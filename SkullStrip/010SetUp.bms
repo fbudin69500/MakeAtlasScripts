@@ -1,0 +1,20 @@
+#Variables initialization
+RegEx( MD_TAG ${MD_SUFFIX} '\..*' REPLACE '' )
+RegEx( MD_EXT ${MD_SUFFIX} '\..*' MATCH )
+RegEx( FA_TAG ${FA_SUFFIX} '\..*' REPLACE '' )
+RegEx( FA_EXT ${FA_SUFFIX} '\..*' MATCH )
+RegEx( RIGID_REGISTRATION_IMAGE_TAG ${RIGID_REGISTRATION_IMAGE_SUFFIX} '\..*' REPLACE '' )
+RegEx( RIGID_REGISTRATION_IMAGE_EXT ${RIGID_REGISTRATION_IMAGE_SUFFIX} '\..*' MATCH )
+
+ForEach( file ${ATLAS_FILES})
+  RegEx( temp_TAG ${file} '\..*' REPLACE '' )
+  RegEx( temp_EXT ${file} '\..*' MATCH )
+  Set( ATLAS_TAG ${temp_TAG} ${ATLAS_TAG})
+  Set( ATLAS_EXT ${temp_EXT} ${ATLAS_EXT})
+  if( ${temp_TAG} == template )
+    Set( TEMPLATE_EXT ${temp_EXT} )
+  endif( ${temp_TAG} == template )
+EndForEach( file ${ATLAS_FILES})
+
+
+MakeDirectory( ${tempDir} )

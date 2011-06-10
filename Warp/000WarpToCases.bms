@@ -1,0 +1,47 @@
+###Tools used###
+#ImageMath
+#fWarp->BRAINSDemonWarp
+#ResampleVolume2
+#RegisterImages
+
+set( template ${AtlasDir}/${Template_Image} )
+ForEach( i ${CASES} )
+  ######################Mask case image###########################
+  Set( SubjDir ${dir}/${i})
+  Set( image ${SubjDir}/${INPUT_SUB_DIR}/${i}${WARP_INPUT_SUFFIX} )
+  Set( mask ${SubjDir}/${PROCESS_SUBDIR}/${i}${NEW_MASK_TAG}.${extension} )
+  Set( MaskedImage ${tempDir}/${i}_MaskedImage.nrrd )
+  Set( Cmd ImageMath ${image} -mask ${mask} -outfile ${MaskedImage} -type float )
+  run( output ${Cmd} )
+  echo( ${output} )
+  #######################Histogram match##########################
+  set( hmImage ${tempDir}/${i}_MaskedImage_hm.nrrd )
+  set( Cmd ImageMath ${MaskedImage} -matchHistogram ${template} -outfile ${hmImage} -type float)
+  run( output ${Cmd} )
+  echo( ${output} )
+  ############Register atlas with new masked image#########################
+  set( TRANSFORM ${tempDir}/${i}_reg_to_New_atlas.txt )
+  set( Cmd ${RegisterImagesDIR}RegisterImages --initialization CentersOfMass --registration PipelineAffine --metric MattesMI ${hmImage} ${template} --saveTransform ${TRANSFORM}  )
+  run( output ${Cmd} )
+  echo( ${output} )
+  #####Warp#####################
+  Set( DeformationField ${SubjDir}/${PROCESS_SUBDIR}/Atlas_to_${i}_displacementField.nrrd )
+  Set( WarpCmd ${BRAINSDemonWarpDIR}BRAINSDemonWarp -f ${hmImage} -m ${template} -O ${DeformationField} --initializeWithTransform ${TRANSFORM} -e --numberOfMatchPoints 50 --numberOfHistogramBins 1024 --minimumMovingPyramid 4,4,4 --minimumFixedPyramid 4,4,4 -n 3 -i 100,50,40 --upperThresholdForBOBF 3000 --registrationFilterType LogDemons )
+  run( output ${WarpCmd} )
+  echo( ${output} )
+  #####Resample atlas############
+  ForEach(j ${LabelMapsToWarp} )
+    GetFilename( name ${j} NAME ) 
+    set( ResampledImage ${SubjDir}/${PROCESS_SUBDIR}/${name} )
+    set( Cmd ${ResampleVolume2DIR}ResampleVolume2 ${j} ${ResampledImage} -H ${DeformationField} -i nn -R ${image} --hfieldtype displacement )
+    run( output ${Cmd} )
+    echo( ${output} )
+    foreach( k ${STAT_FILE_SUFFIX} )
+      GetFilename( name ${j} NAME_WITHOUT_EXTENSION ) 
+      set( Cmd ${ImageStatDIR}ImageStat ${SubjDir}/${INPUT_SUB_DIR}/${i}${k} -label ${ResampledImage} -outbase ${name}${k} )
+      Run( output ${Cmd} )
+      Echo( ${output} )
+    endforeach( k ${STAT_FILE_SUFFIX} )
+  EndForEach(j ${LabelMapsToWarp} )
+EndForEach( i ${CASES} )
+

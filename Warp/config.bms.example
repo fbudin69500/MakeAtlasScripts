@@ -1,0 +1,50 @@
+###################################
+##input: input/output dir, cases, suffixes (transform, DTI, rigid_registration)
+###################################
+##The files must have the following structure: dir/case/case_suffix
+##Cases to process
+set( CASES F-01 L-03 N-01 CC-04 LLL-04 )
+##subdirectory in cases directories: Be careful, if empty, set to .
+Set( INPUT_SUB_DIR NIRALProc )
+##input dir, root directory of the cases
+set( dir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant )
+##directory in which the computed atlas and atlas parcellation are saved
+set( AtlasDir ${dir}/atlas3 )
+##Template image to use for registration
+set( Template_Image AverageImage_SS.nrrd )
+##directory in which temporary files are written
+set( tempDir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant/temp )
+###################################
+#Warp parameters
+###################################
+##Input suffix of files used to create new atlas
+set( WARP_INPUT_SUFFIX _dti_f_toTemplate_MD.nhdr )
+##List of images to warp
+set( LabelMapsToWarp ${AtlasDir}/template_atlas.nrrd ${AtlasDir}/corticalthickness.nrrd )
+##Files on which to compute statistics
+set( STAT_FILE_SUFFIX _sp_dti_f_toTemplate_masked_MD.nhdr )
+###################################
+#Extra parameters. Normally no need to modified
+###################################
+##subdirectory in the case directory in which to save new case files (mask and parcellation)
+set( PROCESS_SUBDIR NIRALProc )
+##suffix of the mask created from the segmentation
+set( NEW_MASK_TAG _mask_from_seg )
+##output files extension
+set( extension nrrd )
+###################################
+##Set up path of executables. If binaries can be found in the path, just set it to ''
+##If directory needs to be set, do not forget '/' at the end
+#ImageStat
+set( ImageStatDIR '' )
+#ImageMath
+set( ImageMathDIR '' )
+#ResampleVolume2
+set( ResampleVolume2DIR '' )
+#RegisterImages
+set( RegisterImagesDIR '' )
+#BRAINSDemonWarp
+set( BRAINSDemonWarpDIR /tools/Slicer3/Slicer3-3.6.1-2010-08-23-linux-x86_64/lib/Slicer3/Plugins/ )
+###################################
+##Processes
+include( /rodent/bin_linux64/MakeAtlas/Warp/000WarpToCases.bms )

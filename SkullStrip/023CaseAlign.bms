@@ -1,0 +1,92 @@
+### The script uses:
+#- rreg
+#- transformation
+#- areg
+#- ResampleVolume2
+###############################
+# iterate over all cases and do initial registration onto template frame
+	Echo ('Registering '${Case})
+
+	# requires three files
+	# 1) source file (subject image)
+	# 2) destination file (template image)
+	# 3) transformation file
+	# 4) registration parameter file (if necessary)
+
+If( ${IS_SCALED} == TRUE )
+  Set ( TemplateFile ${tempDir}/${Case}/template.gipl.gz )
+Else( ${IS_SCALED} == TRUE )
+  Set ( TemplateFile ${tempDir}/template.gipl.gz )
+EndIf( ${IS_SCALED} == TRUE )
+
+
+If( ${i} != 0 )
+  Set (SrcFile ${CORRECTED} )
+  set( masked_image ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}_masked${i}.gipl.gz)
+  set( Cmd ${ImageMathDIR}ImageMath ${SrcFile} -mask ${dilatedMASK} -outfile ${masked_image} -type float )
+  run( output ${Cmd} )
+  echo( ${output} )
+  set( SrcFile ${masked_image} )
+Else( ${i} != 0 )
+  Set (SrcFile ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.gipl.gz)
+EndIf( ${i} != 0 )
+
+#histogram match
+Set( DestImg ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}_hm${i}.gipl.gz )
+Set( Cmd ImageMath ${SrcFile} -matchHistogram ${TemplateFile} -outfile ${DestImg} -type float )
+Run( output ${Cmd} )
+Echo( ${output} )
+Set( SrcFile ${DestImg} )
+
+
+Set (DofFile ${tempDir}/${Case}/${Case}_rigid${i}.dof)
+Set (RegParamFile ${CONFIGDIR}/rreg_rigid.params)
+
+Set (alignCmd ${rregDIR}rreg ${TemplateFile} ${SrcFile} -parin ${RegParamFile} -dofout ${DofFile})
+Run (output ${alignCmd})
+Echo (${output})
+
+Set( DstImg ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}_rigid${i}.gipl.gz )
+Set (transformCmd ${transformationDIR}transformation ${SrcFile} ${DstImg} -dofin ${DofFile} -target ${TemplateFile} -bspline )
+Echo (${transformCmd})
+Run (output ${transformCmd})
+Echo (${output})
+
+
+
+Set (RegConfigFile ${CONFIGDIR}/rreg_TO_TEMPLATE.param )
+Set (AffDofFile ${tempDir}/${Case}/${Case}_affine${i}.dof )
+# affine registration
+Set (regCmd ${aregDIR}areg ${DstImg} ${TemplateFile} -parin ${RegConfigFile} -dofout ${AffDofFile} )
+Echo (${regCmd})
+Run (output ${regCmd})
+Echo (${output})
+
+
+
+
+ForEach( Type ${ATLAS_TAG} )
+    Set (TargetFile ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.gipl.gz)
+    Set( DstImg ${tempDir}/${Case}/${Type}_rigid_to_${Case}${RIGID_REGISTRATION_IMAGE_TAG}_rigid${i}.gipl.gz )
+    If( ${IS_SCALED} == TRUE )
+      Set ( image ${tempDir}/${Case}/${Type}.gipl.gz )
+    Else( ${IS_SCALED} == TRUE )
+      Set ( image ${tempDir}/${Type}.gipl.gz )
+    EndIf( ${IS_SCALED} == TRUE )
+    Set (transformCmd ${transformationDIR}transformation ${image} ${DstImg} -dofin ${AffDofFile} -target ${TargetFile} -bspline )
+    Echo (${transformCmd})
+    Run (output ${transformCmd})
+    Echo (${output})
+    Set( SrcImg ${DstImg} )
+    Set( DstImg ${tempDir}/${Case}/${Type}_rigid_to_${Case}${RIGID_REGISTRATION_IMAGE_TAG}${i}.gipl.gz )
+    Set (transformCmd ${transformationDIR}transformation ${SrcImg} ${DstImg} -dofin ${DofFile} -invert -target ${TargetFile} -bspline )
+    Echo (${transformCmd})
+    Run (output ${transformCmd})
+    Echo (${output})
+    Set( SrcImg ${DstImg} )
+    Set( DstImg ${ABC_Case_DIR}/${Type}.mha )
+    Set (transformCmd ${ResampleVolume2DIR}ResampleVolume2 ${SrcImg} ${DstImg} -i nn )
+    Echo (${transformCmd})
+    Run (output ${transformCmd})
+    Echo (${output})
+EndForEach( Type ATLAS_TAG )

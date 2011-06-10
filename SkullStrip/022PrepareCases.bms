@@ -1,0 +1,48 @@
+### The script uses:
+#- ImageMath
+#- ResampleVolume2
+###############################
+#prepare files before computation
+#rreg and areg need .gipl.gz files so we convert everything that
+#these softare are going to use to this format
+
+#convert
+Set( Img ${SubjDir}/${INPUT_SUB_DIR}/${Case}${RIGID_REGISTRATION_IMAGE_SUFFIX} )
+Set( DestImg ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.gipl.gz )
+if( ${IS_SCALAR} == FALSE )
+  if( ${RIGID_REGISTRATION_IMAGE_SUFFIX} == ${MD_TAG} )
+    echo( "MD image" )
+    set( Cmd ${ImageMathDIR}ImageMath ${Img} -constOper 2,100000 -outfile ${DestImg} )
+    else( ${RIGID_REGISTRATION_IMAGE_SUFFIX} == ${MD_TAG} )
+    if( ${RIGID_REGISTRATION_IMAGE_SUFFIX} == ${FA_TAG} )
+       echo( "FA image" )
+       set( Cmd ${ImageMathDIR}ImageMath ${Img} -constOper 2,10000 -outfile ${DestImg} )
+    else( ${RIGID_REGISTRATION_IMAGE_SUFFIX} == ${FA_TAG} )
+       Set( Cmd ${ResampleVolume2DIR}ResampleVolume2 ${Img} ${DestImg} -i nn )
+    EndIf( ${RIGID_REGISTRATION_IMAGE_SUFFIX} == ${FA_TAG})
+  EndIf( ${RIGID_REGISTRATION_IMAGE_SUFFIX} == ${MD_TAG} )
+else( ${IS_SCALAR} == FALSE )
+  Set( Cmd ${ResampleVolume2DIR}ResampleVolume2 ${Img} ${DestImg} -i nn )
+endif( ${IS_SCALAR} == FALSE )
+Run (output ${Cmd})
+Echo (${output})
+
+
+set( count 0 )
+If( ${IS_SCALED} == TRUE )
+  ForEach( file ${ATLAS_TAG} )
+    GetParam(EXT ${ATLAS_EXT} ${count})
+    Set( SrcImg ${ATLAS_DIR}/${file}${EXT} )
+    Set( DstImg ${tempDir}/${Case}/${file}.gipl.gz )
+    Set (transformCmd ${ResampleVolume2DIR}ResampleVolume2 ${SrcImg} ${DstImg} -R ${SubjDir}/${INPUT_SUB_DIR}/${ATLAS_GRID} )
+    echo(${transformCmd})
+    Run (output ${transformCmd})
+    Echo (${output})
+    Set( ImageMathCmd ${ImageMathDIR}ImageMath ${DstImg} -changeSp 1,1,1 -outfile ${DstImg} -type float )
+    echo( ${ImageMathCmd} )
+    Run( output ${ImageMathCmd} )
+    echo( ${output} )
+    Inc( ${count} 1 )
+    Int( ${count} )
+  EndForEach( file ${ATLAS_TAG} )
+EndIf( ${IS_SCALED} )

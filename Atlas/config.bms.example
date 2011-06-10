@@ -1,0 +1,81 @@
+###################################
+##input: input/output dir, cases, suffixes (transform, DTI, rigid_registration)
+###################################
+##The files must have the following structure: dir/case/case_suffix
+##Cases to process
+set( CASES F-01 L-03 N-01 CC-04 LLL-04 )
+##subdirectory in cases directories: Be careful, if empty, set to .
+Set( INPUT_SUB_DIR NIRALProc )
+##input dir, root directory of the cases
+set( dir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant )
+##directory in which the computed atlas and atlas parcellation are saved
+set( outputDir ${dir}/atlas )
+##directory in which temporary files are written
+set( tempDir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant/temp )
+##suffix of the DTI image, if scalar images, set to ''
+set( DTI_SUFFIX _dti_f.nhdr )
+##if set to '', not used. Set DTI_SUFFIX accordingly (Not used for scalar images)
+set( TRANSFORM_SUFFIX _toTemplateCombined.txt )
+##if scalar image (TRUE or FALSE)
+set( IS_SCALAR FALSE )
+##If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
+set( IS_SCALED TRUE )
+#in case of a rescaling: OLD (to use with Shonagh's pipeline, NEW: To use with DWIResamplingSlicer3Module if scaling option is activated
+set( RESCALE_CENTER_VERSION OLD )#OLD OR NEW
+##atlas for brain stripping and parcellation
+set (ATLAS_DIR /tools/atlas/Rodent/C57BL6J_Brookhaven/probaMaps)
+###################################
+#atlas building parameters
+###################################
+##Input suffix of files used to create new atlas
+set( ATLAS_INPUT_SUFFIX _dti_f_toTemplate_MD.nhdr )
+###################################
+#Extra parameters. Normally no need to modified
+###################################
+##Atlas file
+set( TEMPLATE template.mha )
+##Name of the parcellation atlas
+set( PARCELLATION_FILE_NAME template_atlas.mha )
+##image grid filename
+set( IMAGE_GRID ImageGrid.nrrd )
+##subdirectory in the case directory in which to save new case files (mask and parcellation)
+set( PROCESS_SUBDIR NIRALProc_SS )
+##suffix of the mask created from the segmentation
+set( NEW_MASK_TAG _mask_from_seg )
+##output files extension
+set( extension nrrd )
+##directory in which temporary files to compute the atlas are written
+set( atlasProcessDir ${tempDir}/AtlasProcessing )
+###################################
+#ImageMath
+set( ImageMathDIR '' )
+#ResampleVolume2
+set( ResampleVolume2DIR '' )
+#rreg
+set( rregDIR '' )
+#transformation
+set( transformationDIR '' )
+#areg
+set( aregDIR '' )
+#RegisterImages
+set( RegisterImagesDIR '' )
+#Double2FloatTransform
+set( Double2FloatTransformDIR '' )
+#AtlasWerks
+set( AtlasWerksDIR '' )
+#ResampleDTIlogEuclidean
+set( ResampleDTIlogEuclideanDIR '' )
+#BRAINSDemonWarp
+set( BRAINSDemonWarpDIR '' )
+#dtiaverage
+set( dtiaverageDIR '' )
+#unu
+set( unuDIR '' )
+#dtiprocess
+set( dtiprocessDIR '' )
+#ITKTransformTools
+set( ITKTransformToolsDIR '' )
+###################################
+##Processes
+#include( ${scriptDir}/000MakeAtlas.bms )
+include( /rodent/bin_linux64/MakeAtlas/Atlas/000MakeAtlas.bms )

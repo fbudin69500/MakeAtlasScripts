@@ -1,0 +1,9 @@
+#Variables initialization
+
+#Variables initialization
+RegEx( PARCELLATION_FILE_TAG ${PARCELLATION_FILE_NAME} '\..*' REPLACE '' )
+RegEx( DTI_TAG ${DTI_SUFFIX} '\..*' REPLACE '' )
+RegEx( ATLAS_INPUT_TAG ${ATLAS_INPUT_SUFFIX} '\..*' REPLACE '' )
+set( ATLAS_INPUT_MASKED_TAG ${ATLAS_INPUT_TAG}_masked_from_seg )
+
+MakeDirectory( ${tempDir} )

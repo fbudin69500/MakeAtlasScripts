@@ -1,0 +1,32 @@
+###################################
+##input: input/output dir, cases, suffixes (transform, DTI, rigid_registration)
+###################################
+##The files must have the following structure: dir/case/case_suffix
+##Cases to process
+set( CASES F-01 L-03 N-01 CC-04 LLL-04 )
+##subdirectory in cases directories: Be careful, if empty, set to .
+Set( INPUT_SUB_DIR NIRALProc )
+##input dir, root directory of the cases
+set( dir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant )
+###################################
+#Bias correction parameters
+###################################
+##Input suffix of files used to create new atlas
+set( BIAS_INPUT_SUFFIX _dti_f_toTemplate_MD.nhdr )
+###################################
+#Extra parameters. Normally no need to modified
+###################################
+##subdirectory in the case directory in which to save new case files (mask and parcellation)
+set( PROCESS_SUBDIR NIRALProcBias )
+##suffix of the output created from the segmentation
+set( OUTPUT_TAG _bias_corrected )
+##output files extension
+set( extension nrrd )
+###################################
+##Set up path of executables. If binaries can be found in the path, just set it to ''
+##If directory needs to be set, do not forget '/' at the end
+#N4ITKBiasFieldCorrection
+set( N4ITKBiasFieldCorrectionPATH 'N4ITKBiasFieldCorrection' )
+###################################
+##Processes
+include( /biomed-resimg/home/budin/LocalWork/BiasCorrection/BiasFieldCorrection.bms )

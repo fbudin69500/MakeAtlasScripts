@@ -1,0 +1,18 @@
+### The script uses:
+#- ResampleVolume2
+#prepare files before computation
+#rreg and areg need .gipl.gz files so we convert
+#the atlas files to this format
+set( count 0)
+ForEach( file ${ATLAS_TAG} )
+  GetParam(EXT ${ATLAS_EXT} ${count})
+  Set( SrcImg ${ATLAS_DIR}/${file}${EXT} )
+  Set( DstImg ${tempDir}/${file}.gipl.gz )
+  Set (transformCmd ${ResampleVolume2DIR}ResampleVolume2 ${SrcImg} ${DstImg} -i nn )
+  echo(${transformCmd})
+  Run (output ${transformCmd})
+  Echo (${output})
+  Inc(${count} 1)
+  Int( ${count} )
+EndForEach( file ${ATLAS_TAG} )
+
