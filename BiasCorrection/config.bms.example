@@ -29,4 +29,4 @@ set( extension nrrd )
 set( N4ITKBiasFieldCorrectionPATH 'N4ITKBiasFieldCorrection' )
 ###################################
 ##Processes
-include( /biomed-resimg/home/budin/LocalWork/BiasCorrection/BiasFieldCorrection.bms )
+include( /biomed-resimg/rodent/bin_linux64/MakeAtlas/BiasCorrection/BiasFieldCorrection.bms )

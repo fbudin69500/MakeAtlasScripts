@@ -1,6 +1,5 @@
 ###Tools used###
 #N4ITKBiasFieldCorrection
-
 ForEach( i ${CASES} )
   ######################Mask case image###########################
   Set( SubjDir ${dir}/${i})
@@ -8,6 +7,7 @@ ForEach( i ${CASES} )
   Set( image ${SubjDir}/${INPUT_SUB_DIR}/${i}${BIAS_INPUT_SUFFIX} )
   Set( output ${SubjDir}/${PROCESS_SUBDIR}/${i}${OUTPUT_TAG}.${extension} )
   Set( Cmd ${N4ITKBiasFieldCorrectionPATH} --inputimage ${image} --outputimage ${output} --bsplineorder 4 )
+  echo( ${Cmd} )
   run( output ${Cmd} )
   echo( ${output} )
 EndForEach( i ${CASES} )
