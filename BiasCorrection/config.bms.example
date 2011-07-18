@@ -11,7 +11,7 @@ set( dir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant )
 ###################################
 #Bias correction parameters
 ###################################
-##Input suffix of files used to create new atlas
+##Input suffix of files
 set( BIAS_INPUT_SUFFIX _dti_f_toTemplate_MD.nhdr )
 ###################################
 #Extra parameters. Normally no need to modified

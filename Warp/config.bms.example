@@ -21,12 +21,12 @@ set( tempDir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant/temp )
 set( WARP_INPUT_SUFFIX _dti_f_toTemplate_MD.nhdr )
 ##List of images to warp
 set( LabelMapsToWarp ${AtlasDir}/template_atlas.nrrd ${AtlasDir}/corticalthickness.nrrd )
-##Files on which to compute statistics
+##Image files on which to compute statistics
 set( STAT_FILE_SUFFIX _sp_dti_f_toTemplate_masked_MD.nhdr )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
-##subdirectory in the case directory in which to save new case files (mask and parcellation)
+##subdirectory in the case directory in which to save new case files (mask, parcellation and statistics)
 set( PROCESS_SUBDIR NIRALProc )
 ##suffix of the mask created from the segmentation
 set( NEW_MASK_TAG _mask_from_seg )
