@@ -26,6 +26,8 @@ sequence(seq 0 0 1)
 ##Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName config.bms )
+##Bias field correction (TRUE/FALSE)
+set( biasFieldCorrection FALSE )
 ###################################
 #ABC parameters, suffixes
 ###################################
