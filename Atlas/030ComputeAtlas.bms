@@ -37,7 +37,7 @@ include( 031AffineRegistration.bms )
 MakeDirectory( ${outputDir} )
 #set( atlasWerksCmd ${AtlasWerksDIR} --outputImageFilenamePrefix=${atlasProcessDir}/avg_ --outputDeformedImageFilenamePrefix=${atlasProcessDir}/deformedImage_ --outputHFieldFilenamePrefix=${atlasProcessDir}/h_ --outputHInvFieldFilenamePrefix=${atlasProcessDir}/inv_h_ --scaleLevel=4 --numberOfIterations=200 --scaleLevel=2 --numberOfIterations=50 --scaleLevel=1 --alpha=${ALPHA} --numberOfIterations=25 ${MD_CASES} ${TRANSFORM_LIST} )
 
-set( atlasWerksCmd ${AtlasWerksDIR}AtlasWerks --outputImageFilenamePrefix=${atlasProcessDir}/avg_ --outputDeformedImageFilenamePrefix=${atlasProcessDir}/deformedImage_ --outputHFieldFilenamePrefix=${atlasProcessDir}/h_ --scaleLevel=4 --numberOfIterations=200 --scaleLevel=2 --numberOfIterations=50 --scaleLevel=1 --numberOfIterations=25 ${MD_CASES} ${TRANSFORM_LIST} )
+set( atlasWerksCmd ${AtlasWerksDIR}AtlasWerks --outputImageFilenamePrefix=${atlasProcessDir}/avg_ --outputDeformedImageFilenamePrefix=${atlasProcessDir}/deformedImage_ --outputHFieldFilenamePrefix=${atlasProcessDir}/h_ --outputHInvFieldFilenamePrefix=${atlasProcessDir}/inv_h_ --scaleLevel=4 --numberOfIterations=200 --scaleLevel=2 --numberOfIterations=50 --scaleLevel=1 --numberOfIterations=25 ${MD_CASES} ${TRANSFORM_LIST} )
 
 echo (${atlasWerksCmd})
 run (output ${atlasWerksCmd})
@@ -68,6 +68,13 @@ foreach( i ${CASES} )
   Set( Cmd ${ResampleVolume2DIR}ResampleVolume2 ${hfield} ${COPIED_HFIELD} )
   Run( output ${Cmd} )
   echo( ${output} )
+
+  set( invhfield ${atlasProcessDir}/inv_h_${suffix}.mhd )
+  Set( COPIED_INV_HFIELD ${SubjDir}/${PROCESS_SUBDIR}/${i}_inv_hFieldToAtlas.mha )
+  Set( Cmd ${ResampleVolume2DIR}ResampleVolume2 ${invhfield} ${COPIED_INV_HFIELD} )
+  Run( output ${Cmd} )
+  echo( ${output} )
+
   Inc(${count} 1)
   Int( ${count} )
 endforeach( ${CASES} )
