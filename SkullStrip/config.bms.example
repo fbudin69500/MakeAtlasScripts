@@ -76,6 +76,8 @@ set( rregDIR '' )
 set( transformationDIR '' )
 #areg
 set( aregDIR '' )
+#ITKTransformTools
+set( ITKTransformToolsDIR '' )
 ###################################
 ##Processes
 #include( ${scriptDir}/000MakeAtlas.bms )
