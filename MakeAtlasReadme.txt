@@ -17,6 +17,7 @@ IS_SCALAR: TRUE if the input images are scalar images. FALSE if they are DTIs
 IS_SCALED: If the transform given was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
 RESCALE_CENTER_VERSION: In case of a rescaling: OLD (to use with Shonagh's pipeline, NEW: To use with DWIResamplingSlicer3Module if scaling option is activated
 extension: Output and temporary files extension
+TRANSF_TYPE: 0 for a fluid transformation, 1 for a B-Splines transformation
 
 Output files:
 

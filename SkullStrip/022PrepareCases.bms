@@ -31,6 +31,18 @@ if( ${Registration} == TRUE )
   Echo (${output})
 EndIf( ${Registration} == TRUE )
 
+Set( directionGrid ${tempDir}/${Case}/${Case}_directionGrid.nrrd )
+Set( Cmd ${ITKTransformToolsDIR}ITKTransformTools size ${DestImg} ${Direction} --grid ${directionGrid} )
+Run( output ${Cmd} )
+echo( ${output} )
+
+Set( directionIMG ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.gipl.gz )
+Set( Cmd ${ResampleVolume2DIR}ResampleVolume2 ${DestImg} -f ${Direction} -R ${directionGrid} -d 1,0,0,0,1,0,0,0,1 ${directionIMG} )
+Run( output ${Cmd} )
+echo( ${output} )
+
+
+
 
 set( count 0 )
 If( ${IS_SCALED} == TRUE )
