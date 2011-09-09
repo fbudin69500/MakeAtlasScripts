@@ -9,6 +9,10 @@ set( CASES F-01 L-03 N-01 CC-04 LLL-04 )
 Set( INPUT_SUB_DIR NIRALProc )
 ##suffix of the image used to register the image to the atlas to compute segmentation
 set( RIGID_REGISTRATION_IMAGE_SUFFIX _idwi_toTemplate.nhdr )
+##Rigid or only affine registration
+set( Rigid FALSE )
+##Register the images or not (skips both rigid and affine registration if set to FALSE )
+set( Registration TRUE )
 ##input dir, root directory of the cases
 set( dir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant )
 ##directory in which temporary files are written
@@ -23,11 +27,6 @@ set( FA_SUFFIX _dti_f_toTemplate_FA.nhdr )
 set( IS_SCALED TRUE )
 ##Number of loops: sequence(seq 0 NB_LOOPS 1)
 sequence(seq 0 0 1)
-##Name of this file (configuration file).
-##Set to '' if you don't want to save the configuration file in the output directory
-set( ScriptName config.bms )
-##Bias field correction (TRUE/FALSE)
-set( biasFieldCorrection FALSE )
 ###################################
 #ABC parameters, suffixes
 ###################################
@@ -79,4 +78,4 @@ set( aregDIR '' )
 ###################################
 ##Processes
 #include( ${scriptDir}/000MakeAtlas.bms )
-include( /rodent/bin_linux64/MakeAtlas/SkullStrip/000SkullStrip.bms )
+include( /biomed-resimg/rodent/SherylMoy/processing/SkullStrip/000SkullStrip.bms )
