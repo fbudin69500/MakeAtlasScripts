@@ -10,6 +10,24 @@
 if( ${Registration} == TRUE )
   Set( Img ${SubjDir}/${INPUT_SUB_DIR}/${Case}${RIGID_REGISTRATION_IMAGE_SUFFIX} )
   Set( DestImg ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.gipl.gz )
+
+  Set( Direction ${tempDir}/${Case}/${Case}_direction.tfm )
+
+  Set( Cmd ${ITKTransformToolsDIR}ITKTransformTools direction  ${Img} ${Direction} )
+  Run( output ${Cmd} )
+  echo( ${output} )
+
+  Set( directionGrid ${tempDir}/${Case}/${Case}_directionGrid.nrrd )
+  Set( Cmd ${ITKTransformToolsDIR}ITKTransformTools size ${Img} ${Direction} --grid ${directionGrid} )
+  Run( output ${Cmd} )
+  echo( ${output} )
+
+  Set( directionIMG ${tempDir}/${Case}/${Case}_direction.nrrd )
+  Set( Cmd ${ResampleVolume2DIR}ResampleVolume2 ${Img} -f ${Direction} -R ${directionGrid} -d 1,0,0,0,1,0,0,0,1 ${directionIMG} )
+  Run( output ${Cmd} )
+  echo( ${output} )
+
+  Set( Img ${directionIMG} )
   if( ${IS_SCALAR} == FALSE )
     echo( "DTI image" )
     if( ${RIGID_REGISTRATION_IMAGE_SUFFIX} == ${MD_SUFFIX} )
@@ -30,16 +48,6 @@ if( ${Registration} == TRUE )
   Run (output ${Cmd})
   Echo (${output})
 EndIf( ${Registration} == TRUE )
-
-Set( directionGrid ${tempDir}/${Case}/${Case}_directionGrid.nrrd )
-Set( Cmd ${ITKTransformToolsDIR}ITKTransformTools size ${DestImg} ${Direction} --grid ${directionGrid} )
-Run( output ${Cmd} )
-echo( ${output} )
-
-Set( directionIMG ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.gipl.gz )
-Set( Cmd ${ResampleVolume2DIR}ResampleVolume2 ${DestImg} -f ${Direction} -R ${directionGrid} -d 1,0,0,0,1,0,0,0,1 ${directionIMG} )
-Run( output ${Cmd} )
-echo( ${output} )
 
 
 

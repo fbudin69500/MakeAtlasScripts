@@ -20,6 +20,8 @@ set( TRANSFORM_SUFFIX _toTemplateCombined.txt )
 set( IS_SCALAR FALSE )
 ##If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
 set( IS_SCALED TRUE )
+## histogram match 
+set ( HISTOGRAM_MATCH FALSE )
 #in case of a rescaling: OLD (to use with Shonagh's pipeline, NEW: To use with DWIResamplingSlicer3Module if scaling option is activated
 set( RESCALE_CENTER_VERSION OLD )#OLD OR NEW
 ##atlas for brain stripping and parcellation
