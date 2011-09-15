@@ -1,0 +1,88 @@
+##Check that the version is the same in the example and in the config file you are modifying.
+##If not, copy and modify this example to have a version of the configuration file that is up
+##to date.
+##Version:1.11
+#####################################################################################################
+################################### Variables to set ################################################
+#####################################################################################################
+##The files must have the following structure: dir/case/case_suffix
+##-1-input dir, root directory of the cases
+set( dir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant )
+##-2-Cases to process
+set( CASES F-01 L-03 N-01 CC-04 LLL-04 )
+##-3-atlas for brain stripping and parcellation
+set (ATLAS_DIR /tools/atlas/Rodent/C57BL6J_Brookhaven/probaMaps)
+##-4-Name of this file (configuration file).
+##Set to '' if you don't want to save the configuration file in the output directory
+set( ScriptName config.bms )
+#####################################################################################################
+######################## Advanced options that you should not have to modify ########################
+#####################################################################################################
+##-5-subdirectory in cases directories: Be careful, if empty, set to .
+Set( INPUT_SUB_DIR Processing/2-Registration+DTIBuild )
+##-6-subdirectory in the case directory in which to save new case files (mask and parcellation)
+set( PROCESS_SUBDIR Processing/3-SkullStripping )
+##-7-suffix of the image used to register the image to the atlas to compute segmentation
+set( RIGID_REGISTRATION_IMAGE_SUFFIX _idwi_toTemplate.nhdr )
+##-8-Is the image used for the registration the MD image? In that case, we'll multiply its values
+##by 100000 before converting it to integers
+set( RIGID_IS_MD FALSE )
+##-9-Is the image used for the registration the FA image?In that case, we'll multiply its values
+##by 10000 before converting it to integers
+set( RIGID_IS_FA FALSE )
+##-10-if scalar image (TRUE or FALSE)
+set( IS_SCALAR FALSE )
+##-11-type of image used for segmentation. Can hold multiple types
+set( ABC_IMAGE_SUFFIX ${RIGID_REGISTRATION_IMAGE_SUFFIX} )
+##-12-Register the images or not (skips both rigid and affine registration if set to FALSE )
+set( Registration TRUE )
+##-13-Rigid or only affine registration
+set( Rigid TRUE )
+##-14-Bias field correction (TRUE/FALSE)
+set( biasFieldCorrection FALSE )
+##-15-Filter method: if set to true, ABC will use the 'Curvature flow'. Otherwise, it will use 'Grad aniso diffusion'
+set( FILTERCURVATURE TRUE )
+##-16-Atlas files. One file must be called template.${ext}
+set( ATLAS_FILES 1.mha 2.mha 3.mha 4.mha template.mha )
+##-17-ABC Priors
+set( PRIORS 1 1 1 1 )
+##-18-atlas grid filename
+set( ATLAS_GRID AtlasGrid.nrrd )
+##-19-directory in which temporary files are written
+set( tempDir ${dir}/temp )
+##-20-was the input image scaled to 1,1,1
+set( IS_SCALED FALSE )
+##-21-Number of loops: sequence(seq 0 NB_LOOPS 1)
+sequence(seq 0 0 1)
+##-22-directory in which to find "rreg_rigid.params" and "rreg_TO_TEMPLATE.param"
+set( CONFIGDIR /rodent/bin_linux64/MakeAtlas/SkullStrip )
+##-23-Closing radius to smooth mask computed from segmentation
+set( MASK_CLOSING_RADIUS 5 )
+##-24-suffix of the mask created from the segmentation
+set( NEW_MASK_TAG _mask_from_seg )
+##-25-output files extension
+set( extension nrrd )
+##-26-suffix of segmentation files
+set ( ABCSUFFIX seg )
+#######################################################################################################
+##Set up path of executables. If binaries can be found in the path, just set it to ''
+##If directory needs to be set, do not forget '/' at the end
+#ABC
+set( ABCDIR '' )
+#SegPostProcessCLP
+set( SegPostProcessCLPDIR '' )
+#ImageMath
+set( ImageMathDIR '' )
+#ResampleVolume2
+set( ResampleVolume2DIR '' )
+#rreg
+set( rregDIR '' )
+#transformation
+set( transformationDIR '' )
+#areg
+set( aregDIR '' )
+#ITKTransformTools
+set( ITKTransformToolsDIR '' )
+###################################
+##Processes
+include( /rodent/bin_linux64/MakeAtlas/SkullStrip/000SkullStrip.bms )
