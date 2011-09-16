@@ -1,0 +1,93 @@
+##Check that the version is the same in the example and in the config file you are modifying.
+##If not, copy and modify this example to have a version of the configuration file that is up
+##to date.
+##Version:1.1
+#####################################################################################################
+################################### Variables to set ################################################
+#####################################################################################################
+##The files must have the following structure:
+##dir/case/case_suffix;dir=/rodent/Project/subProject1/Processing
+##-1-Processing directory, root directory of the cases
+set( dir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant/Processing )
+##-2-Cases to process
+set( CASES F-01 L-03 N-01 CC-04 LLL-04 )
+##-3-Input suffix of files used to create new atlas
+set( ATLAS_INPUT_SUFFIX _dti_f_toTemplate_MD.nhdr )
+##-4-Subdirectory in cases directories: Be careful, if empty, set to .
+Set( INPUT_SUB_DIR 2-Registration+DTIBuild )
+##-5-Mask subdirectory: Be careful, if empty, set to .
+Set( Mask_SUB_DIR 3-SkullStripping-a )
+##-6-Atlas for brain stripping and parcellation
+set( ATLAS_DIR ${dir}/template/original-a )
+##-7-Population atlas directories suffix
+set( AtlasDirectoriesSuffix 1 )
+##-8-Subdirectory in which the DTI that hasn't yet been registered is
+##(used only if image type is not scalar)
+Set( DTI_SUB_DIR 1-Converted )
+##-9-Suffix of the DTI image, if scalar images, set to ''
+set( DTI_SUFFIX _dti_f.nhdr )
+##-10-If set to '', not used. Set DTI_SUFFIX accordingly (Not used for scalar images)
+set( TRANSFORM_SUFFIX _toTemplateCombined.txt )
+###################################
+#Extra parameters. Normally no need to modified
+###################################
+##-11-Directory in which the computed population atlas and its parcellation/segmentation are saved
+set( outputDir ${dir}/atlas-${AtlasDirectoriesSuffix} )
+##-12-Subdirectory in the case directory in which to save new case files (hfields/invhfields)
+set( PROCESS_SUBDIR 4-AtlasCreation-${AtlasDirectoriesSuffix} )
+##-13-Directory in which temporary files are written
+set( tempDir ${outputDir}/temp )
+##-14-Directory in which temporary files to compute the atlas are written
+set( atlasProcessDir ${tempDir}/AtlasProcessing )
+##-15-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
+set( IS_SCALED FALSE )
+##-16-Histogram match for scalar images
+set( HISTOGRAM_MATCH TRUE )
+##-17-In case of a rescaling:
+##OLD: to use with Shonagh's pipeline
+##NEW: To use with DWIResamplingSlicer3Module if scaling option is activated
+set( RESCALE_CENTER_VERSION NEW )#OLD OR NEW
+##-18-If scalar image (TRUE or FALSE)
+set( IS_SCALAR FALSE )
+##-19-Atlas file
+set( TEMPLATE template.mha )
+##-20-Name of the parcellation atlas
+set( PARCELLATION_FILE_NAME template_atlas.mha )
+##-21-Image grid filename
+set( IMAGE_GRID ImageGrid.nrrd )
+##-22-Suffix of the mask created from the segmentation
+set( NEW_MASK_TAG _mask_from_seg )
+##-23-Output files extension
+set( extension nrrd )
+###################################
+#ImageMath
+set( ImageMathDIR '' )
+#ResampleVolume2
+set( ResampleVolume2DIR '' )
+#rreg
+set( rregDIR '' )
+#transformation
+set( transformationDIR '' )
+#areg
+set( aregDIR '' )
+#RegisterImages
+set( RegisterImagesDIR '' )
+#Double2FloatTransform
+set( Double2FloatTransformDIR '' )
+#AtlasWerks
+set( AtlasWerksDIR '' )
+#ResampleDTIlogEuclidean
+set( ResampleDTIlogEuclideanDIR '' )
+#BRAINSDemonWarp
+set( BRAINSDemonWarpDIR '' )
+#dtiaverage
+set( dtiaverageDIR '' )
+#unu
+set( unuDIR '' )
+#dtiprocess
+set( dtiprocessDIR '' )
+#ITKTransformTools
+set( ITKTransformToolsDIR '' )
+###################################
+##Processes
+include( /rodent/bin_linux64/MakeAtlas/Atlas/000MakeAtlas.bms )
