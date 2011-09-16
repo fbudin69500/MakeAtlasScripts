@@ -1,19 +1,20 @@
 ##Check that the version is the same in the example and in the config file you are modifying.
 ##If not, copy and modify this example to have a version of the configuration file that is up
 ##to date.
-##Version:1.11
+##Version:1.12
 #####################################################################################################
 ################################### Variables to set ################################################
 #####################################################################################################
-##The files must have the following structure: dir/case/case_suffix
-##-1-input dir, root directory of the cases
-set( dir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant )
+##The files must have the following structure:
+##dir/case/case_suffix;dir=/rodent/Project/subProject1/Processing
+##-1-Processing directory, root directory of the cases
+set( dir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant/Processing )
 ##-2-Cases to process
 set( CASES F-01 L-03 N-01 CC-04 LLL-04 )
 ##-3-suffix of the image used to register the image to the atlas to compute segmentation
 set( RIGID_REGISTRATION_IMAGE_SUFFIX _MD_toTemplate.nhdr )
 ##-4-atlas for brain stripping and parcellation
-set (ATLAS_DIR /tools/atlas/Rodent/C57BL6J_Brookhaven/probaMaps)
+set (ATLAS_DIR ${dir}/template/original-a)
 ##-5-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName config.bms )
@@ -21,9 +22,9 @@ set( ScriptName config.bms )
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
 ##-6-subdirectory in cases directories: Be careful, if empty, set to .
-Set( INPUT_SUB_DIR Processing/2-Registration+DTIBuild )
+Set( INPUT_SUB_DIR 2-Registration+DTIBuild )
 ##-7-subdirectory in the case directory in which to save new case files (mask and parcellation)
-set( PROCESS_SUBDIR Processing/3-SkullStripping )
+set( PROCESS_SUBDIR 3-SkullStripping-a )
 ##-8-Is the image used for the registration the MD image? In that case, we'll multiply its values
 ##by 100000 before converting it to integers
 set( RIGID_IS_MD FALSE )
