@@ -20,7 +20,7 @@ AppendFile(${ABCfile} '<OUTPUT-FORMAT>'${extension}'</OUTPUT-FORMAT>\n')
 
 ForEach (Type ${ABC_IMAGE_SUFFIX})
    AppendFile(${ABCfile} '<IMAGE>\n')
-   AppendFile(${ABCfile} '  <FILE>'${SubjDir}/${INPUT_SUB_DIR}/${Case}${Type}'</FILE>\n')
+   AppendFile(${ABCfile} '  <FILE>'${InputSubjDir}/${Case}${Type}'</FILE>\n')
    AppendFile(${ABCfile} '  <ORIENTATION>'file'</ORIENTATION>\n')
    AppendFile(${ABCfile} '</IMAGE>\n')
 EndForEach (${Type})

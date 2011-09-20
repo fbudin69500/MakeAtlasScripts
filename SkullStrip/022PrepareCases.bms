@@ -8,7 +8,7 @@
 
 #convert
 if( ${Registration} == TRUE )
-  Set( Img ${SubjDir}/${INPUT_SUB_DIR}/${Case}${RIGID_REGISTRATION_IMAGE_SUFFIX} )
+  Set( Img ${InputSubjDir}/${Case}${RIGID_REGISTRATION_IMAGE_SUFFIX} )
   Set( DestImg ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}_noDirection.gipl.gz )
 
   if( ${IS_SCALAR} == FALSE )
@@ -60,7 +60,7 @@ If( ${IS_SCALED} == TRUE )
     else( ${Registration} == TRUE )
       Set( DstImg ${tempDir}/${Case}/${file}.mha )
     endif( ${Registration} == TRUE )
-    Set (transformCmd ${ResampleVolume2DIR}ResampleVolume2 ${SrcImg} ${DstImg} -R ${SubjDir}/${INPUT_SUB_DIR}/${ATLAS_GRID} )
+    Set (transformCmd ${ResampleVolume2DIR}ResampleVolume2 ${SrcImg} ${DstImg} -R ${InputSubjDir}/${ATLAS_GRID} )
     echo(${transformCmd})
     Run (output ${transformCmd})
     Echo (${output})

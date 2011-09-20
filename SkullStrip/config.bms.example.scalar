@@ -21,10 +21,12 @@ set( ScriptName config.bms )
 #####################################################################################################
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
-##-6-subdirectory in cases directories: Be careful, if empty, set to .
-Set( INPUT_SUB_DIR 2-Registration )
 ##-7-subdirectory in the case directory in which to save new case files (mask and parcellation)
 set( PROCESS_SUBDIR 3-SkullStripping-a )
+##Input pre-subdir. For old data structure, the value should be "."
+set( INPUT_PRE_SUBDIR Results )
+##Output pre-subdir. For old data structure, the value should be "."
+set( OUTPUT_PRE_SUBDIR Processing )
 ##-8-Is the image used for the registration the MD image? In that case, we'll multiply its values
 ##by 100000 before converting it to integers
 set( RIGID_IS_MD FALSE )
