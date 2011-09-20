@@ -14,7 +14,7 @@ set( CASES F-01 L-03 N-01 CC-04 LLL-04 )
 ##-3-suffix of the image used to register the image to the atlas to compute segmentation
 set( RIGID_REGISTRATION_IMAGE_SUFFIX .nhdr )
 ##-4-atlas for brain stripping and parcellation
-set (ATLAS_DIR ${dir}/template/original-a)
+set (ATLAS_DIR ${dir}/${OUTPUT_PRE_SUBDIR}/template/original-a)
 ##-5-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName config.bms )
