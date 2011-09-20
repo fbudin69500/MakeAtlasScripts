@@ -11,19 +11,19 @@
 set( dir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant/Processing )
 ##-2-Cases to process
 set( CASES F-01 L-03 N-01 CC-04 LLL-04 )
-##-7-suffix of the image used to register the image to the atlas to compute segmentation
+##-3-suffix of the image used to register the image to the atlas to compute segmentation
 set( RIGID_REGISTRATION_IMAGE_SUFFIX .nhdr )
-##-3-atlas for brain stripping and parcellation
+##-4-atlas for brain stripping and parcellation
 set (ATLAS_DIR ${dir}/template/original-a)
-##-4-Name of this file (configuration file).
+##-5-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName config.bms )
 #####################################################################################################
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
-##-5-subdirectory in cases directories: Be careful, if empty, set to .
+##-6-subdirectory in cases directories: Be careful, if empty, set to .
 Set( INPUT_SUB_DIR 2-Registration )
-##-6-subdirectory in the case directory in which to save new case files (mask and parcellation)
+##-7-subdirectory in the case directory in which to save new case files (mask and parcellation)
 set( PROCESS_SUBDIR 3-SkullStripping-a )
 ##-8-Is the image used for the registration the MD image? In that case, we'll multiply its values
 ##by 100000 before converting it to integers
