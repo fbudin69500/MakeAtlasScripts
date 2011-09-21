@@ -14,7 +14,7 @@ set( CASES F-01 L-03 N-01 CC-04 LLL-04 )
 ##-3-Input suffix of files used to create new atlas
 set( ATLAS_INPUT_SUFFIX .nhdr )
 ##-4-Atlas subdirectory for brain stripping and parcellation
-set( ATLAS_SUB_DIR a-Original )
+set( ATLAS_SUB_DIR a-original )
 ##-5-Population atlas directories suffix
 set( AtlasDirectoriesSuffix 1 )
 ###################################

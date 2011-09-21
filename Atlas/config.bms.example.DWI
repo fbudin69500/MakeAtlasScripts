@@ -14,7 +14,7 @@ set( CASES F-01 L-03 N-01 CC-04 LLL-04 )
 ##-3-Input suffix of files used to create new atlas
 set( ATLAS_INPUT_SUFFIX _dti_f_toTemplate_MD.nhdr )
 ##-4-Atlas subdirectory for brain stripping and parcellation
-set( ATLAS_SUB_DIR a-Original )
+set( ATLAS_SUB_DIR a-original )
 ##-5-Population atlas directories suffix
 set( AtlasDirectoriesSuffix 1 )
 ##-6-Suffix of the DTI image, if scalar images, set to ''
@@ -31,7 +31,7 @@ set( OUTPUT_PRE_SUBDIR Processing )
 ##-10-Atlas directory for brain stripping and parcellation
 set( ATLAS_DIR ${dir}/${OUTPUT_PRE_SUBDIR}/template/S{ATLAS_SUB_DIR} )
 ##-11-Directory in which the computed population atlas and its parcellation/segmentation are saved
-set( outputDir ${dir}/${OUTPUT_PRE_SUBDIR}/atlas-${AtlasDirectoriesSuffix} )
+set( outputDir ${dir}/${OUTPUT_PRE_SUBDIR}/Atlas-${AtlasDirectoriesSuffix} )
 ##-12-Subdirectory in the case directory in which to save new case files (hfields/invhfields)
 set( PROCESS_SUBDIR 4-AtlasCreation-${AtlasDirectoriesSuffix} )
 ##-13-Directory in which temporary files are written
