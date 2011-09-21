@@ -12,24 +12,24 @@ set( dir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant )
 ##-2-Cases to process
 set( CASES F-01 L-03 N-01 CC-04 LLL-04 )
 ##-3-Image files on which to compute statistics (can contain multiple files)
-set( STAT_FILE_SUFFIX _sp_dti_f_toTemplate_masked_MD.nhdr )
+set( STAT_FILE_SUFFIX _dti_f_reg_AD.nrrd _dti_f_reg_FA.nrrd _dti_f_reg_MD.nrrd _dti_f_reg_RD.nrrd )
 ##-4-subdirectory in the case directory in which to save new case files (mask, parcellation and statistics)
 set( PROCESS_SUBDIR 5-Warping )
+##-5-Input suffix of files used to create new atlas
+set( WARP_INPUT_SUFFIX _dti_f_toTemplate_MD.nhdr )
+##-6-Template image to use for registration
+set( Template_Image AverageImage_SS_MD.nrrd )
 #####################################################################################################
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
-##-5-List of images to warp (can contain multiple files)
+##-7-List of images to warp (can contain multiple files)
 set( LabelMapsToWarp template_atlas.nrrd )
-##-6-Input pre-subdir. For old data structure, the value should be "."
+##-8-Input pre-subdir. For old data structure, the value should be "."
 set( INPUT_PRE_SUBDIR Results )
-##-7-Output pre-subdir. For old data structure, the value should be "."
+##-9-Output pre-subdir. For old data structure, the value should be "."
 set( OUTPUT_PRE_SUBDIR Processing )
-##-8-directory in which the computed atlas and atlas parcellation are saved
+##-10-directory in which the computed atlas and atlas parcellation are saved
 set( AtlasDir ${dir}/${INPUT_PRE_SUBDIR}/Atlas )
-##-9-Template image to use for registration
-set( Template_Image AverageImage_SS.nrrd )
-##-10-Input suffix of files used to create new atlas
-set( WARP_INPUT_SUFFIX _dti_f_toTemplate_MD.nhdr )
 ##-11-directory in which temporary files are written
 set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
 ##-12-suffix of the mask created from the segmentation
