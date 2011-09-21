@@ -17,7 +17,7 @@ set( CASES F-01 L-03 N-01 CC-04 LLL-04 )
 ##-4-suffix of the image used to register the image to the atlas to compute segmentation
 set( RIGID_REGISTRATION_IMAGE_SUFFIX .nhdr )
 ##-5-Atlas subdirectory for brain stripping and parcellation
-set( ATLAS_SUB_DIR a-Original )
+set( ATLAS_SUB_DIR a-original )
 ##-6-subdirectory in the case directory in which to save new case files (mask and parcellation)
 set( PROCESS_SUBDIR 3-SkullStripping-a )
 #####################################################################################################
