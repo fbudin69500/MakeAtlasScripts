@@ -54,7 +54,7 @@ set( PRIORS 1 1 1 1 )
 ##-20-atlas grid filename
 set( ATLAS_GRID AtlasGrid.nrrd )
 ##-21-directory in which temporary files are written
-set( tempDir ${dir}/temp )
+set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
 ##-22-was the input image scaled to 1,1,1
 set( IS_SCALED FALSE )
 ##-23-Number of loops: sequence(seq 0 NB_LOOPS 1)
