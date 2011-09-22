@@ -1,0 +1,111 @@
+#!/bin/tcsh
+set nbparams = $#argv
+if( $nbparams < 3 ) then
+  echo "Usage: Step ProcessingDir ResultDir [ConfigFile] [-l file1 file2 ... filen] [-b file1 file2 ... filen]"
+  exit -1
+endif
+if( $argv[1] < 1 || $argv[1] > 5 ) then
+  echo "Step number must be between 1 and 5"
+  echo "1-Converted"
+  echo "2-Registration"
+  echo "3-Skullstrip"
+  echo "4-Atlas Creation"
+  echo "5-Warp"
+  exit -1
+endif
+set step=$argv[1]
+set Processing_dir=$argv[2]:h
+set Result_dir=$argv[3]:h
+if( $step >= 3 && $step <= 5 && $nbparams != 4 ) then
+  echo "Usage: Step ProcessingDir ResultDir ConfigFile"
+  exit -1
+endif
+#creates output directory if necessary
+echo "plop"$Result_dir
+if( ! -d $Result_dir ) then
+  echo "plop3"
+  if( -e $Result_dir ) then
+    echo "Error: Result directory name already exists and is not a directory"
+    exit -1
+  else
+    mkdir $Result_dir
+  endif
+endif
+echo "plop2"
+#Steps 1 and 2
+if( $step == 1 || $step == 2 ) then
+  #reads args
+  @ count = 1
+  set isList = 0
+  set isblackList = 0
+  set List =''
+  set blackList = ''
+  while ($count <= $nbparams)
+    set changed = 0
+    if( "$argv[$count]" == "-l" ) then
+      set isList = 1
+      set isblackList = 0
+      set changed = 1
+    endif
+    if( "$argv[$count]" == "-b" ) then
+      set isList = 0
+      set isblackList = 1
+      set changed = 1
+    endif
+    if( $changed == 0 ) then
+      if( $isList == 1 ) set List = ($List $argv[$count]:h )
+      if( $isblackList == 1 ) set blackList = ($blackList $argv[$count]:h )
+    endif
+    @ count = $count + 1
+  end
+  # if no case given, looks for cases in Processing_dir
+  if( $List[1] == '' ) then
+    set blackList=($blackList "temp" "template" "Atlas" "config")
+    #Reads files contains in processing_dir
+    set listTemp=(`ls $Processing_dir`)
+    foreach i ($listTemp)
+      if( -d "$Processing_dir/$i" ) then
+        set List = ($List $i:h)
+      endif
+    end
+  endif
+  #checks against black list
+  set ListCases = ''
+  foreach i ($List)
+    set good = 1
+    foreach j ($blackList)
+      if( $j == $i ) set good = 0
+    end
+    if( $good == 1 ) set ListCases = ($ListCases $i)
+  end
+  #Creates cases subdirectory in "Result_dir" if necessary
+  foreach i ($ListCases)
+    if( ! -d $Result_dir/$i ) then
+      if( -e $Result_dir/$i ) then
+        echo "Error: Result directory name already exists and is not a directory"
+        exit -1
+      else
+        mkdir $Result_dir/$i
+      endif
+    endif
+  end
+  #Start processing
+  if( $step == 1 ) then
+    foreach i ($ListCases)
+      set tolink = `ls $Processing_dir/$i/1-Converted | grep '.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
+      foreach j ($tolink)
+        ln -sf $Processing_dir/$i/1-Converted/$j $Result_dir/$i/$j
+      end
+    end
+  endif
+  if( $step == 2 ) then
+    foreach i ($ListCases)
+      set subdirName=`ls $Processing_dir/$i | grep 2-Registration`
+      set subdirName=$subdirName:h
+      set tolink = `ls $Processing_dir/$i/$subdirName | grep '.txt\|.tfm\|.mat\|.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
+      foreach j ($tolink)
+        ln -sf $Processing_dir/$i/$subdirName/$j $Result_dir/$i/$j
+      end
+    end
+  endif
+endif
