@@ -15,7 +15,7 @@ foreach( i ${CASES} )
   ##Save config file in each sub dir of each case
   if( ${ScriptName} != '' )
     GetFilename( name ${ScriptName} NAME )
-    CopyFile( ${ScriptName} ${OutputSubjDir}/${PROCESS_SUBDIR}/${name} )
+    CopyFile( ${ScriptName} ${OutSubjDir}/${PROCESS_SUBDIR}/${name} )
   Endif( ${ScriptName} != '' )
   set( MD ${InSubjDir}/${i}${ATLAS_INPUT_SUFFIX} )
   set( MASK ${InSubjDir}/${i}${NEW_MASK_TAG}.${extension} )#we save mask in case directory
