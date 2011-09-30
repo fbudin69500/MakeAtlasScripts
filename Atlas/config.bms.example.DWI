@@ -1,7 +1,7 @@
 ##Check that the version is the same in the example and in the config file you are modifying.
 ##If not, copy and modify this example to have a version of the configuration file that is up
 ##to date.
-##Version:1.22
+##Version:1.23
 #####################################################################################################
 ################################### Variables to set ################################################
 #####################################################################################################
@@ -31,35 +31,37 @@ set( TRANSFORM_SUFFIX _toTemplateCombined.txt )
 set( INPUT_PRE_SUBDIR Results )
 ##-10-Output pre-subdir. For old data structure, the value should be "."
 set( OUTPUT_PRE_SUBDIR Processing )
-##-11-Atlas directory for brain stripping and parcellation
+##-11-Input pre-subdir. For new data structure, the value should be "."
+set( INPUT_POST_SUBDIR . )
+##-12-Atlas directory for brain stripping and parcellation
 set( ATLAS_DIR ${dir}/${OUTPUT_PRE_SUBDIR}/template/${ATLAS_SUB_DIR} )
-##-12-Directory in which the computed population atlas and its parcellation/segmentation are saved
+##-13-Directory in which the computed population atlas and its parcellation/segmentation are saved
 set( outputDir ${dir}/${OUTPUT_PRE_SUBDIR}/Atlas-${AtlasDirectoriesSuffix} )
-##-13-Subdirectory in the case directory in which to save new case files (hfields/invhfields)
+##-14-Subdirectory in the case directory in which to save new case files (hfields/invhfields)
 set( PROCESS_SUBDIR 4-AtlasCreation-${AtlasDirectoriesSuffix} )
-##-14-Directory in which temporary files are written
+##-15-Directory in which temporary files are written
 set( tempDir ${outputDir}/temp )
-##-15-Directory in which temporary files to compute the atlas are written
+##-16-Directory in which temporary files to compute the atlas are written
 set( atlasProcessDir ${tempDir}/AtlasProcessing )
-##-16-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
+##-17-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
 set( IS_SCALED FALSE )
-##-17-Histogram match for scalar images
+##-18-Histogram match for scalar images
 set( HISTOGRAM_MATCH TRUE )
-##-18-In case of a rescaling:
+##-19-In case of a rescaling:
 ##OLD: to use with Shonagh's pipeline
 ##NEW: To use with DWIResamplingSlicer3Module if scaling option is activated
 set( RESCALE_CENTER_VERSION NEW )#OLD OR NEW
-##-19-If scalar image (TRUE or FALSE)
+##-20-If scalar image (TRUE or FALSE)
 set( IS_SCALAR FALSE )
-##-20-Atlas file
+##-21-Atlas file
 set( TEMPLATE template.mha )
-##-21-Name of the parcellation atlas
+##-22-Name of the parcellation atlas
 set( PARCELLATION_FILE_NAME template_atlas.mha )
-##-22-Image grid filename
+##-23-Image grid filename
 set( IMAGE_GRID ImageGrid.nrrd )
-##-23-Suffix of the mask created from the segmentation
+##-24-Suffix of the mask created from the segmentation
 set( NEW_MASK_TAG _mask_from_seg )
-##-24-Output files extension
+##-25-Output files extension
 set( extension nrrd )
 ###################################
 #ImageMath
