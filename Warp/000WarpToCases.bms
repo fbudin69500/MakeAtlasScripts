@@ -9,7 +9,7 @@ MakeDirectory( ${tempDir} )
 ForEach( i ${CASES} )
   ######################Mask case image###########################
   set (OutSubjDir ${dir}/${OUTPUT_PRE_SUBDIR}/${i})
-  set (InSubjDir ${dir}/${INPUT_PRE_SUBDIR}/${i})
+  set (InSubjDir ${dir}/${INPUT_PRE_SUBDIR}/${i}/${INPUT_POST_SUBDIR} )
   MakeDirectory( ${OutSubjDir}/${PROCESS_SUBDIR} )
   if( ${ScriptName} != '' )
     GetFilename( name ${ScriptName} NAME )
