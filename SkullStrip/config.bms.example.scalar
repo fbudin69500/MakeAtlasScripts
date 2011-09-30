@@ -1,7 +1,7 @@
 ##Check that the version is the same in the example and in the config file you are modifying.
 ##If not, copy and modify this example to have a version of the configuration file that is up
 ##to date.
-##Version:1.21
+##Version:1.22
 #####################################################################################################
 ################################### Variables to set ################################################
 #####################################################################################################
@@ -27,47 +27,49 @@ set( PROCESS_SUBDIR 3-SkullStripping-a )
 set( INPUT_PRE_SUBDIR Results )
 ##-8-Output pre-subdir. For old data structure, the value should be "."
 set( OUTPUT_PRE_SUBDIR Processing )
-##-9-atlas for brain stripping and parcellation
+##-9-Input pre-subdir. For new data structure, the value should be "."
+set( INPUT_POST_SUBDIR . )
+##-10-atlas for brain stripping and parcellation
 set( ATLAS_DIR ${dir}/${OUTPUT_PRE_SUBDIR}/template/${ATLAS_SUB_DIR} )
-##-10-Is the image used for the registration the MD image? In that case, we'll multiply its values
+##-11-Is the image used for the registration the MD image? In that case, we'll multiply its values
 ##by 100000 before converting it to integers
 set( RIGID_IS_MD FALSE )
-##-11-Is the image used for the registration the FA image?In that case, we'll multiply its values
+##-12-Is the image used for the registration the FA image?In that case, we'll multiply its values
 ##by 10000 before converting it to integers
 set( RIGID_IS_FA FALSE )
-##-12-if scalar image (TRUE or FALSE)
+##-13-if scalar image (TRUE or FALSE)
 set( IS_SCALAR TRUE )
-##-13-type of image used for segmentation. Can hold multiple types
+##-14-type of image used for segmentation. Can hold multiple types
 set( ABC_IMAGE_SUFFIX ${RIGID_REGISTRATION_IMAGE_SUFFIX} )
-##-14-Register the images or not (skips both rigid and affine registration if set to FALSE )
+##-15-Register the images or not (skips both rigid and affine registration if set to FALSE )
 set( Registration TRUE )
-##-15-Rigid or only affine registration
+##-16-Rigid or only affine registration
 set( Rigid TRUE )
-##-16-Bias field correction (TRUE/FALSE)
+##-17-Bias field correction (TRUE/FALSE)
 set( biasFieldCorrection FALSE )
-##-17-Filter method: if set to true, ABC will use the 'Curvature flow'. Otherwise, it will use 'Grad aniso diffusion'
+##-18-Filter method: if set to true, ABC will use the 'Curvature flow'. Otherwise, it will use 'Grad aniso diffusion'
 set( FILTERCURVATURE TRUE )
-##-18-Atlas files. One file must be called template.${ext}
+##-19-Atlas files. One file must be called template.${ext}
 set( ATLAS_FILES 1.mha 2.mha 3.mha 4.mha template.mha )
-##-19-ABC Priors
+##-20-ABC Priors
 set( PRIORS 1 1 1 1 )
-##-20-atlas grid filename
+##-21-atlas grid filename
 set( ATLAS_GRID AtlasGrid.nrrd )
-##-21-directory in which temporary files are written
+##-22-directory in which temporary files are written
 set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
-##-22-was the input image scaled to 1,1,1
+##-23-was the input image scaled to 1,1,1
 set( IS_SCALED FALSE )
-##-23-Number of loops: sequence(seq 0 NB_LOOPS 1)
+##-24-Number of loops: sequence(seq 0 NB_LOOPS 1)
 sequence(seq 0 0 1)
-##-24-directory in which to find "rreg_rigid.params" and "rreg_TO_TEMPLATE.param"
+##-25-directory in which to find "rreg_rigid.params" and "rreg_TO_TEMPLATE.param"
 set( CONFIGDIR /rodent/bin_linux64/MakeAtlas/SkullStrip )
-##-25-Closing radius to smooth mask computed from segmentation
+##-26-Closing radius to smooth mask computed from segmentation
 set( MASK_CLOSING_RADIUS 5 )
-##-26-suffix of the mask created from the segmentation
+##-27-suffix of the mask created from the segmentation
 set( NEW_MASK_TAG _mask_from_seg )
-##-27-output files extension
+##-28-output files extension
 set( extension nrrd )
-##-28-suffix of segmentation files
+##-29-suffix of segmentation files
 set ( ABCSUFFIX seg )
 #######################################################################################################
 ##Set up path of executables. If binaries can be found in the path, just set it to ''
