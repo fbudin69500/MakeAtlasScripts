@@ -24,13 +24,7 @@ foreach( i ${CASES} )
   echo( ${Cmd} )
   run( output ${Cmd} )
   echo( ${output} )
-  set( paddedMD ${atlasProcessDir}/${i}${ATLAS_INPUT_MASKED_TAG}_padded.${extension} )
-  set( Cmd ${unuDIR}unu pad -i ${maskedMD} -o ${paddedMD} -min -10 -10 -10 -max M+10 M+10 M+10 -b pad )
-  echo( ${Cmd} )
-  run( output ${Cmd} )
-  echo( ${output} )
 endforeach( ${CASES} )
-set( ATLAS_INPUT_MASKED_TAG ${ATLAS_INPUT_MASKED_TAG}_padded )
 #########################affine registration###############################
 ##affinely register all cases once they are skullstripped
 GetParam(FIXED_CASE ${CASES} 0)
