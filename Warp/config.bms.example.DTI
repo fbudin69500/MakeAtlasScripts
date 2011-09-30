@@ -1,40 +1,43 @@
 ##Check that the version is the same in the example and in the config file you are modifying.
 ##If not, copy and modify this example to have a version of the configuration file that is up
 ##to date.
-##Version:1
+##Version:1.01
 #####################################################################################################
 ################################### Variables to set ################################################
 #####################################################################################################
+##-1-Name of this file (configuration file).
+##Set to '' if you don't want to save the configuration file in the output directory
+set( ScriptName config.bms )
 ##The files must have the following structure:
 ##dir/case/case_suffix;dir=/rodent/Project/subProject1
-##-1-SubProject root directory
+##-2-SubProject root directory
 set( dir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant )
-##-2-Cases to process
+##-3-Cases to process
 set( CASES F-01 L-03 N-01 CC-04 LLL-04 )
-##-3-Image files on which to compute statistics (can contain multiple files)
+##-4-Image files on which to compute statistics (can contain multiple files)
 set( STAT_FILE_SUFFIX _dti_f_reg_AD.nrrd _dti_f_reg_FA.nrrd _dti_f_reg_MD.nrrd _dti_f_reg_RD.nrrd )
-##-4-subdirectory in the case directory in which to save new case files (mask, parcellation and statistics)
+##-5-subdirectory in the case directory in which to save new case files (mask, parcellation and statistics)
 set( PROCESS_SUBDIR 5-Warping )
-##-5-Input suffix of files used to create new atlas
+##-6-Input suffix of files used to create new atlas
 set( WARP_INPUT_SUFFIX _dti_f_toTemplate_MD.nhdr )
-##-6-Template image to use for registration
+##-7-Template image to use for registration
 set( Template_Image AverageImage_SS_MD.nrrd )
 #####################################################################################################
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
-##-7-List of images to warp (can contain multiple files)
+##-8-List of images to warp (can contain multiple files)
 set( LabelMapsToWarp template_atlas.nrrd )
-##-8-Input pre-subdir. For old data structure, the value should be "."
+##-9-Input pre-subdir. For old data structure, the value should be "."
 set( INPUT_PRE_SUBDIR Results )
-##-9-Output pre-subdir. For old data structure, the value should be "."
+##-10-Output pre-subdir. For old data structure, the value should be "."
 set( OUTPUT_PRE_SUBDIR Processing )
-##-10-directory in which the computed atlas and atlas parcellation are saved
+##-11-directory in which the computed atlas and atlas parcellation are saved
 set( AtlasDir ${dir}/${INPUT_PRE_SUBDIR}/Atlas )
-##-11-directory in which temporary files are written
+##-12-directory in which temporary files are written
 set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
-##-12-suffix of the mask created from the segmentation
+##-13-suffix of the mask created from the segmentation
 set( NEW_MASK_TAG _mask_from_seg )
-##-13-output files extension
+##-14-output files extension
 set( extension nrrd )
 ###################################
 ##Set up path of executables. If binaries can be found in the path, just set it to ''

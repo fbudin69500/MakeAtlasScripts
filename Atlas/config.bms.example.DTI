@@ -1,62 +1,65 @@
 ##Check that the version is the same in the example and in the config file you are modifying.
 ##If not, copy and modify this example to have a version of the configuration file that is up
 ##to date.
-##Version:1.21
+##Version:1.22
 #####################################################################################################
 ################################### Variables to set ################################################
 #####################################################################################################
+##-1-Name of this file (configuration file).
+##Set to '' if you don't want to save the configuration file in the output directory
+set( ScriptName config.bms )
 ##The files must have the following structure:
 ##dir/case/case_suffix;dir=/rodent/Project/subProject1
-##-1-SubProject root directory
+##-2-SubProject root directory
 set( dir /rodent/FAS_sulik/DTI08/PN45ChallengeGrant )
-##-2-Cases to process
+##-3-Cases to process
 set( CASES F-01 L-03 N-01 CC-04 LLL-04 )
-##-3-Input suffix of files used to create new atlas
+##-4-Input suffix of files used to create new atlas
 set( ATLAS_INPUT_SUFFIX _dti_f_toTemplate_MD.nhdr )
-##-4-Atlas subdirectory for brain stripping and parcellation
+##-5-Atlas subdirectory for brain stripping and parcellation
 set( ATLAS_SUB_DIR a-original )
-##-5-Population atlas directories suffix
+##-6-Population atlas directories suffix
 set( AtlasDirectoriesSuffix 1 )
-##-6-Suffix of the DTI image, if scalar images, set to ''
+##-7-Suffix of the DTI image, if scalar images, set to ''
 set( DTI_SUFFIX _dti_f.nhdr )
-##-7-If set to '', not used. Set DTI_SUFFIX accordingly (Not used for scalar images)
+##-8-If set to '', not used. Set DTI_SUFFIX accordingly (Not used for scalar images)
 set( TRANSFORM_SUFFIX _toTemplateCombined.txt )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
-##-8-Input pre-subdir. For old data structure, the value should be "."
+##-9-Input pre-subdir. For old data structure, the value should be "."
 set( INPUT_PRE_SUBDIR Results )
-##-9-Output pre-subdir. For old data structure, the value should be "."
+##-10-Output pre-subdir. For old data structure, the value should be "."
 set( OUTPUT_PRE_SUBDIR Processing )
-##-10-Atlas directory for brain stripping and parcellation
+##-11-Atlas directory for brain stripping and parcellation
 set( ATLAS_DIR ${dir}/${OUTPUT_PRE_SUBDIR}/template/${ATLAS_SUB_DIR} )
-##-11-Directory in which the computed population atlas and its parcellation/segmentation are saved
+##-12-Directory in which the computed population atlas and its parcellation/segmentation are saved
 set( outputDir ${dir}/${OUTPUT_PRE_SUBDIR}/Atlas-${AtlasDirectoriesSuffix} )
-##-12-Subdirectory in the case directory in which to save new case files (hfields/invhfields)
+##-13-Subdirectory in the case directory in which to save new case files (hfields/invhfields)
 set( PROCESS_SUBDIR 4-AtlasCreation-${AtlasDirectoriesSuffix} )
-##-13-Directory in which temporary files are written
+##-14-Directory in which temporary files are written
 set( tempDir ${outputDir}/temp )
-##-14-Directory in which temporary files to compute the atlas are written
+##-15-Directory in which temporary files to compute the atlas are written
 set( atlasProcessDir ${tempDir}/AtlasProcessing )
-##-15-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
+##-16-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
 set( IS_SCALED FALSE )
-##-16-Histogram match for scalar images
+##-17-Histogram match for scalar images
 set( HISTOGRAM_MATCH TRUE )
-##-17-In case of a rescaling:
+##-18-In case of a rescaling:
 ##OLD: to use with Shonagh's pipeline
 ##NEW: To use with DWIResamplingSlicer3Module if scaling option is activated
 set( RESCALE_CENTER_VERSION NEW )#OLD OR NEW
-##-18-If scalar image (TRUE or FALSE)
+##-19-If scalar image (TRUE or FALSE)
 set( IS_SCALAR FALSE )
-##-19-Atlas file
+##-20-Atlas file
 set( TEMPLATE template.mha )
-##-20-Name of the parcellation atlas
+##-21-Name of the parcellation atlas
 set( PARCELLATION_FILE_NAME template_atlas.mha )
-##-21-Image grid filename
+##-22-Image grid filename
 set( IMAGE_GRID ImageGrid.nrrd )
-##-22-Suffix of the mask created from the segmentation
+##-23-Suffix of the mask created from the segmentation
 set( NEW_MASK_TAG _mask_from_seg )
-##-23-Output files extension
+##-24-Output files extension
 set( extension nrrd )
 ###################################
 #ImageMath
