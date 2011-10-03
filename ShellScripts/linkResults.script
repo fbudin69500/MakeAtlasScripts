@@ -1,6 +1,5 @@
 #!/bin/tcsh
 set nbparams = $#argv
-echo $0
 if( `echo $0 | grep -c -i -e '^/'` > 0 ) then
   if( `echo $0 | grep -o "/" | wc -l` > 1 ) then
     set pathScript = $0:h
@@ -89,9 +88,9 @@ if( $step == 1 || $step == 2 ) then
   end
   # if no case given, looks for cases in Processing_dir
   if( $List[1] == '' ) then
-    set blackList=($blackList "temp" "Temp" "template" "Template" "Atlas" "config" "Config" "atlas")
+    set blackList=($blackList "temp" "Temp" "template" "Template" "config" "Config" )
     #Reads files contains in processing_dir
-    set listTemp=(`ls $Processing_dir`)
+    set listTemp=(`\ls $Processing_dir`)
     foreach i ($listTemp)
       if( -d "$Processing_dir/$i" ) then
         set List = ($List $i:h)
@@ -124,7 +123,7 @@ if( $step == 1 || $step == 2 ) then
       if( $subdirName == '' ) then
         set subdirNameCase = "1-Converted"
       endif
-      set tolink = `ls $Processing_dir/$i/$subdirNameCase | grep '.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
+      set tolink = `\ls $Processing_dir/$i/$subdirNameCase | grep '.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
       foreach j ($tolink)
         ln -sf $Processing_dir/$i/1-Converted/$j $Result_dir/$i/$j
       end
@@ -133,16 +132,16 @@ if( $step == 1 || $step == 2 ) then
   if( $step == 2 ) then
     foreach i ($ListCases)
       if( $subdirName == '' ) then
-        if( `ls $Processing_dir/$i | grep 2-Registration | wc -l` > 1 ) then
+        if( `\ls $Processing_dir/$i | grep 2-Registration | wc -l` > 1 ) then
           echo "Multiple subdirectories contain 2-Registration. Please set the correct name manually"
           exit -1
         endif
-        set subdirNameTemp=`ls $Processing_dir/$i | grep 2-Registration`
+        set subdirNameTemp=`\ls $Processing_dir/$i | grep 2-Registration`
         set subdirNameCase="$subdirNameTemp:h"
       else
         set subdirNameCase=$subdirName
       endif
-      set tolink = `ls $Processing_dir/$i/$subdirNameCase | grep '.txt\|.tfm\|.mat\|.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
+      set tolink = `\ls $Processing_dir/$i/$subdirNameCase | grep '.txt\|.tfm\|.mat\|.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
       foreach j ($tolink)
         ln -sf $Processing_dir/$i/$subdirNameCase/$j $Result_dir/$i/$j
       end
@@ -205,7 +204,7 @@ else
         break
       else
         mkdir $directory/$resultspredir/Atlas
-        set tolink = `ls $atlasDir | grep '.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
+        set tolink = `\ls $atlasDir | grep '.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
           foreach j ($tolink)
             ln -sf $atlasDir/$j $directory/$resultspredir/Atlas/$j
           end
