@@ -17,7 +17,7 @@ else
   set pathScript = $pathVar/$localPath
 endif
 if( $nbparams < 1 ) then
-  echo "Usage: Step [ConfigFile] / [ProcessingDir ResultDir] [-l file1 file2 ... filen] [-b file1 file2 ... filen]"
+  echo "Usage: Step [ConfigFile] / [ProcessingDir ResultDir] [-l file1 file2 ... filen] [-b file1 file2 ... filen][-s subDirectory]"
   exit -1
 endif
 set step=$argv[1]
@@ -33,7 +33,7 @@ endif
 #Steps 1 and 2
 if( $step == 1 || $step == 2 ) then
   if( $nbparams < 3 ) then
-    echo "Usage: Step ProcessingDir ResultDir [-l file1 file2 ... filen] [-b file1 file2 ... filen]"
+    echo "Usage: Step ProcessingDir ResultDir [-l file1 file2 ... filen] [-b file1 file2 ... filen][-s subDirectory]"
     exit -1
   endif
   set Processing_dir=$argv[2]:h
@@ -53,6 +53,8 @@ if( $step == 1 || $step == 2 ) then
   set isblackList = 0
   set List =''
   set blackList = ''
+  set subdir = 0 ;
+  set subdirName = ''
   while ($count <= $nbparams)
     set changed = 0
     if( "$argv[$count]" == "-l" ) then
@@ -65,15 +67,29 @@ if( $step == 1 || $step == 2 ) then
       set isblackList = 1
       set changed = 1
     endif
+    if( "$argv[$count]" == "-s" ) then
+      if( $subdirName != '' ) then
+        echo "Only one subdirectory name can be given at a time"
+        exit -1
+      endif
+      set subdir = 1
+      set isList = 0
+      set isblackList = 0
+      set changed = 1
+    endif
     if( $changed == 0 ) then
       if( $isList == 1 ) set List = ($List $argv[$count]:h )
       if( $isblackList == 1 ) set blackList = ($blackList $argv[$count]:h )
+      if( $subdir == 1 ) then
+        set subdirName = $argv[$count]:h
+        set subdir = 0
+      endif
     endif
     @ count = $count + 1
   end
   # if no case given, looks for cases in Processing_dir
   if( $List[1] == '' ) then
-    set blackList=($blackList "temp" "template" "Atlas" "config")
+    set blackList=($blackList "temp" "Temp" "template" "Template" "Atlas" "config" "Config" "atlas")
     #Reads files contains in processing_dir
     set listTemp=(`ls $Processing_dir`)
     foreach i ($listTemp)
@@ -105,7 +121,10 @@ if( $step == 1 || $step == 2 ) then
   #Start processing
   if( $step == 1 ) then
     foreach i ($ListCases)
-      set tolink = `ls $Processing_dir/$i/1-Converted | grep '.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
+      if( $subdirName == '' ) then
+        set subdirNameCase = "1-Converted"
+      endif
+      set tolink = `ls $Processing_dir/$i/$subdirNameCase | grep '.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
       foreach j ($tolink)
         ln -sf $Processing_dir/$i/1-Converted/$j $Result_dir/$i/$j
       end
@@ -113,11 +132,19 @@ if( $step == 1 || $step == 2 ) then
   endif
   if( $step == 2 ) then
     foreach i ($ListCases)
-      set subdirName=`ls $Processing_dir/$i | grep 2-Registration`
-      set subdirName=$subdirName:h
-      set tolink = `ls $Processing_dir/$i/$subdirName | grep '.txt\|.tfm\|.mat\|.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
+      if( $subdirName == '' ) then
+        if( `ls $Processing_dir/$i | grep 2-Registration | wc -l` > 1 ) then
+          echo "Multiple subdirectories contain 2-Registration. Please set the correct name manually"
+          exit -1
+        endif
+        set subdirNameTemp=`ls $Processing_dir/$i | grep 2-Registration`
+        set subdirNameCase="$subdirNameTemp:h"
+      else
+        set subdirNameCase=$subdirName
+      endif
+      set tolink = `ls $Processing_dir/$i/$subdirNameCase | grep '.txt\|.tfm\|.mat\|.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
       foreach j ($tolink)
-        ln -sf $Processing_dir/$i/$subdirName/$j $Result_dir/$i/$j
+        ln -sf $Processing_dir/$i/$subdirNameCase/$j $Result_dir/$i/$j
       end
     end
   endif
