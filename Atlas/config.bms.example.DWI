@@ -20,7 +20,7 @@ set( ATLAS_INPUT_SUFFIX _dti_f_toTemplate_MD.nhdr )
 set( ATLAS_SUB_DIR a-original )
 ##-6-Population atlas directories suffix
 set( AtlasDirectoriesSuffix 1 )
-##-7-Select BSpline registration instead of LDDMM to register the newly computed population atlas to the given atlas
+##-7-Select BSpline registration instead of LDDMM to register the newly computed population atlas to the given atlas (TRUE/FALSE)
 set( BSpline TRUE )
 ##-8-Suffix of the DTI image, if scalar images, set to ''
 set( DTI_SUFFIX _dti_f.nhdr )
