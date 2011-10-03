@@ -126,8 +126,7 @@ ENDIF( ${IS_SCALED} == TRUE )
 #echo( ${output} )
 
 
-IF(${TRANSF_TYPE} == 0)
-
+IF(${BSpline} == FALSE )
   #####Affine registration atlas with new MD/atlas image###########
   set( TRANSFORM ${atlasProcessDir}/OldtoNewMDAtlas.txt )
   set( REGIMG ${atlasProcessDir}/OldtoNewMDAtlas.${extension} )
@@ -147,9 +146,7 @@ IF(${TRANSF_TYPE} == 0)
   run( output ${resampleCmd} )
   echo( ${output} )
 
-ELSE(${TRANSF_TYPE} == 0)
-
-  IF(${TRANSF_TYPE} == 1)
+ELSE(${BSpline} == FALSE)
    #####B-Spline registration atlas with new MD/atlas image###########
     set( TRANSFORM ${atlasProcessDir}/OldtoNewMDAtlas.txt )
     set( REGIMG ${atlasProcessDir}/OldtoNewMDAtlas.${extension} )
@@ -162,9 +159,4 @@ ELSE(${TRANSF_TYPE} == 0)
     echo( ${resampleCmd} )
     run( output ${resampleCmd} )
     echo( ${output} ) 
-  ELSE(${TRANSF_TYPE} == 1)
-    IF(${TRANSF_TYPE} == 42)
-      echo('the answer')
-    ENDIF(${TRANSF_TYPE} == 42)
-  ENDIF(${TRANSF_TYPE} == 1)
-ENDIF(${TRANSF_TYPE} == 0)
+ENDIF(${BSpline} == FALSE)
