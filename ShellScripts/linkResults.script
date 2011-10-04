@@ -88,7 +88,7 @@ if( $step == 1 || $step == 2 ) then
   end
   # if no case given, looks for cases in Processing_dir
   if( $List[1] == '' ) then
-    set blackList=($blackList "temp" "Temp" "template" "Template" "config" "Config" )
+    set blackList=($blackList "temp" "Temp" "template" "Template" "config" "Config" "Results" "results" )
     #Reads files contains in processing_dir
     set listTemp=(`\ls $Processing_dir`)
     foreach i ($listTemp)
