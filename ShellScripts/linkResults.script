@@ -35,8 +35,8 @@ if( $step == 1 || $step == 2 ) then
     echo "Usage: Step ProcessingDir ResultDir [-l file1 file2 ... filen] [-b file1 file2 ... filen][-s subDirectory]"
     exit -1
   endif
-  set Processing_dir=$argv[2]:h
-  set Result_dir=$argv[3]:h
+  set Processing_dir=$argv[2]
+  set Result_dir=$argv[3]
   #creates output directory if necessary
   if( ! -d $Result_dir ) then
     if( -e $Result_dir ) then
