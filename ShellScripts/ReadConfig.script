@@ -70,7 +70,7 @@ while($i >= 0 )
   endif
   @ i--
 end
-if( `echo $0 | grep -c -i -e '^/` > 0 ) then
+if( `echo $0 | grep -c -i -e '^/'` > 0 ) then
   set pathScript = $0
 else
   set pathVar = `pwd`

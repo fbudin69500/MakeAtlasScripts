@@ -160,8 +160,8 @@ else
   #Get values in config file
   set cases = `$pathScript/ReadConfig.script $configFile CASES`
   set directory = `$pathScript/ReadConfig.script $configFile dir`
-  set resultspredir = `$pathScript/ReadConfig.script $configFile INPUT_PRE_DIR`
-  set processpredir = `$pathScript/ReadConfig.script $configFile OUTPUT_PRE_DIR`
+  set resultspredir = `$pathScript/ReadConfig.script $configFile INPUT_PRE_SUBDIR`
+  set processpredir = `$pathScript/ReadConfig.script $configFile OUTPUT_PRE_SUBDIR`
   set subDir = `$pathScript/ReadConfig.script $configFile PROCESS_SUBDIR`
   #creates output directory if necessary
   if( ! -d $directory/$resultspredir ) then
@@ -188,11 +188,15 @@ else
     set ext = `$pathScript/ReadConfig.script $configFile extension`
     set bias = `$pathScript/ReadConfig.script $configFile biasFieldCorrection`
     set abcSuffix = (`$pathScript/ReadConfig.script $configFile ABC_IMAGE_SUFFIX`)
-    set suffix = abcSuffix[1]
+    if( $#abcSuffix > 1 ) then
+      set suffix = abcSuffix[1]
+    else
+      set suffix = abcSuffix
+    endif
     foreach i ($cases)
-      ln -sf $directory/$processpredir/$i/$subdir/$i$masktag$ext $directory/$resultspredir/$i/$i$masktag$ext
+      ln -sf $directory/$processpredir/$i/$subDir/$i$masktag.$ext $directory/$resultspredir/$i/$i$masktag.$ext
       if( $bias == "TRUE" ) then
-        ln -sf $directory/$processpredir/$i/$subdir/$i${suffix}_corrected.$ext $directory/$resultspredir/$i/$i${suffix}_corrected.$ext
+        ln -sf $directory/$processpredir/$i/$subDir/$i${suffix}_corrected.$ext $directory/$resultspredir/$i/$i${suffix}_corrected.$ext
       endif
     end
   else if ( $step == 4 ) then
@@ -211,8 +215,8 @@ else
       endif
     endif
     foreach i ($cases)
-      ln -sf $directory/$processpredir/$i/$subdir/${i}_hFieldToAtlas.mha $directory/$resultspredir/$i/${i}_hFieldToAtlas.mha
-      ln -sf $directory/$processpredir/$i/$subdir/${i}_inv_hFieldToAtlas.mha $directory/$resultspredir/$i/${i}_inv_hFieldToAtlas.mha
+      ln -sf $directory/$processpredir/$i/$subDir/${i}_hFieldToAtlas.mha $directory/$resultspredir/$i/${i}_hFieldToAtlas.mha
+      ln -sf $directory/$processpredir/$i/$subDir/${i}_inv_hFieldToAtlas.mha $directory/$resultspredir/$i/${i}_inv_hFieldToAtlas.mha
     end
   else if ( $step == 5 ) then
     set statSuffix = `$pathScript/ReadConfig.script $configFile STAT_FILE_SUFFIX`
@@ -220,11 +224,11 @@ else
     foreach i ($cases)
       foreach j ($labelMaps)
         set name = $j:t
-        ln -sf $directory/$processpredir/$i/$subdir/$name $directory/$resultspredir/$name
+        ln -sf $directory/$processpredir/$i/$subDir/$name $directory/$resultspredir/$name
         foreach k ($statSuffix)
           set name_noext = $j:t:r
           set stat_noext = $j:t:r
-          ln -sf $directory/$processpredir/$i/$subdir/${name_noext}${stat_noext}_stat.txt
+          ln -sf $directory/$processpredir/$i/$subDir/${name_noext}${stat_noext}_stat.txt
         end
       end
     end
