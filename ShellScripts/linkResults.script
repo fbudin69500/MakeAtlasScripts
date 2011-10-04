@@ -158,11 +158,11 @@ else
     exit -1
   endif
   #Get values in config file
-  set cases = `$pathScript/ReadConfig $configFile CASES`
-  set directory = `$pathScript/ReadConfig $configFile dir`
-  set resultspredir = `$pathScript/ReadConfig $configFile INPUT_PRE_DIR`
-  set processpredir = `$pathScript/ReadConfig $configFile OUTPUT_PRE_DIR`
-  set subDir = `$pathScript/ReadConfig $configFile PROCESS_SUBDIR`
+  set cases = `$pathScript/ReadConfig.script $configFile CASES`
+  set directory = `$pathScript/ReadConfig.script $configFile dir`
+  set resultspredir = `$pathScript/ReadConfig.script $configFile INPUT_PRE_DIR`
+  set processpredir = `$pathScript/ReadConfig.script $configFile OUTPUT_PRE_DIR`
+  set subDir = `$pathScript/ReadConfig.script $configFile PROCESS_SUBDIR`
   #creates output directory if necessary
   if( ! -d $directory/$resultspredir ) then
     if( -e $directory/$resultspredir ) then
@@ -184,10 +184,10 @@ else
     endif
   end
   if( $step == 3 ) then
-    set masktag = `$pathScript/ReadConfig $configFile NEW_MASK_TAG`
-    set ext = `$pathScript/ReadConfig $configFile extension`
-    set bias = `$pathScript/ReadConfig $configFile biasFieldCorrection`
-    set abcSuffix = (`$pathScript/ReadConfig $configFile ABC_IMAGE_SUFFIX`)
+    set masktag = `$pathScript/ReadConfig.script $configFile NEW_MASK_TAG`
+    set ext = `$pathScript/ReadConfig.script $configFile extension`
+    set bias = `$pathScript/ReadConfig.script $configFile biasFieldCorrection`
+    set abcSuffix = (`$pathScript/ReadConfig.script $configFile ABC_IMAGE_SUFFIX`)
     set suffix = abcSuffix[1]
     foreach i ($cases)
       ln -sf $directory/$processpredir/$i/$subdir/$i$masktag$ext $directory/$resultspredir/$i/$i$masktag$ext
@@ -196,7 +196,7 @@ else
       endif
     end
   else if ( $step == 4 ) then
-    set atlasDir = `$pathScript/ReadConfig $configFile outputDir`
+    set atlasDir = `$pathScript/ReadConfig.script $configFile outputDir`
     if( ! -d $directory/$resultspredir/Atlas ) then
       if( -e $directory/$resultspredir/Atlas ) then
         echo "Error: Result directory name already exists and is not a directory"
@@ -215,8 +215,8 @@ else
       ln -sf $directory/$processpredir/$i/$subdir/${i}_inv_hFieldToAtlas.mha $directory/$resultspredir/$i/${i}_inv_hFieldToAtlas.mha
     end
   else if ( $step == 5 ) then
-    set statSuffix = `$pathScript/ReadConfig $configFile STAT_FILE_SUFFIX`
-    set labelMaps = `$pathScript/ReadConfig $configFile LabelMapsToWarp`
+    set statSuffix = `$pathScript/ReadConfig.script $configFile STAT_FILE_SUFFIX`
+    set labelMaps = `$pathScript/ReadConfig.script $configFile LabelMapsToWarp`
     foreach i ($cases)
       foreach j ($labelMaps)
         set name = $j:t
