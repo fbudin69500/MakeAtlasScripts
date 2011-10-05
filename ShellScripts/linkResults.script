@@ -122,10 +122,12 @@ if( $step == 1 || $step == 2 ) then
     foreach i ($ListCases)
       if( $subdirName == '' ) then
         set subdirNameCase = "1-Converted"
+      else
+        set subdirNameCase=$subdirName
       endif
       set tolink = `\ls $Processing_dir/$i/$subdirNameCase | grep '.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
       foreach j ($tolink)
-        ln -sf $Processing_dir/$i/1-Converted/$j $Result_dir/$i/$j
+        ln -sf $Processing_dir/$i/$subdirNameCase/$j $Result_dir/$i/$j
       end
     end
   endif
