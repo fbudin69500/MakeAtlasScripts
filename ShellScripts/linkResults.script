@@ -203,9 +203,7 @@ else
     end
   else if ( $step == 4 ) then
     set atlasDir = `$pathScript/ReadConfig.script $configFile outputDir`
-echo $atlasDir
     if( ! -d $directory/$resultspredir/Atlas ) then
-echo "plop"
       if( -e $directory/$resultspredir/Atlas ) then
         echo "Error: Result directory name already exists and is not a directory"
         echo "Links not created for Atlas"
@@ -216,7 +214,6 @@ echo "plop"
     endif
     if( -d $directory/$resultspredir/Atlas ) then
       set tolink = `\ls $atlasDir | grep '.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
-echo $atlasDir
       foreach j ($tolink)
         ln -sf $atlasDir/$j $directory/$resultspredir/Atlas/$j
       end
