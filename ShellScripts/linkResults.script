@@ -203,23 +203,28 @@ else
     end
   else if ( $step == 4 ) then
     set atlasDir = `$pathScript/ReadConfig.script $configFile outputDir`
+echo $atlasDir
     if( ! -d $directory/$resultspredir/Atlas ) then
+echo "plop"
       if( -e $directory/$resultspredir/Atlas ) then
         echo "Error: Result directory name already exists and is not a directory"
         echo "Links not created for Atlas"
         break
       else
         mkdir $directory/$resultspredir/Atlas
-        set tolink = `\ls $atlasDir | grep '.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
-          foreach j ($tolink)
-            ln -sf $atlasDir/$j $directory/$resultspredir/Atlas/$j
-          end
       endif
     endif
-    foreach i ($cases)
-      ln -sf $directory/$processpredir/$i/$subDir/${i}_hFieldToAtlas.mha $directory/$resultspredir/$i/${i}_hFieldToAtlas.mha
-      ln -sf $directory/$processpredir/$i/$subDir/${i}_inv_hFieldToAtlas.mha $directory/$resultspredir/$i/${i}_inv_hFieldToAtlas.mha
-    end
+    if( -d $directory/$resultspredir/Atlas ) then
+      set tolink = `\ls $atlasDir | grep '.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
+echo $atlasDir
+      foreach j ($tolink)
+        ln -sf $atlasDir/$j $directory/$resultspredir/Atlas/$j
+      end
+      foreach i ($cases)
+        ln -sf $directory/$processpredir/$i/$subDir/${i}_hFieldToAtlas.mha $directory/$resultspredir/$i/${i}_hFieldToAtlas.mha
+        ln -sf $directory/$processpredir/$i/$subDir/${i}_inv_hFieldToAtlas.mha $directory/$resultspredir/$i/${i}_inv_hFieldToAtlas.mha
+      end
+    endif
   else if ( $step == 5 ) then
     set statSuffix = `$pathScript/ReadConfig.script $configFile STAT_FILE_SUFFIX`
     set labelMaps = `$pathScript/ReadConfig.script $configFile LabelMapsToWarp`
