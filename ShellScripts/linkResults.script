@@ -228,11 +228,11 @@ else
     foreach i ($cases)
       foreach j ($labelMaps)
         set name = $j:t
-        ln -sf $directory/$processpredir/$i/$subDir/$name $directory/$resultspredir/$i/$name
+        ln -sf $directory/$processpredir/$i/$subDir/$name $directory/$resultspredir/$i/$i_$name
         set name_noext = $j:t:r
         foreach k ($statSuffix)
           set stat_noext = $k:t:r
-          ln -sf $directory/$processpredir/$i/$subDir/${name_noext}${stat_noext}_stat.txt $directory/$resultspredir/$i/${name_noext}${stat_noext}_stat.txt
+          ln -sf $directory/$processpredir/$i/$subDir/${name_noext}${stat_noext}_stat.txt $directory/$resultspredir/$i/$i_${name_noext}${stat_noext}_stat.txt
         end
       end
     end
