@@ -1,0 +1,38 @@
+##Set up path of executables. If binaries can be found in the path, just set it to ''
+##If directory needs to be set, do not forget '/' at the end
+#ABC
+set( ABCDIR '' )
+#SegPostProcessCLP
+set( SegPostProcessCLPDIR '' )
+#ImageMath
+set( ImageMathDIR '' )
+#ResampleVolume2
+set( ResampleVolume2DIR '' )
+#rreg
+set( rregDIR '' )
+#transformation
+set( transformationDIR '' )
+#areg
+set( aregDIR '' )
+#RegisterImages
+set( RegisterImagesDIR '' )
+#Double2FloatTransform
+set( Double2FloatTransformDIR '' )
+#AtlasWerks
+set( AtlasWerksDIR '' )
+#ResampleDTIlogEuclidean
+set( ResampleDTIlogEuclideanDIR '' )
+#BRAINSDemonWarp
+set( BRAINSDemonWarpDIR '' )
+#dtiaverage
+set( dtiaverageDIR '' )
+#unu
+set( unuDIR '' )
+#dtiprocess
+set( dtiprocessDIR '' )
+#ITKTransformTools
+set( ITKTransformToolsDIR '' )
+#MedianFilter
+set( MedianImageFilterDIR '' )
+#ImageStat
+set( ImageStatDIR '' )

@@ -72,24 +72,6 @@ set( extension nrrd )
 ##-29-suffix of segmentation files
 set ( ABCSUFFIX seg )
 #######################################################################################################
-##Set up path of executables. If binaries can be found in the path, just set it to ''
-##If directory needs to be set, do not forget '/' at the end
-#ABC
-set( ABCDIR '' )
-#SegPostProcessCLP
-set( SegPostProcessCLPDIR '' )
-#ImageMath
-set( ImageMathDIR '' )
-#ResampleVolume2
-set( ResampleVolume2DIR '' )
-#rreg
-set( rregDIR '' )
-#transformation
-set( transformationDIR '' )
-#areg
-set( aregDIR '' )
-#ITKTransformTools
-set( ITKTransformToolsDIR '' )
-###################################
+include( /rodent/bin_linux64/MakeAtlas/GlobalConfig.bms )
 ##Processes
 include( /rodent/bin_linux64/MakeAtlas/SkullStrip/000SkullStrip.bms )

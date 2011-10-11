@@ -46,18 +46,6 @@ set( NEW_MASK_TAG _mask_from_seg )
 ##-17-output files extension
 set( extension nrrd )
 ###################################
-##Set up path of executables. If binaries can be found in the path, just set it to ''
-##If directory needs to be set, do not forget '/' at the end
-#ImageStat
-set( ImageStatDIR '' )
-#ImageMath
-set( ImageMathDIR '' )
-#ResampleVolume2
-set( ResampleVolume2DIR '' )
-#RegisterImages
-set( RegisterImagesDIR '' )
-#BRAINSDemonWarp
-set( BRAINSDemonWarpDIR /tools/Slicer3/Slicer3-3.6.1-2010-08-23-linux-x86_64/lib/Slicer3/Plugins/ )
-###################################
+include( /rodent/bin_linux64/MakeAtlas/GlobalConfig.bms )
 ##Processes
 include( /rodent/bin_linux64/MakeAtlas/Warp/000WarpToCases.bms )
