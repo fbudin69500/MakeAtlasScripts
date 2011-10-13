@@ -3,6 +3,8 @@
 #-SegPostProcessCLP
 #-ImageMath
 #-ResampleVolume2
+####################Configure############################################
+set( ABCSUFFIX seg )
 ####################run ABC##############################################
 # apply ABC for brain skull stripping
 # run ABC
@@ -41,31 +43,31 @@ ForEach (Case ${CASES})
     Echo (${output})
     ####################create and apply mask############################################
     GetFilename( CaseNoDot ${Case}${SUFFIX} NAME_WITHOUT_EXTENSION )
-    set( label ${ABC_Case_DIR}/${CaseNoDot}_labels_${ABCSUFFIX}.${extension} )
-    set( mask ${tempDir}/${Case}/${Case}${NEW_MASK_TAG}_orig${i}.${extension} )
+    set( label ${ABC_Case_DIR}/${CaseNoDot}_labels_${ABCSUFFIX}.nrrd )
+    set( mask ${tempDir}/${Case}/${Case}${NEW_MASK_TAG}_orig${i}.nrrd )
     set( Cmd ${SegPostProcessCLPDIR}SegPostProcessCLP ${label} ${mask} )
     echo( ${Cmd} )
     run( output ${Cmd} )
     echo( ${output} )
     #we erode and dilate to make the mask smoother
-    set( erodedMASK ${tempDir}/${Case}/${Case}${NEW_MASK_TAG}_eroded${i}.${extension} )
+    set( erodedMASK ${tempDir}/${Case}/${Case}${NEW_MASK_TAG}_eroded${i}.nrrd )
     set( Cmd  ${ImageMathDIR}ImageMath ${mask} -erode ${MASK_CLOSING_RADIUS},1 -outfile ${erodedMASK} )
     echo( ${Cmd} )
     run( output ${Cmd} )
     echo( ${output} )
-    set( dilatedMASK ${tempDir}/${Case}/${Case}${NEW_MASK_TAG}${i}.${extension} )#we save mask in case directory
+    set( dilatedMASK ${tempDir}/${Case}/${Case}${NEW_MASK_TAG}${i}.nrrd )#we save mask in case directory
     set( Cmd ${ImageMathDIR}ImageMath ${erodedMASK} -dilate ${MASK_CLOSING_RADIUS},1 -outfile ${dilatedMASK} )
     echo( ${Cmd} )
     run( output ${Cmd} )
     echo( ${output} )
-    set( CORRECTED ${ABC_Case_DIR}/${CaseNoDot}_corrected_${ABCSUFFIX}.${extension} )
+    set( CORRECTED ${ABC_Case_DIR}/${CaseNoDot}_corrected_${ABCSUFFIX}.nrrd )
   EndForEach( i ${seq} )
-  set( FinalMASK ${OutputSubjDir}/${PROCESS_SUBDIR}/${Case}${NEW_MASK_TAG}.${extension} )#we save mask in case directory
+  set( FinalMASK ${OutputSubjDir}/${PROCESS_SUBDIR}/${Case}${NEW_MASK_TAG}.nrrd )#we save mask in case directory
   set( Cmd ${ResampleVolume2DIR}ResampleVolume2 ${dilatedMASK} ${FinalMASK} -i nn )
   run( output ${Cmd} )
   echo( ${output} )
-  set( CORRECTED ${ABC_Case_DIR}/${CaseNoDot}_corrected_${ABCSUFFIX}.${extension} )
-  set( CORRECTED_COPY ${OutputSubjDir}/${PROCESS_SUBDIR}/${Case}${SUFFIX}_corrected.${extension} )
+  set( CORRECTED ${ABC_Case_DIR}/${CaseNoDot}_corrected_${ABCSUFFIX}.nrrd )
+  set( CORRECTED_COPY ${OutputSubjDir}/${PROCESS_SUBDIR}/${Case}${SUFFIX}_corrected.nrrd )
   If( ${biasFieldCorrection} == TRUE )
     set( Cmd ${ResampleVolume2DIR}ResampleVolume2 ${CORRECTED} ${CORRECTED_COPY} -i nn )
     run( output ${Cmd} )

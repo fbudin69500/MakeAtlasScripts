@@ -16,7 +16,7 @@ Else( ${Registration} == TRUE )
 Endif(${Registration} == TRUE )
 AppendFile(${ABCfile} '<ATLAS-ORIENTATION>file</ATLAS-ORIENTATION>\n')
 AppendFile(${ABCfile} '<OUTPUT-DIRECTORY>'${ABC_Case_DIR}'</OUTPUT-DIRECTORY>\n')
-AppendFile(${ABCfile} '<OUTPUT-FORMAT>'${extension}'</OUTPUT-FORMAT>\n')
+AppendFile(${ABCfile} '<OUTPUT-FORMAT>nrrd</OUTPUT-FORMAT>\n')
 
 ForEach (Type ${ABC_IMAGE_SUFFIX})
    AppendFile(${ABCfile} '<IMAGE>\n')
