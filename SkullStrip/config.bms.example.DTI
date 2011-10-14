@@ -67,6 +67,8 @@ set( CONFIGDIR /rodent/bin_linux64/MakeAtlas/SkullStrip )
 set( MASK_CLOSING_RADIUS 5 )
 ##-27-suffix of the mask created from the segmentation. Do not set the extension
 set( NEW_MASK_TAG _mask_from_seg )
+##-28-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
+set( Step 0 )
 #######################################################################################################
 include( /rodent/bin_linux64/MakeAtlas/GlobalConfig.bms )
 ##Processes
