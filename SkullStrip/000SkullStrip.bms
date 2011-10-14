@@ -5,6 +5,7 @@
 #-ResampleVolume2
 ####################Configure############################################
 set( ABCSUFFIX seg )
+Int(${step})
 ####################run ABC##############################################
 # apply ABC for brain skull stripping
 # run ABC
