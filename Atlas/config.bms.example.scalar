@@ -1,7 +1,7 @@
 ##Check that the version is the same in the example and in the config file you are modifying.
 ##If not, copy and modify this example to have a version of the configuration file that is up
 ##to date.
-##Version:1.31
+##Version:1.32
 #####################################################################################################
 ################################### Variables to set ################################################
 #####################################################################################################
@@ -55,6 +55,8 @@ set( IMAGE_GRID ImageGrid.nrrd )
 set( NEW_MASK_TAG _mask_from_seg.nrrd )
 ##-22-Median Filter images before atlas creation
 set( Mradius 0 )
+##-23-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
+set( Step 0 )
 ###################################
 include( /rodent/bin_linux64/MakeAtlas/GlobalConfig.bms )
 ##Processes
