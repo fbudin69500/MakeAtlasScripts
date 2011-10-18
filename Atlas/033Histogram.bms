@@ -1,4 +1,6 @@
 Set(count 0)
+set( AtlasSS ${outputDir}/AverageImage_SS.nrrd )
+set( AtlasNSS ${outputDir}/AverageImage_NSS.nrrd )
 
 IF (${HISTOGRAM_MATCH} == FALSE)
 
@@ -35,14 +37,13 @@ IF (${HISTOGRAM_MATCH} == FALSE)
     Int( ${count} )
   endforeach( ${CASES} )
 
-  set( AtlasSS ${outputDir}/AverageImage_SS.nrrd )
+
   Set( Cmd ${ImageMathDIR}ImageMath ${FIRST_MDIMAGES} -avg ${LIST_MDIMAGES} -outfile ${AtlasSS} -type float )
   If( ${step} < 33 )
     Run( output ${Cmd} )
     echo( ${output} )
   EndIf( ${step} < 33 )
 
-  set( AtlasNSS ${outputDir}/AverageImage_NSS.nrrd )
   Set( Cmd ${ImageMathDIR}ImageMath ${FIRST_NSS_MDIMAGES} -avg ${LIST_NSS_MDIMAGES} -outfile ${AtlasNSS} -type float )
   If( ${step} < 34 )
     Run( output ${Cmd} )
@@ -73,13 +74,12 @@ ELSE (${HISTOGRAM_MATCH} == FALSE)
       Int( ${count} )
     endforeach( ${CASES} )
 
-  set( Histo ${ResampleVolume2DIR}ResampleVolume2 ${atlasProcessDir}/avg_2.mhd ${outputDir}/AverageImage_SS.nrrd -i nn)
+  set( Histo ${ResampleVolume2DIR}ResampleVolume2 ${atlasProcessDir}/avg_2.mhd ${AtlasSS} -i nn)
   If( ${step} < 36 )
     Run( output ${Histo} )
     echo( ${output} )
   EndIf( ${step} < 36 )
 
-  set( AtlasNSS ${outputDir}/AverageImage_NSS.nrrd )
   Set( Cmd ${ImageMathDIR}ImageMath ${FIRST_NSS_MDIMAGES} -avg ${LIST_NSS_MDIMAGES} -outfile ${AtlasNSS} -type float )
   If( ${step} < 37 )
     Run( output ${Cmd} )
@@ -87,3 +87,4 @@ ELSE (${HISTOGRAM_MATCH} == FALSE)
   EndIf( ${step} < 37 )
   ENDIF (${HISTOGRAM_MATCH} == TRUE)
 ENDIF (${HISTOGRAM_MATCH} == FALSE)
+
