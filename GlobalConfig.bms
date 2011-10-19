@@ -1,38 +1,40 @@
-##Set up path of executables. If binaries can be found in the path, just set it to ''
-##If directory needs to be set, do not forget '/' at the end
+##Set up path of executables. If the binaries are in the path,
+##you can just put the name of the executable
+#DWIProcessPipeline
+set( DWIProcessPipeline 'DWIProcessPipeline' )
 #ABC
-set( ABCDIR '' )
+set( ABC 'ABC' )
 #SegPostProcessCLP
-set( SegPostProcessCLPDIR '' )
+set( SegPostProcessCLP 'SegPostProcessCLP' )
 #ImageMath
-set( ImageMathDIR '' )
+set( ImageMath 'ImageMath' )
 #ResampleVolume2
-set( ResampleVolume2DIR '' )
+set( ResampleVolume2 'ResampleVolume2' )
 #rreg
-set( rregDIR '' )
+set( rreg 'rreg' )
 #transformation
-set( transformationDIR '' )
+set( transformation 'transformation' )
 #areg
-set( aregDIR '' )
+set( areg 'areg' )
 #RegisterImages
-set( RegisterImagesDIR '' )
+set( RegisterImages 'RegisterImages' )
 #Double2FloatTransform
-set( Double2FloatTransformDIR '' )
+set( Double2FloatTransform 'Double2FloatTransform' )
 #AtlasWerks
-set( AtlasWerksDIR '' )
+set( AtlasWerks 'AtlasWerks' )
 #ResampleDTIlogEuclidean
-set( ResampleDTIlogEuclideanDIR '' )
+set( ResampleDTIlogEuclidean 'ResampleDTIlogEuclidean' )
 #BRAINSDemonWarp
-set( BRAINSDemonWarpDIR '' )
+set( BRAINSDemonWarp 'BRAINSDemonWarp' )
 #dtiaverage
-set( dtiaverageDIR '' )
+set( dtiaverage 'dtiaverage' )
 #unu
-set( unuDIR '' )
+set( unu 'unu' )
 #dtiprocess
-set( dtiprocessDIR '' )
+set( dtiprocess 'dtiprocess' )
 #ITKTransformTools
-set( ITKTransformToolsDIR '' )
+set( ITKTransformTools 'ITKTransformTools' )
 #MedianFilter
-set( MedianImageFilterDIR '' )
+set( MedianImageFilter 'MedianImageFilter' )
 #ImageStat
-set( ImageStatDIR '' )
+set( ImageStat 'ImageStat' )

@@ -11,8 +11,8 @@
 RegEx( PARCELLATION_FILE_TAG ${PARCELLATION_FILE_NAME} '\..*' REPLACE '' )
 MakeDirectory( ${atlasProcessDir} )
 
-set( hmImage ${atlasProcessDir}/AverageImage_hm.${extension} )
-set( ImageToRegTo ${PopAtlasDir}/AverageImage_SS.${extension} )
+set( hmImage ${atlasProcessDir}/AverageImage_hm.nrrd )
+set( ImageToRegTo ${PopAtlasDir}/AverageImage_SS.nrrd )
 
 
 set( TemplateFile ${ATLAS_DIR}/${TEMPLATE} )
