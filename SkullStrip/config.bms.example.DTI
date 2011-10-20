@@ -1,7 +1,7 @@
 ##Check that the version is the same in the example and in the config file you are modifying.
 ##If not, copy and modify this example to have a version of the configuration file that is up
 ##to date.
-##Version:1.23
+##Version:1.24
 #####################################################################################################
 ################################### Variables to set ################################################
 #####################################################################################################
@@ -65,8 +65,8 @@ sequence(seq 0 0 1)
 set( CONFIGDIR /rodent/bin_linux64/MakeAtlas/SkullStrip )
 ##-26-Closing radius to smooth mask computed from segmentation
 set( MASK_CLOSING_RADIUS 5 )
-##-27-suffix of the mask created from the segmentation. Do not set the extension
-set( NEW_MASK_TAG _mask_from_seg )
+##-27-suffix of the mask created from the segmentation.
+set( NEW_MASK_TAG _mask_from_seg.nrrd )
 ##-28-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
 set( Step 0 )
 #######################################################################################################

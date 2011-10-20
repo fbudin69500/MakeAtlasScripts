@@ -1,7 +1,7 @@
 ##Check that the version is the same in the example and in the config file you are modifying.
 ##If not, copy and modify this example to have a version of the configuration file that is up
 ##to date.
-##Version:1.2
+##Version:1.21
 #####################################################################################################
 ################################### Variables to set ################################################
 #####################################################################################################
@@ -42,9 +42,7 @@ set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
 ##-15-Suffix of the inverse hfield that are computed in the population atlas creation
 set( InvHField_Suffix _inv_hFieldToAtlas.mha )
 ##-16-suffix of the mask created from the segmentation
-set( NEW_MASK_TAG _mask_from_seg )
-##-17-output files extension
-set( extension nrrd )
+set( NEW_MASK_TAG _mask_from_seg.nrrd )
 ###################################
 include( /rodent/bin_linux64/MakeAtlas/GlobalConfig.bms )
 ##Processes
