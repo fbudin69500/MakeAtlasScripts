@@ -13,7 +13,7 @@ MakeDirectory( ${atlasProcessDir} )
 
 set( hmImage ${atlasProcessDir}/AverageImage_hm.nrrd )
 set( ImageToRegTo ${PopAtlasDir}/AverageImage_SS.nrrd )
-
+set( temp ${atlasProcessDir} )
 
 set( TemplateFile ${ATLAS_DIR}/${TEMPLATE} )
 set( PARCELLATIONFile ${ATLAS_DIR}/${PARCELLATION_FILE_NAME} )

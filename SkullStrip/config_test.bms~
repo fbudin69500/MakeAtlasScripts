@@ -1,0 +1,75 @@
+##Check that the version is the same in the example and in the config file you are modifying.
+##If not, copy and modify this example to have a version of the configuration file that is up
+##to date.
+##Version:1.24
+#####################################################################################################
+################################### Variables to set ################################################
+#####################################################################################################
+##-1-Name of this file (configuration file).
+##Set to '' if you don't want to save the configuration file in the output directory
+set( ScriptName config_test.bms )
+##The files must have the following structure:
+##dir/case/case_suffix;dir=/rodent/Project/subProject1
+##-2-SubProject root directory
+set( dir /rodent/crews_rodent/NADIA/LiveVSFixedStudy/live/P28/ )
+##-3-Cases to process
+set( CASES 20110110_crews_1 20110110_crews_2 )
+##-4-suffix of the image used to register the image to the atlas to compute segmentation
+set( RIGID_REGISTRATION_IMAGE_SUFFIX _T1_1_unit_bc.gipl.gz )
+##-5-Atlas subdirectory for brain stripping and parcellation
+set( ATLAS_SUB_DIR template/a-original )
+##-6-subdirectory in the case directory in which to save new case files (mask and parcellation)
+set( PROCESS_SUBDIR 3-SkullStripping-MarionTestingScripts )
+#####################################################################################################
+######################## Advanced options that you should not have to modify ########################
+#####################################################################################################
+##-7-Input pre-subdir. For old data structure, the value should be "."
+set( INPUT_PRE_SUBDIR . )
+##-8-Output pre-subdir. For old data structure, the value should be "."
+set( OUTPUT_PRE_SUBDIR . )
+##-9-Input pre-subdir. For new data structure, the value should be "."
+set( INPUT_POST_SUBDIR . )
+##-10-atlas for brain stripping and parcellation
+set( ATLAS_DIR ${dir}/${OUTPUT_PRE_SUBDIR}/${ATLAS_SUB_DIR} )
+##-11-Is the image used for the registration the MD image? In that case, we'll multiply its values
+##by 100000 before converting it to integers
+set( RIGID_IS_MD FALSE )
+##-12-Is the image used for the registration the FA image?In that case, we'll multiply its values
+##by 10000 before converting it to integers
+set( RIGID_IS_FA FALSE )
+##-13-if scalar image (TRUE or FALSE)
+set( IS_SCALAR TRUE )
+##-14-type of image used for segmentation. Can hold multiple types
+set( ABC_IMAGE_SUFFIX ${RIGID_REGISTRATION_IMAGE_SUFFIX} )
+##-15-Register the images or not (skips both rigid and affine registration if set to FALSE )
+set( Registration TRUE )
+##-16-Rigid or only affine registration
+set( Rigid TRUE )
+##-17-Bias field correction (TRUE/FALSE)
+set( biasFieldCorrection TRUE )
+##-18-Filter method: if set to true, ABC will use the 'Curvature flow'. Otherwise, it will use 'Grad aniso diffusion'
+set( FILTERCURVATURE TRUE )
+##-19-Atlas files. One file must be called template.${ext}
+set( ATLAS_FILES 1.mha 2.mha 3.mha 4.mha template.mha )
+##-20-ABC Priors
+set( PRIORS 1 1 1 1 )
+##-21-atlas grid filename
+set( ATLAS_GRID AtlasGrid.nrrd )
+##-22-directory in which temporary files are written
+set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
+##-23-was the input image scaled to 1,1,1
+set( IS_SCALED FALSE )
+##-24-Number of loops: sequence(seq 0 NB_LOOPS 1)
+sequence(seq 0 0 1)
+##-25-directory in which to find "rreg_rigid.params" and "rreg_TO_TEMPLATE.param"
+set( CONFIGDIR /rodent/bin_linux64/MakeAtlas/SkullStrip )
+##-26-Closing radius to smooth mask computed from segmentation
+set( MASK_CLOSING_RADIUS 5 )
+##-27-suffix of the mask created from the segmentation.
+set( NEW_MASK_TAG _mask.nrrd )
+##-28-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
+set( step 0 )
+#######################################################################################################
+include( /home/hoogstoe/Scripts/local-scripts/MakeAtlasScripts/GlobalConfig.bms )
+##Processes
+include( /home/hoogstoe/Scripts/local-scripts/MakeAtlasScripts/SkullStrip/000SkullStrip.bms )

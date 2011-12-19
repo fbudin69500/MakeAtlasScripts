@@ -5,10 +5,11 @@
 #-ResampleVolume2
 ####################Configure############################################
 set( ABCSUFFIX seg )
-Int(${step})
+# Int(${step})
 ####################run ABC##############################################
 # apply ABC for brain skull stripping
 # run ABC
+
 set( CORRECTED '' )
 set( dilatedMASK '' )
 include( 010SetUp.bms )

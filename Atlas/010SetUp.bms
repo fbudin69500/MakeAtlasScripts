@@ -1,3 +1,7 @@
+echo()
+echo('SetUp')
+echo()
+
 #Variables initialization
 
 #Variables initialization

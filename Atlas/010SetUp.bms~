@@ -1,0 +1,7 @@
+#Variables initialization
+
+#Variables initialization
+RegEx( DTI_TAG ${DTI_SUFFIX} '\..*' REPLACE '' )
+RegEx( ATLAS_INPUT_TAG ${ATLAS_INPUT_SUFFIX} '\..*' REPLACE '' )
+set( ATLAS_INPUT_MASKED_TAG ${ATLAS_INPUT_TAG}_masked_from_seg )
+

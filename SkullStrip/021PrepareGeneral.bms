@@ -27,4 +27,3 @@ ForEach( file ${ATLAS_TAG} )
   Inc(${count} 1)
   Int( ${count} )
 EndForEach( file ${ATLAS_TAG} )
-

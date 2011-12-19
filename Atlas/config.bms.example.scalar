@@ -20,6 +20,14 @@ set( ATLAS_INPUT_SUFFIX .nhdr )
 set( ATLAS_SUB_DIR a-original )
 ##-6-Population atlas directories suffix
 set( AtlasDirectoriesSuffix 1 )
+##-7-Suffix of the original scalar image (to the avg image).
+set( Original_SUFFIX T1.gipl.gz )
+##-25-Original_has_prefix : if the original is called differently than CaseName_suffix.gipl.gz. If set to FALSE, the script will look for a file which name is just Original_SUFFIX (7th param.)
+set ( Original_has_prefix FALSE ) 
+##-8-Transform suffix for the creation of the Average Image
+set( TRANSFORM_SUFFIX _reg.mat )
+##-24-Recalculating the average image from the original images? (TRUE or FALSE)
+set( Recalculate_avg TRUE )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
@@ -57,6 +65,15 @@ set( NEW_MASK_TAG _mask_from_seg.nrrd )
 set( Mradius 0 )
 ##-23-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
 set( Step 0 )
+##-26- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the doc)
+set (Measure MI)
+##-27- ANTS ranges
+set (rangeMin 1 )
+set (rangeMax 32 )
+##-28- ANTS if set to 0, no deformable mapping is performed.
+set (defIterations 0 )
+##-29- ANTS image dimension
+set (imgDimension 3 )
 ###################################
 include( /rodent/bin_linux64/MakeAtlas/GlobalConfig.bms )
 ##Processes

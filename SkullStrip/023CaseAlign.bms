@@ -19,7 +19,6 @@ Else( ${IS_SCALED} == TRUE )
   Set ( TemplateFile ${tempDir}/template.gipl.gz )
 EndIf( ${IS_SCALED} == TRUE )
 
-
 If( ${i} != 0 )
   Set (SrcFile ${CORRECTED} )
   set( masked_image ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}_masked${i}.gipl.gz)
@@ -27,7 +26,7 @@ If( ${i} != 0 )
   If( ${step} < 6 )
     run( output ${Cmd} )
     echo( ${output} )
-  If( ${step} < 6 )
+  EndIf( ${step} < 6 )
   set( SrcFile ${masked_image} )
 Else( ${i} != 0 )
   Set (SrcFile ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.gipl.gz)
@@ -39,9 +38,8 @@ Set( Cmd ImageMath ${SrcFile} -matchHistogram ${TemplateFile} -outfile ${DestImg
 If( ${step} < 7 )
   Run( output ${Cmd} )
   Echo( ${output} )
-If( ${step} < 7 )
+EndIf( ${step} < 7 )
 Set( SrcFile ${DestImg} )
-
 
 Set (DofFile ${tempDir}/${Case}/${Case}_rigid${i}.dof)
 Set (RegParamFile ${CONFIGDIR}/rreg_rigid.params)

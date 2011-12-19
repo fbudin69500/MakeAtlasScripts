@@ -1,0 +1,47 @@
+##Check that the version is the same in the example and in the config file you are modifying.
+##If not, copy and modify this example to have a version of the configuration file that is up
+##to date.
+##Version:1
+#####################################################################################################
+################################### Variables to set ################################################
+#####################################################################################################
+##-1-Name of this file (configuration file).
+##Set to '' if you don't want to save the configuration file in the output directory
+set( ScriptName config_test_AS.bms )
+##The files must have the following structure:
+##dir/case/case_suffix;dir=/rodent/Project/subProject1
+##-2-SubProject root directory
+set( dir /rodent/crews_rodent/NADIA/LiveVSFixedStudy/live/P28/ )
+##-5-Atlas subdirectory for brain stripping and parcellation
+set( ATLAS_SUB_DIR template/a-original )
+##-6-Population atlas directories suffix
+set( AtlasDirectoriesSuffix MarionTestingScripts )
+##Population atlas file name
+set( PopulationAtlas AverageImage_SS.nrrd )
+##-7-Select BSpline registration instead of LDDMM to register the newly computed population atlas to the given atlas (TRUE/FALSE)
+set( BSpline TRUE )
+###################################
+#Extra parameters. Normally no need to modified
+###################################
+##-10-Input pre-subdir. For old data structure, the value should be "."
+set( INPUT_PRE_SUBDIR . )
+##-11-Output pre-subdir. For old data structure, the value should be "."
+set( OUTPUT_PRE_SUBDIR . )
+##-13-Atlas directory for brain stripping and parcellation
+set( ATLAS_DIR ${dir}/${OUTPUT_PRE_SUBDIR}/${ATLAS_SUB_DIR} )
+##-14-Directory in which the computed population atlas and its parcellation/segmentation are saved
+set( PopAtlasDir ${dir}/${OUTPUT_PRE_SUBDIR}/Atlas-${AtlasDirectoriesSuffix} )
+##-16-Directory in which temporary files are written
+set( atlasProcessDir ${outputDir}/temp-MarionTestingScripts )
+##-18-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
+set( IS_SCALED FALSE )
+##-22-Atlas file
+set( TEMPLATE template.mha )
+##-23-Name of the parcellation atlas
+set( PARCELLATION_FILE_NAME template_atlas.mha )
+##-24-Image grid filename
+set( IMAGE_GRID ImageGrid.nrrd )
+###################################
+include( /home/hoogstoe/Scripts/local-scripts/MakeAtlasScripts/GlobalConfig.bms )
+##Processes
+include( /home/hoogstoe/Scripts/local-scripts/MakeAtlasScripts/AtlasSegmentation/000AtlasSegmentation.bms )

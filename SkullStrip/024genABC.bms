@@ -1,6 +1,4 @@
 # ABC
-
-
 WriteFile (${ABCfile} '<?xml version="1.0"?>\n')
 AppendFile(${ABCfile} '<!DOCTYPE SEGMENTATION-PARAMETERS>\n')
 AppendFile(${ABCfile} '<SEGMENTATION-PARAMETERS>\n')
@@ -13,7 +11,7 @@ Else( ${Registration} == TRUE )
   Else( ${IS_SCALED} == TRUE )
     AppendFile(${ABCfile} '<ATLAS-DIRECTORY>'${tempDir}'</ATLAS-DIRECTORY>\n')
   EndIf( ${IS_SCALED} == TRUE )
-Endif(${Registration} == TRUE )
+EndIf(${Registration} == TRUE )
 AppendFile(${ABCfile} '<ATLAS-ORIENTATION>file</ATLAS-ORIENTATION>\n')
 AppendFile(${ABCfile} '<OUTPUT-DIRECTORY>'${ABC_Case_DIR}'</OUTPUT-DIRECTORY>\n')
 AppendFile(${ABCfile} '<OUTPUT-FORMAT>nrrd</OUTPUT-FORMAT>\n')
@@ -23,7 +21,7 @@ ForEach (Type ${ABC_IMAGE_SUFFIX})
    AppendFile(${ABCfile} '  <FILE>'${InputSubjDir}/${Case}${Type}'</FILE>\n')
    AppendFile(${ABCfile} '  <ORIENTATION>'file'</ORIENTATION>\n')
    AppendFile(${ABCfile} '</IMAGE>\n')
-EndForEach (${Type})
+EndForEach (Type ${ABC_IMAGE_SUFFIX})
 
 AppendFile(${ABCfile} '<FILTER-ITERATIONS>1</FILTER-ITERATIONS>\n')
 AppendFile(${ABCfile} '<FILTER-TIME-STEP>0.001</FILTER-TIME-STEP>\n')
@@ -44,7 +42,7 @@ ForEach( p ${PRIORS} )
   AppendFile(${ABCfile} '<PRIOR-'${count}'>'${p}'</PRIOR-'${count}'>\n')
   Inc(${count} 1)
   Int( ${count} )
-EndForEach( p )
+EndForEach( p ${PRIORS} )
 
 AppendFile(${ABCfile} '<DO-ATLAS-WARP>0</DO-ATLAS-WARP>\n')
 AppendFile(${ABCfile} '<ATLAS-WARP-GRID-X>5</ATLAS-WARP-GRID-X>\n')

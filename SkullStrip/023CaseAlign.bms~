@@ -1,0 +1,118 @@
+### The script uses:
+#- rreg
+#- transformation
+#- areg
+#- ResampleVolume2
+###############################
+# iterate over all cases and do initial registration onto template frame
+	Echo ('Registering '${Case})
+
+	# requires three files
+	# 1) source file (subject image)
+	# 2) destination file (template image)
+	# 3) transformation file
+	# 4) registration parameter file (if necessary)
+
+If( ${IS_SCALED} == TRUE )
+  Set ( TemplateFile ${tempDir}/${Case}/template.gipl.gz )
+Else( ${IS_SCALED} == TRUE )
+  Set ( TemplateFile ${tempDir}/template.gipl.gz )
+EndIf( ${IS_SCALED} == TRUE )
+
+If( ${i} != 0 )
+echo ()
+echo ( 'the corrected file is ' ${CORRECTED})
+echo ()
+  Set (SrcFile ${CORRECTED} )
+  set( masked_image ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}_masked${i}.gipl.gz)
+  set( Cmd ${ImageMath} ${SrcFile} -mask ${dilatedMASK} -outfile ${masked_image} -type float )
+  If( ${step} < 6 )
+    run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 6 )
+  set( SrcFile ${masked_image} )
+Else( ${i} != 0 )
+echo( 'Claude Francois est un zero' )
+  Set (SrcFile ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.gipl.gz)
+EndIf( ${i} != 0 )
+
+#histogram match
+Set( DestImg ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}_hm${i}.gipl.gz )
+Set( Cmd ImageMath ${SrcFile} -matchHistogram ${TemplateFile} -outfile ${DestImg} -type float )
+If( ${step} < 7 )
+  Run( output ${Cmd} )
+  Echo( ${output} )
+EndIf( ${step} < 7 )
+Set( SrcFile ${DestImg} )
+
+Set (DofFile ${tempDir}/${Case}/${Case}_rigid${i}.dof)
+Set (RegParamFile ${CONFIGDIR}/rreg_rigid.params)
+
+if( ${Rigid} == TRUE )
+  Set (alignCmd ${rreg} ${TemplateFile} ${SrcFile} -parin ${RegParamFile} -dofout ${DofFile})
+  If( ${step} < 8 )
+    Run (output ${alignCmd})
+    Echo (${output})
+  EndIf( ${step} < 8 )
+
+  Set( DstImg ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}_rigid${i}.gipl.gz )
+  Set (transformCmd ${transformation} ${SrcFile} ${DstImg} -dofin ${DofFile} -target ${TemplateFile} -bspline )
+  Echo (${transformCmd})
+  If( ${step} < 9 )
+    Run (output ${transformCmd})
+    Echo (${output})
+  EndIf( ${step} < 9 )
+Else( ${Rigid} == TRUE )
+  Set( DstImg ${SrcFile} )
+Endif( ${Rigid} == TRUE )
+
+
+Set (RegConfigFile ${CONFIGDIR}/rreg_TO_TEMPLATE.param )
+Set (AffDofFile ${tempDir}/${Case}/${Case}_affine${i}.dof )
+# affine registration
+Set (regCmd ${areg} ${DstImg} ${TemplateFile} -parin ${RegConfigFile} -dofout ${AffDofFile} )
+Echo (${regCmd})
+If( ${step} < 10 )
+  Run (output ${regCmd})
+  Echo (${output})
+EndIf( ${step} < 10 )
+
+
+
+
+ForEach( Type ${ATLAS_TAG} )
+    Set (TargetFile ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.gipl.gz)
+    If( ${IS_SCALED} == TRUE )
+      Set ( image ${tempDir}/${Case}/${Type}.gipl.gz )
+    Else( ${IS_SCALED} == TRUE )
+      Set ( image ${tempDir}/${Type}.gipl.gz )
+    EndIf( ${IS_SCALED} == TRUE )
+
+    if( ${Rigid} == TRUE )
+      Set( DstImg ${tempDir}/${Case}/${Type}_rigid_to_${Case}${RIGID_REGISTRATION_IMAGE_TAG}_rigid${i}.gipl.gz )
+      Set (transformCmd ${transformation} ${image} ${DstImg} -dofin ${AffDofFile} -target ${TargetFile} -bspline )
+      Echo (${transformCmd})
+      If( ${step} < 11 )
+        Run (output ${transformCmd})
+        Echo (${output})
+      EndIf( ${step} < 11 )
+      Set( SrcImg ${DstImg} )
+    Else( ${Rigid} == TRUE )
+      Set( SrcImg ${image} )
+    EndIf( ${Rigid} == TRUE )
+    Set( DstImg ${tempDir}/${Case}/${Type}_rigid_to_${Case}${RIGID_REGISTRATION_IMAGE_TAG}${i}.gipl.gz )
+    Set (transformCmd ${transformation} ${SrcImg} ${DstImg} -dofin ${DofFile} -invert -target ${TargetFile} -bspline )
+    Echo (${transformCmd})
+    If( ${step} < 12 )
+      Run (output ${transformCmd})
+      Echo (${output})
+    EndIf( ${step} < 12 )
+    Set( SrcImg ${DstImg} )
+    Set( DstImg ${ABC_Case_DIR}/${Type}.mha )
+    Set (transformCmd ${ImageMath} ${SrcImg} -changeOrig ${TargetFile} -outfile ${DstImg} )
+    Echo (${transformCmd})
+    If( ${step} < 13 )
+      Run (output ${transformCmd})
+      Echo (${output})
+    EndIf( ${step} < 13 )
+EndForEach( Type ATLAS_TAG )

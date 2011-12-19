@@ -1,6 +1,14 @@
 Set(count 0)
+Set(count2 0)
 set( AtlasSS ${outputDir}/AverageImage_SS.nrrd )
 set( AtlasNSS ${outputDir}/AverageImage_NSS.nrrd )
+set( AtlasSS_orig ${outputDir}/AverageImage_SS_orig.nrrd )
+set( AtlasNSS_orig ${outputDir}/AverageImage_NSS_orig.nrrd )
+
+#########################################################################################
+				HISTOGRAM MATCH = FALSE
+#########################################################################################
+
 
 IF (${HISTOGRAM_MATCH} == FALSE)
 
@@ -12,43 +20,146 @@ IF (${HISTOGRAM_MATCH} == FALSE)
     Set( TRANSFORMED_MD ${atlasProcessDir}/${i}_SS.nrrd )
     set( ResampleCmd ${ResampleVolume2} ${MD} ${TRANSFORMED_MD} -H ${hfield})
     echo( ${ResampleCmd} )
-    If( ${step} < 31 )
-      run( output ${ResampleCmd} )
-      echo( ${output} )
-    EndIf( ${step} < 31 )
-
-    Set( NSS_MD ${InSubjDir}/${i}${ATLAS_INPUT_SUFFIX} )
-    Set( TRANSFORMED_NSS_MD ${atlasProcessDir}/${i}_NSS.nrrd )
-    set( ResampleCmd ${ResampleVolume2} ${NSS_MD} ${TRANSFORMED_NSS_MD} -H ${hfield})
-    echo( ${ResampleCmd} )
     If( ${step} < 32 )
       run( output ${ResampleCmd} )
       echo( ${output} )
     EndIf( ${step} < 32 )
 
+    Set( NSS_MD ${InSubjDir}/${i}${ATLAS_INPUT_SUFFIX} )
+    Set( TRANSFORMED_NSS_MD ${atlasProcessDir}/${i}_NSS.nrrd )
+    set( ResampleCmd ${ResampleVolume2} ${NSS_MD} ${TRANSFORMED_NSS_MD} -H ${hfield})
+    echo( ${ResampleCmd} )
+    If( ${step} < 33 )
+      run( output ${ResampleCmd} )
+      echo( ${output} )
+    EndIf( ${step} < 33 )
+
     if( ${count} == 0 )
       Set( FIRST_MDIMAGES ${TRANSFORMED_MD} )
       Set( FIRST_NSS_MDIMAGES ${TRANSFORMED_NSS_MD} )    
     else( ${count} == 0 )
-      Set( LIST_MDIMAGES ${LIST_MDIMAGES} ${TRANSFORMED_MD} )
-      Set( LIST_NSS_MDIMAGES ${LIST_NSS_MDIMAGES} ${TRANSFORMED_NSS_MD} )
+	if( ${count2} == 0)
+     	 Set( LIST_MDIMAGES ${FIRST_MDIMAGES} ${TRANSFORMED_MD} )
+     	 Set( LIST_NSS_MDIMAGES ${FIRST_NSS_MDIMAGES} ${TRANSFORMED_NSS_MD} )
+    	 Inc(${count2} 1)
+    	 Int( ${count2} )
+	else( ${count2} == 0)
+     	 Set( LIST_MDIMAGES ${LIST_MDIMAGES} ${TRANSFORMED_MD} )
+     	 Set( LIST_NSS_MDIMAGES ${LIST_NSS_MDIMAGES} ${TRANSFORMED_NSS_MD} )
+	endif( ${count2} == 0)
     endif( ${count} == 0 )
     Inc(${count} 1)
     Int( ${count} )
   endforeach( ${CASES} )
 
-
   Set( Cmd ${ImageMath} ${FIRST_MDIMAGES} -avg ${LIST_MDIMAGES} -outfile ${AtlasSS} -type float )
-  If( ${step} < 33 )
-    Run( output ${Cmd} )
-    echo( ${output} )
-  EndIf( ${step} < 33 )
-
-  Set( Cmd ${ImageMath} ${FIRST_NSS_MDIMAGES} -avg ${LIST_NSS_MDIMAGES} -outfile ${AtlasNSS} -type float )
   If( ${step} < 34 )
     Run( output ${Cmd} )
     echo( ${output} )
   EndIf( ${step} < 34 )
+  Set( Cmd ${ImageMath} ${FIRST_NSS_MDIMAGES} -avg ${LIST_NSS_MDIMAGES} -outfile ${AtlasNSS} -type float )
+  If( ${step} < 35 )
+    Run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 35 )
+
+###############################################################################
+## recalculating average from the original images with transform and h-Field ##
+
+If (${Recalculate_avg} == TRUE)
+  set (count 0)
+  set(count2 0)
+
+echo ( 'recalculating average...' )
+echo ( '' )
+
+foreach( i ${CASES} )
+  Set (InSubjDir ${dir}/${INPUT_PRE_SUBDIR}/${i}/${INPUT_POST_SUBDIR} )
+  set (OutSubjDir ${dir}/${OUTPUT_PRE_SUBDIR}/${i})
+ 
+  If(${Original_has_prefix} == FALSE)
+   Set( originalImage ${dir}/${i}/T1.gipl.gz )
+  Else(${Original_has_prefix} == FALSE)
+   Set( originalImage ${dir}/${i}/${i}${Original_SUFFIX} )
+  EndIf(${Original_has_prefix} == FALSE)
+
+  Set( resampledOriginalFile ${atlasProcessDir}/${i}_transformed.nrrd )
+  set( resampledOriginalFileMasked ${atlasProcessDir}/${i}${DTI_TAG}_transformed_masked.nrrd )
+  Set( hfield ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_hFieldToAtlas.mha )
+
+  if( ${TRANSFORM_SUFFIX} != '' )
+    set( combinedTransforms -f ${InSubjDir}/${i}${TRANSFORM_SUFFIX} )
+  else( ${TRANSFORM_SUFFIX} != '' )
+    set( combinedTransforms '' )
+  Endif( ${TRANSFORM_SUFFIX} != '' )
+  Set( hfield ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_hFieldToAtlas.mha )
+  set( ResampleVolCmd ${ResampleVolume2} ${originalImage} ${resampledOriginalFile} ${combinedTransforms} -H ${hfield} -R ${FIXED_IMG})
+  echo( ${ResampleVolCmd} )
+
+  If( ${step} < 36 )
+    run( output ${ResampleVolCmd} )
+    echo( ${output} )
+  EndIf( ${step} < 36 )
+
+  ####transform mask###################
+  set( mask ${InSubjDir}/${i}${NEW_MASK_TAG} )
+  set( maskTransformed ${atlasProcessDir}/${i}_mask_transformed.nrrd )
+  set( ResampleCmd ${ResampleVolume2} ${mask} ${maskTransformed} -H ${hfield} -R ${FIXED_IMG} -i nn )
+  echo( ${ResampleCmd} )
+  If( ${step} < 37 )
+  run( output ${ResampleCmd} )
+  echo( ${output} )
+  EndIf( ${step} < 37 )
+
+  ####mask images##########################
+  set( maskCmd ${ImageMath} ${resampledOriginalFile} -mask ${maskTransformed} -outfile ${resampledOriginalFileMasked} -type float)
+  echo( ${maskCmd} )
+
+  If( ${step} < 38 )
+  run( output ${maskCmd} )
+  echo( ${output} )
+  EndIf( ${step} < 38 )
+
+  ####save list of images##########################
+    if( ${count} == 0 )
+      Set( FIRST_ORIGIMAGES ${resampledOriginalFileMasked} )
+      Set( FIRST_NSS_ORIGIMAGES ${resampledOriginalFile} )    
+    else( ${count} == 0 )
+	if( ${count2} == 0)
+     	 Set( LIST_ORIGIMAGES ${FIRST_ORIGIMAGES} ${resampledOriginalFileMasked} )
+     	 Set( LIST_NSS_ORIGIMAGES ${FIRST_NSS_ORIGIMAGES} ${resampledOriginalFile} )
+    	 Inc(${count2} 1)
+    	 Int( ${count2} )
+	else( ${count2} == 0)
+     	 Set( LIST_ORIGIMAGES ${LIST_ORIGIMAGES} ${resampledOriginalFileMasked} )
+     	 Set( LIST_NSS_ORIGIMAGES ${LIST_NSS_ORIGIMAGES} ${resampledOriginalFile} )
+	endif( ${count2} == 0)
+    endif( ${count} == 0 )
+    Inc(${count} 1)
+    Int( ${count} )
+
+endforeach( i ${CASES} )
+
+  ####compute ##########################
+Set( Cmd ${ImageMath} ${FIRST_NSS_ORIGIMAGES} -avg ${LIST_NSS_ORIGIMAGES} -outfile ${AtlasNSS_orig} -type float )
+  echo( ${Cmd} )
+  If( ${step} < 39 )
+    run( output ${Cmd} )
+    echo( ${output} )
+  If( ${step} < 39 )
+
+  Set( Cmd ${ImageMath} ${FIRST_ORIGIMAGES} -avg ${LIST_ORIGIMAGES} -outfile ${AtlasSS_orig} -type float )
+  echo( ${Cmd} )
+  If( ${step} < 40 )
+    run( output ${Cmd} )
+    echo( ${output} )
+  If( ${step} < 40 )
+
+EndIf (${Recalculate_avg} == TRUE)
+
+#########################################################################################
+				HISTOGRAM MATCH = TRUE
+#########################################################################################
 
 ELSE (${HISTOGRAM_MATCH} == FALSE)
   IF(${HISTOGRAM_MATCH} == TRUE)
@@ -60,10 +171,10 @@ ELSE (${HISTOGRAM_MATCH} == FALSE)
       Set( TRANSFORMED_NSS_MD ${atlasProcessDir}/${i}_NSS.nrrd )
       set( ResampleCmd ${ResampleVolume2} ${NSS_MD} ${TRANSFORMED_NSS_MD} -H ${hfield})
       echo( ${ResampleCmd} )
-      If( ${step} < 35 )
+      If( ${step} < 41 )
         run( output ${ResampleCmd} )
         echo( ${output} )
-      EndIf( ${step} < 35 )
+      EndIf( ${step} < 41 )
 
       if( ${count} == 0 )
         Set( FIRST_NSS_MDIMAGES ${TRANSFORMED_NSS_MD} )
@@ -75,16 +186,19 @@ ELSE (${HISTOGRAM_MATCH} == FALSE)
     endforeach( ${CASES} )
 
   set( Histo ${ResampleVolume2} ${atlasProcessDir}/avg_2.mhd ${AtlasSS} -i nn)
-  If( ${step} < 36 )
+  If( ${step} < 42 )
     Run( output ${Histo} )
     echo( ${output} )
-  EndIf( ${step} < 36 )
+  EndIf( ${step} < 42 )
 
   Set( Cmd ${ImageMath} ${FIRST_NSS_MDIMAGES} -avg ${LIST_NSS_MDIMAGES} -outfile ${AtlasNSS} -type float )
-  If( ${step} < 37 )
+  If( ${step} < 43 )
     Run( output ${Cmd} )
     echo( ${output} )
-  EndIf( ${step} < 37 )
+  EndIf( ${step} < 43 )
   ENDIF (${HISTOGRAM_MATCH} == TRUE)
 ENDIF (${HISTOGRAM_MATCH} == FALSE)
 
+echo()
+echo(' fin Histogram ')
+echo()
