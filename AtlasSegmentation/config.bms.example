@@ -19,7 +19,7 @@ set( AtlasDirectoriesSuffix 1 )
 ##Population atlas file name
 set( PopulationAtlas AverageImage_SS.nrrd )
 ##-7-Select BSpline registration instead of LDDMM to register the newly computed population atlas to the given atlas (TRUE/FALSE)
-set( BSpline TRUE )
+set( Diffeomorphic TRUE )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
@@ -41,6 +41,17 @@ set( TEMPLATE template.mha )
 set( PARCELLATION_FILE_NAME template_atlas.mha )
 ##-24-Image grid filename
 set( IMAGE_GRID ImageGrid.nrrd )
+##-26- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the doc)
+set (Measure MI)
+##-27- ANTS ranges
+set (weight 1 )
+set (bin_number 32 )
+##-28- ANTS if set to 0, no deformable mapping is performed.
+set (defIterations 0 )
+##-29- ANTS image dimension
+set (imgDimension 3 )
+##-30-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
+set (step 0)
 ###################################
 include( /rodent/bin_linux64/MakeAtlas/GlobalConfig.bms )
 ##Processes

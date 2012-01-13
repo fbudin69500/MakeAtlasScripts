@@ -6,22 +6,35 @@
 #- ResampleVolume2
 #- BRAINSDemonWarp
 #- ITKTransformTools
+#- ANTs
 ############Register atlas with new MD/atlas image#######################
 #Variables initialization
 RegEx( PARCELLATION_FILE_TAG ${PARCELLATION_FILE_NAME} '\..*' REPLACE '' )
+RegEx( TEMPLATE_TAG ${TEMPLATE} '\..*' REPLACE '' )
+RegEx( PopulationAtlas_TAG ${PopulationAtlas} '\..*' REPLACE '' )
 MakeDirectory( ${atlasProcessDir} )
 
-set( hmImage ${atlasProcessDir}/AverageImage_hm.nrrd )
-set( ImageToRegTo ${PopAtlasDir}/AverageImage_SS.nrrd )
-
-
+set( ImageToRegTo ${PopAtlasDir}/${PopulationAtlas} )
+set( temp ${atlasProcessDir} )
 set( TemplateFile ${ATLAS_DIR}/${TEMPLATE} )
+
+############Smoothes population atlas#######################
+  set ( TemplateFile_SMOOTH ${atlasProcessDir}/${TEMPLATE_TAG}_Smooth.nrrd )
+  set ( IMCmd ${ImageMath} ${TemplateFile} -outfile ${TemplateFile_SMOOTH} -smooth -gauss )
+
+  echo( ${IMCmd} )
+  if (${step} < 1)
+    run( output ${IMCmd} )
+    echo( ${output} )
+  endif (${step} < 1)
+
+
 set( PARCELLATIONFile ${ATLAS_DIR}/${PARCELLATION_FILE_NAME} )
 IF( ${IS_SCALED} == TRUE )
   set( Cmd ${ITKTransformTools} scale ${PopAtlasDir}/${IMAGE_GRID} ${TemplateFile} ${temp}/ImageGrid.nrrd ${temp}/AtlasGrid.nrrd )
   run( output ${Cmd} )
   echo( ${output} )
-  set( Cmd ${ResampleVolume2} ${TemplateFile} -R ${temp}/AtlasGrid.nrrd ${temp}/TemplateResampled.nrrd )
+  set( Cmd ${ResampleVolume2} ${TemplateFile_SMOOTH} -R ${temp}/AtlasGrid.nrrd ${temp}/TemplateResampled.nrrd )
   run( output ${Cmd} )
   echo( ${output} )
   Set( Cmd ${ImageMath} ${temp}/TemplateResampled.nrrd -changeSp 1,1,1 -outfile ${temp}/TemplateResampled.nrrd -type float )
@@ -38,37 +51,103 @@ IF( ${IS_SCALED} == TRUE )
 ENDIF( ${IS_SCALED} == TRUE )
 
 
-IF(${BSpline} == FALSE )
-  #####Affine registration atlas with new MD/atlas image###########
-  set( TRANSFORM ${temp}/OldtoNewMDAtlas.txt )
-  set( REGIMG ${temp}/OldtoNewMDAtlas.nrrd )
-  #set( RegCmd ${RegisterImages} --initialization CentersOfMass --registration PipelineAffine --metric MattesMI ${hmImage} ${TemplateFile} --saveTransform ${TRANSFORM} --resampledImage ${REGIMG} )
-  set( RegCmd ${RegisterImages} --initialization CentersOfMass --registration PipelineAffine --metric MattesMI ${ImageToRegTo} ${TemplateFile} --saveTransform ${TRANSFORM} --resampledImage ${REGIMG} )
-  echo( ${RegCmd} )
-  run( output ${RegCmd} )
-  echo( ${output} )
-  #####Warp#####################
-  Set( DeformationField ${temp}/displacementFieldOldAtlas.nrrd )
-  Set( WarpCmd ${BRAINSDemonWarp} -f ${ImageToRegTo} -m ${TemplateFile} -O ${DeformationField} --initializeWithTransform ${TRANSFORM} -e --numberOfMatchPoints 50 --numberOfHistogramBins 1024 --minimumMovingPyramid 4,4,4 --minimumFixedPyramid 4,4,4 -n 3 -i 100,50,40 --upperThresholdForBOBF 3000 --registrationFilterType SymmetricLogDemons )
-  Run( output ${WarpCmd} )
-  echo( ${output} )
-  #####Resample atlas (parcellation)############
-  set( resampleCmd ${ResampleVolume2} ${PARCELLATIONFile} ${PopAtlasDir}/${PARCELLATION_FILE_TAG}.nrrd -H ${DeformationField} -i nn -R ${ImageToRegTo} --hfieldtype displacement )
-  echo( ${resampleCmd} )
-  run( output ${resampleCmd} )
-  echo( ${output} )
+### IF(${Diffeomorphic} == FALSE )
 
-ELSE(${BSpline} == FALSE)
-   #####B-Spline registration atlas with new MD/atlas image###########
-    set( TRANSFORM ${temp}/OldtoNewMDAtlas.txt )
-    set( REGIMG ${temp}/OldtoNewMDAtlas.nrrd )
-    set( RegCmd ${RegisterImages} --initialization CentersOfMass --registration PipelineBSpline --metric MattesMI ${ImageToRegTo} ${TemplateFile} --saveTransform ${TRANSFORM} --resampledImage ${REGIMG} --rigidSamplingRatio 0.1 --affineSamplingRatio 0.1 --bsplineMaxIterations 40 --bsplineSamplingRatio 0.3 --controlPointSpacing 30 )
-    echo( ${RegCmd} )
+  #####Affine registration atlas with new MD/atlas image###########
+  set( REGIMG ${temp}/OldtoNewMDAtlas.nrrd )
+
+  #####Uses RI for an initialization and saves transform#####################
+  set( TRANSFORM ${temp}/Init_transform.txt )
+  set( RegCmd ${RegisterImages} --initialization CentersOfMass ${ImageToRegTo} ${TemplateFile_SMOOTH} --saveTransform ${TRANSFORM})
+
+  echo( ${RegCmd} )
+  if (${step} < 2)
     run( output ${RegCmd} )
     echo( ${output} )
-  #####Resample atlas (parcellation)############
-    set( resampleCmd ${ResampleVolume2} ${PARCELLATIONFile} ${PopAtlasDir}/${PARCELLATION_FILE_TAG}.nrrd -i nn -R ${ImageToRegTo} -f ${TRANSFORM})
-    echo( ${resampleCmd} )
-    run( output ${resampleCmd} )
-    echo( ${output} ) 
-ENDIF(${BSpline} == FALSE)
+  endif (${step} < 2)
+
+  #####ITKTransformTools#####################
+  set ( Grid ${temp}/Grid.nrrd )
+  set ( ITKTTCmd ${ITKTransformTools} size ${TemplateFile_SMOOTH} ${TRANSFORM} --grid ${Grid} )
+
+  echo( ${ITKTTCmd} )
+  if (${step} < 3)
+    run( output ${ITKTTCmd} )
+    echo( ${output} )
+  endif (${step} < 3)
+
+  #####ResampleVolume2#####################
+  set ( TEMPLATE_RV2 ${temp}/${TEMPLATE_TAG}_RV2.nrrd ) 
+  set ( RV2Cmd ${ResampleVolume2} -f ${TRANSFORM} -i nn -R ${Grid} ${TemplateFile_SMOOTH} ${TEMPLATE_RV2})
+
+  echo( ${RV2Cmd} )
+  if (${step} < 4)
+    run( output ${RV2Cmd} )
+    echo( ${output} )
+  endif (${step} < 4)
+
+  set ( PARCELLATION_FILE ${ATLAS_DIR}/${PARCELLATION_FILE_NAME} )
+  set ( PARCELLATION_FILE_RV2 ${temp}/${PARCELLATION_FILE_TAG}_RV2.nrrd )
+  set ( RV2Cmd ${ResampleVolume2} -f ${TRANSFORM} -i nn -R ${Grid} ${PARCELLATION_FILE} ${PARCELLATION_FILE_RV2})
+
+  echo( ${RV2Cmd} )
+  if (${step} < 5)
+    run( output ${RV2Cmd} )
+    echo( ${output} )
+  endif (${step} < 5)
+
+ # set( WARP_FILE ${atlasProcessDir}/AverageImage_SS_to_TemplateResampledWarp.nii.gz )
+ # set( NII_FILE_PREFIX ${atlasProcessDir}/AverageImage_SS_to_TemplateResampled )
+ # set( AFFINE_FILE ${atlasProcessDir}/AverageImage_SS_to_TemplateResampledAffine.txt ) 
+  set( WARP_FILE ${atlasProcessDir}/${PopulationAtlas_TAG}_to_${TEMPLATE_TAG}_RV2Warp.nii.gz )
+  set( NII_FILE_PREFIX ${atlasProcessDir}/${PopulationAtlas_TAG}_to_${TEMPLATE_TAG}_RV2 )
+  set( AFFINE_FILE ${atlasProcessDir}/${PopulationAtlas_TAG}_to_${TEMPLATE_TAG}_RV2Affine.txt )
+
+IF(${Diffeomorphic} == FALSE )
+  #####ANTS#####################
+echo()
+echo('Elastic')
+echo()
+  set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo},${TEMPLATE_RV2},${weight},${bin_number}] -r Gauss[3,0] -i 30x20x10 -o ${NII_FILE_PREFIX} -t Elast[1.5] )
+
+  echo( ${AntsCmd} )
+  if (${step} < 6)
+    run( output ${AntsCmd} )
+    echo( ${output} )
+  endif (${step} < 6)
+
+ELSE(${Diffeomorphic} == FALSE)
+  #####ANTS#####################
+echo()
+echo('Diffeomorphic')
+echo() 
+  set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo},${TEMPLATE_RV2},${weight},${bin_number}] -r Gauss[3,0] -i 30x20x10 -o ${NII_FILE_PREFIX} -t SyN[0.25] )
+
+  echo( ${AntsCmd} )
+  if (${step} < 6)
+    run( output ${AntsCmd} )
+    echo( ${output} )
+  endif (${step} < 6)
+
+   #####Warp#####################
+ENDIF(${Diffeomorphic} == FALSE)
+
+  Set( DeformationField ${temp}/displacementFieldOldAtlas.nrrd )
+  Set( TEMPLATE_RV2_WARP ${temp}/${TEMPLATE_TAG}_RV2_Warp.nrrd  )
+  set( WarpCmd ${WarpImageMultiTransform} ${imgDimension} ${TEMPLATE_RV2} ${TEMPLATE_RV2_WARP} ${WARP_FILE} ${AFFINE_FILE} -R ${ImageToRegTo} )
+
+  echo( ${WarpCmd} )
+  if (${step} < 7)
+    Run( output ${WarpCmd} )
+    echo( ${output} )
+  endif (${step} < 7)
+
+  #####Warp atlas (parcellation)############
+  set ( PARCELLATION_FILE_RV2_WARP ${outputDir}/${PARCELLATION_FILE_TAG}_RV2_Warp.nrrd )
+  set( WarpCmd ${WarpImageMultiTransform} ${imgDimension} ${PARCELLATION_FILE_RV2} ${PARCELLATION_FILE_RV2_WARP} ${WARP_FILE} ${AFFINE_FILE} -R ${ImageToRegTo} --use-NN)
+
+  echo( ${WarpCmd} )
+  if (${step} < 8)
+    run( output ${WarpCmd} )
+    echo( ${output} )
+  endif (${step} < 8)
