@@ -1,0 +1,24 @@
+###Tools used###
+#ImageStat
+
+ForEach( i ${CASES} )
+  ######################Mask case image###########################
+  set (OutSubjDir ${dir}/${OUTPUT_PRE_SUBDIR}/${i})
+  set (InSubjDir ${dir}/${INPUT_PRE_SUBDIR}/${i}/${INPUT_POST_SUBDIR} )
+  MakeDirectory( ${OutSubjDir}/${PROCESS_SUBDIR} )
+  if( ${ScriptName} != '' )
+    GetFilename( name ${ScriptName} NAME )
+    CopyFile( ${ScriptName} ${OutSubjDir}/${PROCESS_SUBDIR}/${name} )
+  Endif( ${ScriptName} != '' )
+  #####Resample atlas############
+  ForEach(j ${LabelMapsSuffix} )
+    set( ResampledImage ${OutSubjDir}/${PROCESS_SUBDIR}/${i}${j} )
+    foreach( k ${STAT_FILE_SUFFIX} )
+      GetFilename( name ${j} NAME_WITHOUT_EXTENSION )
+      GetFilename( k_noext ${k} NAME_WITHOUT_EXTENSION )
+      set( Cmd ${ImageStat} ${InSubjDir}/${i}${k} -label ${ResampledImage} -outbase ${OutSubjDir}/${PROCESS_SUBDIR}/${i}${name}${k_noext} )
+      Run( output ${Cmd} )
+      Echo( ${output} )
+    endforeach( k ${STAT_FILE_SUFFIX} )
+  EndForEach(j ${LabelMapsSuffix} )
+EndForEach( i ${CASES} )
