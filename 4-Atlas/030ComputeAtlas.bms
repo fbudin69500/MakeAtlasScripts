@@ -1,7 +1,3 @@
-echo()
-echo('ComputeAtlas')
-echo()
-
 ### The script uses:
 #- ANTS
 #- Double2FloatTransform
@@ -57,7 +53,7 @@ GetParam(FIXED_CASE ${CASES} 0)
 set( FIXED_IMG ${atlasProcessDir}/${FIXED_CASE}${ATLAS_INPUT_MASKED_TAG}.nrrd )
 set( RESCALED_FIXED_IMG ${atlasProcessDir}/${FIXED_CASE}${ATLAS_INPUT_MASKED_TAG}_hm_resc.nrrd )
 include( 031AffineRegistration.bms )
-echo('lulu')
+
 set( avgImage ${atlasProcessDir}/AverageAffineImage.nrrd )
 set( Cmd ${ImageMath} ${FIRST_CASE} -avg ${ALL_OTHER_CASES} -outfile ${avgImage} )
 If( ${step} < 9 )
@@ -77,13 +73,16 @@ if( ${ScriptName} != '' )
   CopyFile( ${ScriptName} ${outputDir}/${name} )
   ExitOnError( 'FALSE' )
 Endif( ${ScriptName} != '' )
-set( atlasWerksCmd ${AtlasWerks} --outputImageFilenamePrefix=${atlasProcessDir}/avg_ --outputDeformedImageFilenamePrefix=${atlasProcessDir}/deformedImage_ --outputHFieldFilenamePrefix=${atlasProcessDir}/h_ --outputHInvFieldFilenamePrefix=${atlasProcessDir}/inv_h_ --scaleLevel=4 --numberOfIterations=200 --scaleLevel=2 --numberOfIterations=50 --scaleLevel=1 --numberOfIterations=25 ${MD_CASES} ${TRANSFORM_LIST} )
+include( 034CreateXML.bms )
 
-echo (${atlasWerksCmd})
+set ( atlasWerksCmd ${AtlasWerks} -f ${atlasProcessDir}/AW_test.xml)
+MakeDirectory( ${outputDir}/Atlas )
+
 If( ${step} < 14 )
-  run (output ${atlasWerksCmd})
-  echo (${output})
-EndIf( ${step} < 14 )
+  run ( output ${atlasWerksCmd})
+  echo ( ${output} )
+Endif( ${step} < 14 )
+
 ###################Save H-Fields#########################################
 set( count 0 )
 foreach( i ${CASES} )
@@ -141,7 +140,6 @@ Set( ImageForMask ${atlasProcessDir}/avg_2.mhd )
 Set( ImageForMaskNrrd ${atlasProcessDir}/avg_2.nrrd )
 Set( Mask ${atlasProcessDir}/mask.nrrd )
 
-
 Set( Cmd ${ResampleVolume2} ${ImageForMask} ${ImageForMaskNrrd} -i nn )
 
 Run( output ${Cmd} )
@@ -159,7 +157,3 @@ If( ${step} < 46 )
   Run( output ${Cmd} )
   echo( ${output} )
 EndIf( ${step} < 46 )
-
-echo()
-echo(' fin Compute Atlas')
-echo()

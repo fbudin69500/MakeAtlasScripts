@@ -26,8 +26,8 @@ set ( Original_has_prefix TRUE )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
-##-10-Directory in which the computed population atlas and its parcellation/segmentation are saved
-set( outputDir ${dir}/${OUTPUT_PRE_SUBDIR}/Atlas-${AtlasDirectoriesSuffix} )
+##-10-SubProject root directory
+set( dir @ProcessingDir@ )
 ##-11-Input pre-subdir. For old data structure, the value should be "."
 set( INPUT_PRE_SUBDIR Results )
 ##-12-Output pre-subdir. For old data structure, the value should be "."
@@ -36,42 +36,37 @@ set( OUTPUT_PRE_SUBDIR Processing )
 set( INPUT_POST_SUBDIR . )
 ##-13b-Input post-subdir where the original image is. For new data structure, the value should be "."
 set( INPUT_POST_SUBDIR_Original . )
-##-14-Subdirectory in the case directory in which to save new case files (hfields/invhfields)
+##-14-Directory in which the computed population atlas and its parcellation/segmentation are saved
+set( outputDir ${dir}/${OUTPUT_PRE_SUBDIR}/Atlas-${AtlasDirectoriesSuffix} )
+##-15-Subdirectory in the case directory in which to save new case files (hfields/invhfields)
 set( PROCESS_SUBDIR 4-AtlasCreation-${AtlasDirectoriesSuffix} )
-##-15-Directory in which temporary files are written
+##-16-Directory in which temporary files are written
 set( atlasProcessDir ${outputDir}/temp )
-##-16-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
+##-17-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
 set( IS_SCALED FALSE )
-##-17-Histogram match for scalar images
+##-18-Histogram match for scalar images
 set( HISTOGRAM_MATCH TRUE )
-##-18-In case of a rescaling:
+##-19-In case of a rescaling:
 ##OLD: to use with Shonagh's pipeline
 ##NEW: To use with DWIResamplingSlicer3Module if scaling option is activated
 set( RESCALE_CENTER_VERSION NEW )#OLD OR NEW
-##-19-If scalar image (TRUE or FALSE)
+##-20-If scalar image (TRUE or FALSE)
 set( IS_SCALAR @IsScalar@ )
-##-20-Image grid filename
+##-21-Image grid filename
 set( IMAGE_GRID ImageGrid.nrrd )
-##-21-Median Filter images before atlas creation
+##-22-Median Filter images before atlas creation
 set( Mradius 0 )
-##-22-Name of this file (configuration file).
+##-23-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName @ConfigDirectory@/4-AtlasConfig.bms )
 ##The files must have the following structure:
 ##dir/case/case_suffix;dir=/rodent/Project/subProject1
-##-23-SubProject root directory
-set( dir @ProcessingDir@ )
 ##-24-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
 set( step 0 )
 ##-25- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the doc)
 set (Measure MI)
-##-26- ANTS ranges
-set (rangeMin 1 )
+##-26- affine registration MI bin number
 set (rangeMax 32 )
-##-27- ANTS if set to 0, no deformable mapping is performed.
-set (defIterations 0 )
-##-28- ANTS image dimension
-set (imgDimension 3 )
 ###################################
 include( @ConfigDirectory@/GlobalConfig.bms )
 ##Processes

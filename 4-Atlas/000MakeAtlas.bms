@@ -1,7 +1,3 @@
-echo()
-echo('MakeAtlas')
-echo()
-
 Int(${step})
 ####################set up variables#####################################
 include( 010SetUp.bms )

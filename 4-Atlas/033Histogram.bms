@@ -9,7 +9,6 @@ set( AtlasNSS_orig ${outputDir}/AverageImage_NSS_orig.nrrd )
 				HISTOGRAM MATCH = FALSE
 #########################################################################################
 
-
 IF (${HISTOGRAM_MATCH} == FALSE)
 
   foreach( i ${CASES} )
@@ -18,6 +17,7 @@ IF (${HISTOGRAM_MATCH} == FALSE)
     Set( hfield ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_hFieldToAtlas.mha )
     Set( MD ${atlasProcessDir}/${i}${ATLAS_INPUT_MASKED_TAG}.nrrd )
     Set( TRANSFORMED_MD ${atlasProcessDir}/${i}_SS.nrrd )
+
     set( ResampleCmd ${ResampleVolume2} ${MD} ${TRANSFORMED_MD} -H ${hfield})
     echo( ${ResampleCmd} )
     If( ${step} < 32 )
@@ -185,7 +185,8 @@ ELSE (${HISTOGRAM_MATCH} == FALSE)
       Int( ${count} )
     endforeach( ${CASES} )
 
-  set( Histo ${ResampleVolume2} ${atlasProcessDir}/avg_2.mhd ${AtlasSS} -i nn)
+############################# SET PATH CORRECTLY
+  set( Histo ${ResampleVolume2} avg_template.nii.gz ${AtlasSS} -i nn)
   If( ${step} < 42 )
     Run( output ${Histo} )
     echo( ${output} )
@@ -198,7 +199,3 @@ ELSE (${HISTOGRAM_MATCH} == FALSE)
   EndIf( ${step} < 43 )
   ENDIF (${HISTOGRAM_MATCH} == TRUE)
 ENDIF (${HISTOGRAM_MATCH} == FALSE)
-
-echo()
-echo(' fin Histogram ')
-echo()

@@ -30,6 +30,10 @@ set( INPUT_PRE_SUBDIR Results )
 set( OUTPUT_PRE_SUBDIR Processing )
 ##-11-Input pre-subdir. For new data structure, the value should be "."
 set( INPUT_POST_SUBDIR . )
+##The files must have the following structure:
+##dir/case/case_suffix;dir=/rodent/Project/subProject1
+##-15-SubProject root directory
+set( dir @ProcessingDir@ )
 ##-12-directory in which the population atlas and population atlas parcellation are saved
 set( AtlasDir ${dir}/${INPUT_PRE_SUBDIR}/Atlas )
 ##-13-directory in which temporary files are written
@@ -37,10 +41,6 @@ set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
 ##-14-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName @ConfigDirectory@/6-WarpConfig.bms )
-##The files must have the following structure:
-##dir/case/case_suffix;dir=/rodent/Project/subProject1
-##-15-SubProject root directory
-set( dir @ProcessingDir@ )
 ###################################
 include( @ConfigDirectory@/GlobalConfig.bms )
 ##Processes
