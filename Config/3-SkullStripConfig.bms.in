@@ -68,7 +68,7 @@ set( CONFIGDIR @CMAKE_CURRENT_SOURCE_DIR@/SkullStrip )
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName @ConfigDirectory@/3-SkullStripConfig.bms )
 ##-28-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
-set( Step 0 )
+set( step 0 )
 #######################################################################################################
 include( @ConfigDirectory@/GlobalConfig.bms )
 ##Processes
