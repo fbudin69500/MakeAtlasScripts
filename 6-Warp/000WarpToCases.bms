@@ -48,13 +48,17 @@ ForEach( i ${CASES} )
     #####################################################
     #######################ANTS##########################
     #####################################################
+    set( Mask_reg '' )
+    if( ${TEMPLATE_MASK} != '' )
+      set( Mask_reg -m -m MSQ\[${mask},${AtlasDir}/${TEMPLATE_MASK},1,0] )
+    endif( ${TEMPLATE_MASK} != '' )
 
     GetFilename( template_TAG ${Template_Image} NAME_WITHOUT_EXTENSION )
     set( NII_FILE_PREFIX ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_to_${template_TAG}_ANTS )
     set( AFFINE_FILE ${NII_FILE_PREFIX}Affine.txt )
     set( WARP_FILE ${NII_FILE_PREFIX}Warp.nii.gz )
     set (bin_number 32)
-    set ( AntsCmd ${ANTS} 3 -m MI[${MaskedImage}, ${InitialTemplate}, 1, ${bin_number}] -i 30x35x40 -r Gauss[1,0] -t SyN[0.25] -o ${NII_FILE_PREFIX} )
+    set ( AntsCmd ${ANTS} 3 ${Mask_reg} -m MI[${MaskedImage}, ${InitialTemplate}, 1, ${bin_number}] -i 30x35x40 -r Gauss[1,0] -t SyN[0.25] -o ${NII_FILE_PREFIX} )
     echo( ${AntsCmd} )
     run( output ${AntsCmd} )
     echo( ${output} )
