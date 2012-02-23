@@ -15,7 +15,7 @@ set( WARP_INPUT_SUFFIX @WarpInputSuffix@ )
 set( LabelMapsToWarp template_atlas.nrrd )
 ##-5-suffix of the mask created from the segmentation
 set( NEW_MASK_TAG _mask_from_seg.nrrd )
-##-6-Template mask (used in the registration if set). Template mask has to be in template directory
+##-6-Template mask (used for the registration if set). Template mask has to be in template directory
 set( TEMPLATE_MASK '' )
 ##-7-subdirectory in the case directory in which to save new case files (mask, parcellation and statistics)
 set( PROCESS_SUBDIR 6-Warping )

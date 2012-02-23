@@ -1,11 +1,27 @@
 ###Tools used###
 #ImageMath
-#BRAINSDemonWarp
+#WarpImageMultiTransform
 #ResampleVolume2
 #RegisterImages
+#unu
+#ANTS
+#ITKTransformTools
 
 set( template ${AtlasDir}/${Template_Image} )
+set( template_mask_filtered '' )
 MakeDirectory( ${tempDir} )
+set( Mask_reg '' )
+if( ${USE_INV_HFIELD} == FALSE && ${TEMPLATE_MASK} != '' )
+  #######Mask template just in case it wasn't
+  set( template_masked ${tempDir}/template_masked.nii.gz )
+  set( Cmd ${ImageMath} ${template} -mask ${AtlasDir}/${TEMPLATE_MASK} -type float -outfile ${template_masked} )
+  echo( ${Cmd} )
+  run( output ${Cmd} )
+  echo( ${output} )
+
+  set( template ${template_masked} )
+endif( ${USE_INV_HFIELD} == FALSE && ${TEMPLATE_MASK} != '' )
+
 ForEach( i ${CASES} )
   ######################Mask case image###########################
   set (OutSubjDir ${dir}/${OUTPUT_PRE_SUBDIR}/${i})
@@ -21,7 +37,7 @@ ForEach( i ${CASES} )
   else( ${USE_INV_HFIELD} == TRUE )
     #######Mask input image
     Set( mask ${InSubjDir}/${i}${NEW_MASK_TAG} )
-    Set( MaskedImage ${tempDir}/${i}_MaskedImage.nrrd )
+    Set( MaskedImage ${tempDir}/${i}_MaskedImage.nii.gz )
     Set( Cmd ImageMath ${image} -mask ${mask} -outfile ${MaskedImage} -type float )
     echo( ${Cmd} )
     run( output ${Cmd} )
@@ -34,23 +50,29 @@ ForEach( i ${CASES} )
     run( output ${Cmd} )
     echo( ${output} )
 
-    set( InitialTransformGrid ${tempDir}/${i}_template_initialTransformGrid.nrrd )
+    set( InitialTransformGrid ${tempDir}/${i}_template_initialTransformGrid.nii.gz )
     set( Cmd ${ITKTransformTools} size ${template} ${InitialTransform} --grid ${InitialTransformGrid} )
     echo( ${Cmd} )
     run( output ${Cmd} )
     echo( ${output} )
 
-    set( InitialImage ${tempDir}/${i}_initialImage.nrrd )
+    set( InitialTemplate ${tempDir}/${i}_initialTemplate.nii.gz )
     set( Cmd ${ResampleVolume2} -R ${InitialTransformGrid} -f ${InitialTransform} ${template} ${InitialTemplate} -i nn )
     echo( ${Cmd} )
     run( output ${Cmd} )
     echo( ${output} )
+  
     #####################################################
     #######################ANTS##########################
     #####################################################
-    set( Mask_reg '' )
     if( ${TEMPLATE_MASK} != '' )
-      set( Mask_reg -m -m MSQ\[${mask},${AtlasDir}/${TEMPLATE_MASK},1,0] )
+      set( InitialMask ${tempDir}/${i}_initialMask.nii.gz )
+      set( Cmd ${ResampleVolume2} -R ${InitialTransformGrid} -f ${InitialTransform} ${AtlasDir}/${TEMPLATE_MASK} ${InitialMask} -i nn )
+      echo( ${Cmd} )
+      run( output ${Cmd} )
+      echo( ${output} )
+
+      set( Mask_reg -m MSQ[${mask},${InitialMask},1,0] )
     endif( ${TEMPLATE_MASK} != '' )
 
     GetFilename( template_TAG ${Template_Image} NAME_WITHOUT_EXTENSION )
@@ -64,7 +86,7 @@ ForEach( i ${CASES} )
     echo( ${output} )
 
    #####Warp#####################
-    Set( template_WARP ${tempDir}/${template_TAG}_ANTSWarp.nrrd  )
+    Set( template_WARP ${tempDir}/${template_TAG}_ANTSWarp.nii.gz  )
     set( WarpCmd ${WarpImageMultiTransform} 3 ${template} ${template_WARP} ${WARP_FILE} ${AFFINE_FILE} -R ${MaskedImage} )
     echo( ${WarpCmd} )
     Run( output ${WarpCmd} )
