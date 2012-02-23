@@ -24,9 +24,9 @@ dtiprocess
 ITKTransformTools
 MedianImageFilter
 ImageStat
-/opt/local/ANTS/ANTs-1.9.x-Linux/bin/ANTS
-/opt/local/ANTS/ANTs-1.9.x-Linux/bin/WarpImageMultiTransform
-/opt/local/ANTS/ANTs-1.9.x-Linux/bin/buildtemplateparallel.sh
+ANTS
+WarpImageMultiTransform
+buildtemplateparallel.sh
 )
 
 #Find tools
@@ -123,7 +123,11 @@ foreach( var ${config_files} )
   string(REPLACE ".bms.in" ".bms" var2 ${var} )
   string(REGEX REPLACE ".*/" "" var2 ${var2} )
   configure_file( "${var}" "${ConfigDirectory}/${var2}" @ONLY )
-  if( NOT ( ${ConfigDirectory} STREQUAL ${CMAKE_CURRENT_BINARY_DIR} ) )
+  get_filename_component(ConfigDirectoryRealPath ${ConfigDirectory} REALPATH )
+  get_filename_component(CMAKE_CURRENT_BINARY_DIRRealPath ${CMAKE_CURRENT_BINARY_DIR} REALPATH )
+  message(WARNING ${ConfigDirectoryRealPath} )
+  message(WARNING ${CMAKE_CURRENT_BINARY_DIRRealPath} )
+  if( NOT ( ${ConfigDirectoryRealPath} STREQUAL ${CMAKE_CURRENT_BINARY_DIRRealPath} ) )
     file( REMOVE ${CMAKE_CURRENT_BINARY_DIR}/${var2} )
   endif()
 endforeach( var )
