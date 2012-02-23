@@ -19,56 +19,61 @@ ForEach( i ${CASES} )
   if( ${USE_INV_HFIELD} == TRUE )
     set( hfield -H ${InSubjDir}/${i}${InvHField_Suffix} )
   else( ${USE_INV_HFIELD} == TRUE )
+    #######Mask input image
     Set( mask ${InSubjDir}/${i}${NEW_MASK_TAG} )
     Set( MaskedImage ${tempDir}/${i}_MaskedImage.nrrd )
     Set( Cmd ImageMath ${image} -mask ${mask} -outfile ${MaskedImage} -type float )
+    echo( ${Cmd} )
     run( output ${Cmd} )
     echo( ${output} )
 
+    ########Initial registration
+    set( InitialTransform ${tempDir}/${i}_initialTransform.txt )
+    Set( Cmd ${RegisterImages} --initialization CentersOfMass --saveTransform ${InitialTransform} --registration Initial ${MaskedImage} ${template} )
+    echo( ${Cmd} )
+    run( output ${Cmd} )
+    echo( ${output} )
+
+    set( InitialTransformGrid ${tempDir}/${i}_template_initialTransformGrid.nrrd )
+    set( Cmd ${ITKTransformTools} size ${template} ${InitialTransform} --grid ${InitialTransformGrid} )
+    echo( ${Cmd} )
+    run( output ${Cmd} )
+    echo( ${output} )
+
+    set( InitialImage ${tempDir}/${i}_initialImage.nrrd )
+    set( Cmd ${ResampleVolume2} -R ${InitialTransformGrid} -f ${InitialTransform} ${template} ${InitialTemplate} -i nn )
+    echo( ${Cmd} )
+    run( output ${Cmd} )
+    echo( ${output} )
     #####################################################
     #######################ANTS##########################
     #####################################################
 
-    #######################match Histogram##########################
-    set( hmImage ${tempDir}/${i}_MaskedImage_hm.nrrd )
-    set( Cmd ImageMath ${MaskedImage} -matchHistogram ${template} -outfile ${hmImage} -type float)
-    run( output ${Cmd} )
-    echo( ${output} )
-
-    ############ANTs: Register atlas with new masked image#########################
-    RegEx( hmImage_TAG ${hmImage} '\..*' REPLACE '' )
-    RegEx( template_TAG ${Template_Image} '\..*' REPLACE '' )
-
-    set( WARP_FILE ${hmImage_TAG}_to_${template_TAG}_RV2Warp.nii.gz )
-    set( NII_FILE_PREFIX ${hmImage_TAG}_to_${template_TAG}_RV2 )
-    set( AFFINE_FILE ${hmImage_TAG}_to_${template_TAG}_RV2Affine.txt )
-    set (imgDimension 3)
-    set (weight 1)
+    GetFilename( template_TAG ${Template_Image} NAME_WITHOUT_EXTENSION )
+    set( NII_FILE_PREFIX ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_to_${template_TAG}_ANTS )
+    set( AFFINE_FILE ${NII_FILE_PREFIX}Affine.txt )
+    set( WARP_FILE ${NII_FILE_PREFIX}Warp.nii.gz )
     set (bin_number 32)
-
-    set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${hmImage}, ${template}, ${weight}, ${bin_number}] -r Gauss[3,0] -i 30x20x10 -o ${NII_FILE_PREFIX} -t Elast[1.5] )
+    set ( AntsCmd ${ANTS} 3 -m MI[${MaskedImage}, ${InitialTemplate}, 1, ${bin_number}] -i 30x35x40 -r Gauss[1,0] -t SyN[0.25] -o ${NII_FILE_PREFIX} )
     echo( ${AntsCmd} )
     run( output ${AntsCmd} )
     echo( ${output} )
 
    #####Warp#####################
-    Set( DeformationField ${tempDir}/displacementFieldOldAtlas.nrrd )
-    Set( template_WARP ${tempDir}/${template_TAG}_RV2_Warp.nrrd  )
-#? sur le -R 
-    set( WarpCmd ${WarpImageMultiTransform} ${imgDimension} ${template} ${template_WARP} ${WARP_FILE} ${AFFINE_FILE} -R ${template} )
-
+    Set( template_WARP ${tempDir}/${template_TAG}_ANTSWarp.nrrd  )
+    set( WarpCmd ${WarpImageMultiTransform} 3 ${template} ${template_WARP} ${WARP_FILE} ${AFFINE_FILE} -R ${MaskedImage} )
     echo( ${WarpCmd} )
     Run( output ${WarpCmd} )
     echo( ${output} )
 
-#? sur le -H
-    set( hfield --hfieldtype displacement -H ${template_WARP} )
+    set( hfield --hfieldtype displacement -H ${WARP_FILE} )
   endif( ${USE_INV_HFIELD} == TRUE )
   #####Resample atlas############
   ForEach(j ${LabelMapsToWarp} )
     GetFilename( name ${j} NAME )
     set( ResampledImage ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_${name} )
     set( Cmd ${ResampleVolume2} ${AtlasDir}/${j} ${ResampledImage} -i nn -R ${image} ${hfield} )
+    echo( ${Cmd} )
     run( output ${Cmd} )
     echo( ${output} )
   EndForEach(j ${LabelMapsToWarp} )
