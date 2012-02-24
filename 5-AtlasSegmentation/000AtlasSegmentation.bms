@@ -61,9 +61,6 @@ IF( ${IS_SCALED} == TRUE )
 ENDIF( ${IS_SCALED} == TRUE )
 
 
-  #####Affine registration atlas with new MD/atlas image###########
-set( REGIMG ${temp}/OldtoNewMDAtlas.nrrd )
-
   #####Uses RI for an initialization and saves transform#####################
 set( TRANSFORM ${temp}/Init_transform.txt )
 set( RegCmd ${RegisterImages} --initialization CentersOfMass ${ImageToRegTo} ${TemplateFile_SMOOTH} --saveTransform ${TRANSFORM})
