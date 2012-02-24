@@ -13,49 +13,46 @@ set( AtlasDirectoriesSuffix 1 )
 set( PopulationAtlas AverageImage_SS.nrrd )
 ##-4-Atlas file
 set( TEMPLATE template.mha )
-##-5-Template mask (if there isn't one, set to '', if there's one, give the full path)
-set ( TEMPLATE_mask '' )
-##-6-Name of the parcellation atlas
+##-5-Template mask (if there isn't one, set to ''). This file has to be in external template directory
+set ( TEMPLATE_mask_FILENAME '' )
+##-6-Name of the parcellation atlas. This file has to be in external template directory
 set( PARCELLATION_FILE_NAME template_atlas.mha )
+##-7-Population Atlas mask (if there isn't one, set to '', if there's one, give the full path)
+set ( PopAtlas_mask_FILENAME '' )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
+##-8-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
+set( IS_SCALED FALSE )
+##-9-Select which kind of registration is gonna be used. FALSE = Elastic, TRUE = Diffeomorphic
+set( Diffeomorphic TRUE )
+##-10-Do you want the smoothing? (type float)
+set ( Smooth FALSE )
 ##The files must have the following structure:
 ##dir/case/case_suffix;dir=/rodent/Project/subProject1
-##-7-SubProject root directory
+##-11-SubProject root directory
 set( dir @ProcessingDir@ )
-##-8-Select which kind of registration is gonna be used. FALSE = Elastic, TRUE = Diffeomorphic
-set( Diffeomorphic FALSE )
-##-9-Do you want the smoothing? (type float)
-set ( Smooth FALSE )
-##-10-Population Atlas mask (if there isn't one, set to '', if there's one, give the full path)
-set ( PopAtlas_mask '' )
-##-11-Input pre-subdir. For old data structure, the value should be "."
+##-12-Input pre-subdir. For old data structure, the value should be "."
 set( INPUT_PRE_SUBDIR Results )
-##-12-Output pre-subdir. For old data structure, the value should be "."
+##-13-Output pre-subdir. For old data structure, the value should be "."
 set( OUTPUT_PRE_SUBDIR Processing )
-##-13-External atlas and probability maps directory
+##-14-External atlas and probability maps directory
 set( ATLAS_DIR ${dir}/${OUTPUT_PRE_SUBDIR}/template/${ATLAS_SUB_DIR} )
-##-14-Directory in which the computed population atlas and its parcellation/segmentation are saved
+##-15-Directory in which the computed population atlas and its parcellation/segmentation are saved
 set( PopAtlasDir ${dir}/${OUTPUT_PRE_SUBDIR}/Atlas-${AtlasDirectoriesSuffix} )
-##-15-Directory in which temporary files are written
+##-16-Directory in which temporary files are written
 set( atlasProcessDir ${PopAtlasDir}/temp )
-##-16-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
-set( IS_SCALED FALSE )
 ##-17-Image grid filename
 set( IMAGE_GRID ImageGrid.nrrd )
-##-18-Name of this file (configuration file).
+##-18- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the ANTS doc)
+set (Measure MI)
+##-19- ANTS ranges. Bin number for MI metric. Refer to ANTS doc for the other metrics
+set (bin_number 32 )
+##-20-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
+set( step 0 )
+##-21-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName @ConfigDirectory@/5-AtlasSegmentationConfig.bms )
-##-19- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the doc)
-set (Measure MI)
-##-20- ANTS ranges
-set (weight 1 )
-set (bin_number 32 )
-##-21- ANTS if set to 0, no deformable mapping is performed.
-set (defIterations 0 )
-##-22- ANTS image dimension
-set (imgDimension 3 )
 ###################################
 include( @ConfigDirectory@/GlobalConfig.bms )
 ##Processes
