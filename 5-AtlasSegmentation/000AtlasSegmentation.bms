@@ -182,7 +182,7 @@ ELSE(${Diffeomorphic} == TRUE)
   set( diff_Elast_Cmd -r Gauss[3,0] -i 30x20x10 -t Elast[1.5] )
 ENDIF(${Diffeomorphic} == TRUE)
 
-set ( AntsCmd ${ANTS} 3 -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, 1, ${bin_number}] ${mask_add_Cmd} ${diff_Elast_CMD} -o ${NII_FILE_PREFIX} )
+set ( AntsCmd ${ANTS} 3 -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, 1, ${bin_number}] ${mask_add_Cmd} ${diff_Elast_Cmd} -o ${NII_FILE_PREFIX} )
 echo( ${AntsCmd} )
 if (${step} < 16)
   run( output ${AntsCmd} )
