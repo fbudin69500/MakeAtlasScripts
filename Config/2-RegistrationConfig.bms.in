@@ -20,6 +20,9 @@ set( TEMPLATE_FILE template.mha )
 ###################################
 ##-6-Transform (ie: '_manual_reg.txt' )
 set( TRANSFORM_SUFFIX '' )
+##dir/case/case_suffix;dir=/rodent/Project/subProject1
+##-20-SubProject root directory
+set( dir @ProcessingDir@ )
 ##-7-Atlas directory for brain stripping and parcellation
 set( ATLAS_DIR ${dir}/${OUTPUT_PRE_SUBDIR}/template/${TEMPLATE_SUB_DIR} )
 ##-8-Bias correction
@@ -48,9 +51,6 @@ set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName @ConfigDirectory@/2-RegistrationConfig.bms )
 ##The files must have the following structure:
-##dir/case/case_suffix;dir=/rodent/Project/subProject1
-##-20-SubProject root directory
-set( dir @ProcessingDir@ )
 ##-21-Type of the input image: DWI, DTI or scalar
 set( Type @InputType@ )
 ###################################
