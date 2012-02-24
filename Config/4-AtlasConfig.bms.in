@@ -1,7 +1,7 @@
 ##Check that the version is the same in the example and in the config file you are modifying.
 ##If not, copy and modify this example to have a version of the configuration file that is up
 ##to date.
-##Version:1.32
+##Version:@ConfigVersion@
 #####################################################################################################
 ################################### Variables to set ################################################
 #####################################################################################################
