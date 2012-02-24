@@ -1,13 +1,10 @@
 ### The script uses:
 #- RegisterImages
-#- Double2FloatTransform
-#- AtlasWerks
 #- ImageMath
 #- ResampleVolume2
-#- BRAINSDemonWarp
 #- ITKTransformTools
 #- unu
-#- ANTs
+#- ANTS
 ############Register atlas with new MD/atlas image#######################
 #Variables initialization
 RegEx( PARCELLATION_FILE_TAG ${PARCELLATION_FILE_NAME} '\..*' REPLACE '' )
@@ -105,34 +102,36 @@ set( RegCmd ${RegisterImages} --initialization CentersOfMass ${ImageToRegTo} ${T
   set( NII_FILE_PREFIX ${atlasProcessDir}/${PopulationAtlas_TAG}_to_${TEMPLATE_TAG}_RV2 )
   set( AFFINE_FILE ${atlasProcessDir}/${PopulationAtlas_TAG}_to_${TEMPLATE_TAG}_RV2Affine.txt )
 
+
+IF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
+  #####ANTS#####################
+  set ( TEMPLATE_mask_IM ${ATLAS_DIR}/${TEMPLATE_TAG}_IM.nrrd )
+  set ( PopAtlas_mask_IM ${ATLAS_DIR}/${PopulationAtlas_TAG}_mask_IM.nrrd )
+  set ( IMCmd ${ImageMath} ${TEMPLATE_mask} -outfile ${TEMPLATE_mask_IM} -threshold 0.5,42000)
+  echo( ${IMCmd} )
+
+  if (${step} < 6)
+    run( output ${IMCmd} )
+    echo( ${output} )
+  endif (${step} < 6)
+
+  set ( IMCmd ${ImageMath} ${PopAtlas_mask} -outfile ${PopAtlas_mask_IM} -threshold 0.5,42000)
+  echo( ${IMCmd} )
+  if (${step} < 6)
+    run( output ${IMCmd} )
+    echo( ${output} )
+  endif (${step} < 6)
+
+  set( PopAtlas_mask ${PopAtlas_mask_IM} )
+  set( TEMPLATE_mask ${TEMPLATE_mask_IM} )
+ENDIF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
+
 IF(${Diffeomorphic} == TRUE )
-#Diffeomorphic
-
+  ####Diffeomorphic
   IF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
-    #####ANTS#####################
-    set ( TEMPLATE_mask_IM ${ATLAS_DIR}/${TEMPLATE_TAG}_IM.nrrd )
-    set ( PopAtlas_mask_IM ${ATLAS_DIR}/${PopulationAtlas_TAG}_IM.nrrd )
-    set ( IMCmd ${ImageMath} ${TEMPLATE_mask} -outfile ${TEMPLATE_mask_IM} -threshold 0.5,42000)
-  echo( ${IMCmd} )
-
-  if (${step} < 6)
-    run( output ${IMCmd} )
-    echo( ${output} )
-  endif (${step} < 6)
-    set ( IMCmd ${ImageMath} ${PopAtlas_mask} -outfile ${PopAtlas_mask_IM} -threshold 0.5,42000)
-  echo( ${IMCmd} )
-
-  if (${step} < 6)
-    run( output ${IMCmd} )
-    echo( ${output} )
-  endif (${step} < 6)
-
     set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${weight}, ${bin_number}] -m MSQ[${PopAtlas_mask}, ${TEMPLATE_mask}, ${weight}, 0] -i 30x35x40 -r Gauss[1,0] -t SyN[0.25] -o ${NII_FILE_PREFIX} )
-
   ELSE(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
-
     set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${weight}, ${bin_number}] -i 30x35x40 -r Gauss[1,0] -t SyN[0.25] -o ${NII_FILE_PREFIX} )
-
   ENDIF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
 
   echo( ${AntsCmd} )
@@ -142,15 +141,11 @@ IF(${Diffeomorphic} == TRUE )
   endif (${step} < 6)
 
 ELSE(${Diffeomorphic} == TRUE) 
-#Elastic
+  ####Elastic
   IF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
-  #####ANTS#####################
-set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${weight}, ${bin_number}]  -m MSQ[${PopAtlas_mask}, ${TEMPLATE_mask}, ${weight}, 0] -r Gauss[3,0] -i 30x20x10 -o ${NII_FILE_PREFIX} -t Elast[1.5] )
-
+    set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${weight}, ${bin_number}]  -m MSQ[${PopAtlas_mask}, ${TEMPLATE_mask}, ${weight}, 0] -r Gauss[3,0] -i 30x20x10 -o ${NII_FILE_PREFIX} -t Elast[1.5] )
   ELSE(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
-
-  set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${weight}, ${bin_number}] -r Gauss[3,0] -i 30x20x10 -o ${NII_FILE_PREFIX} -t Elast[1.5] )
-
+    set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${weight}, ${bin_number}] -r Gauss[3,0] -i 30x20x10 -o ${NII_FILE_PREFIX} -t Elast[1.5] )
   ENDIF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
 
   echo( ${AntsCmd} )
