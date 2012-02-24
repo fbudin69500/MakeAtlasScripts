@@ -143,53 +143,46 @@ IF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
   set( TEMPLATE_mask ${TEMPLATE_mask_IM} )
 ENDIF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
 
+IF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
+  set( mask_add_Cmd -m MSQ[${PopAtlas_mask}, ${TEMPLATE_mask}, ${weight}, 0] )
+ELSE(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
+  set( mask_add_Cmd '' )
+ENDIF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
+
+
 IF(${Diffeomorphic} == TRUE )
   ####Diffeomorphic
-  IF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
-    set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${weight}, ${bin_number}] -m MSQ[${PopAtlas_mask}, ${TEMPLATE_mask}, ${weight}, 0] -i 30x35x40 -r Gauss[1,0] -t SyN[0.25] -o ${NII_FILE_PREFIX} )
-  ELSE(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
-    set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${weight}, ${bin_number}] -i 30x35x40 -r Gauss[1,0] -t SyN[0.25] -o ${NII_FILE_PREFIX} )
-  ENDIF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
-
-  echo( ${AntsCmd} )
-  if (${step} < 6)
-    run( output ${AntsCmd} )
-    echo( ${output} )
-  endif (${step} < 6)
-
+  set( diff_Elast_Cmd -r Gauss[1,0] -t SyN[0.25] -i 30x35x40 )
 ELSE(${Diffeomorphic} == TRUE) 
   ####Elastic
-  IF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
-    set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${weight}, ${bin_number}]  -m MSQ[${PopAtlas_mask}, ${TEMPLATE_mask}, ${weight}, 0] -r Gauss[3,0] -i 30x20x10 -o ${NII_FILE_PREFIX} -t Elast[1.5] )
-  ELSE(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
-    set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${weight}, ${bin_number}] -r Gauss[3,0] -i 30x20x10 -o ${NII_FILE_PREFIX} -t Elast[1.5] )
-  ENDIF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
-
-  echo( ${AntsCmd} )
-  if (${step} < 6)
-    run( output ${AntsCmd} )
-    echo( ${output} )
-  endif (${step} < 6)
-
+  set( diff_Elast_Cmd -r Gauss[3,0] -i 30x20x10 -t Elast[1.5] )
 ENDIF(${Diffeomorphic} == TRUE)
 
-   #####Warp#####################
-  Set( DeformationField ${temp}/displacementFieldOldAtlas.nrrd )
-  Set( TEMPLATE_RV2_WARP ${temp}/${TEMPLATE_TAG}_RV2_Warp.nrrd  )
-  set( WarpCmd ${WarpImageMultiTransform} ${imgDimension} ${TEMPLATE_RV2} ${TEMPLATE_RV2_WARP} ${WARP_FILE} ${AFFINE_FILE} -R ${ImageToRegTo} )
+set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${weight}, ${bin_number}] ${mask_add_Cmd} ${diff_Elast_CMD} -o ${NII_FILE_PREFIX} )
+echo( ${AntsCmd} )
+if (${step} < 6)
+  run( output ${AntsCmd} )
+  echo( ${output} )
+endif (${step} < 6)
 
-  echo( ${WarpCmd} )
-  if (${step} < 7)
-    Run( output ${WarpCmd} )
-    echo( ${output} )
-  endif (${step} < 7)
 
-  #####Warp atlas (parcellation)############
-  set ( PARCELLATION_FILE_RV2_WARP ${temp}/${PARCELLATION_FILE_TAG}_RV2_Warp.nrrd )
-  set( WarpCmd ${WarpImageMultiTransform} ${imgDimension} ${PARCELLATION_FILE_RV2} ${PARCELLATION_FILE_RV2_WARP} ${WARP_FILE} ${AFFINE_FILE} -R ${ImageToRegTo} --use-NN)
 
-  echo( ${WarpCmd} )
-  if (${step} < 8)
-    run( output ${WarpCmd} )
-    echo( ${output} )
-  endif (${step} < 8)
+#####Warp#####################
+set( TEMPLATE_RV2_WARP ${temp}/${TEMPLATE_TAG}_ANTS_Warp.nrrd  )
+set( WarpCmd ${WarpImageMultiTransform} ${imgDimension} ${TEMPLATE_RV2} ${TEMPLATE_RV2_WARP} ${WARP_FILE} ${AFFINE_FILE} -R ${ImageToRegTo} )
+
+echo( ${WarpCmd} )
+if (${step} < 7)
+  Run( output ${WarpCmd} )
+  echo( ${output} )
+endif (${step} < 7)
+
+#####Warp atlas (parcellation)############
+set ( PARCELLATION_FILE_RV2_WARP ${PopAtlasDir}/${PARCELLATION_FILE_TAG}_ANTS_Warp.nrrd )
+set( WarpCmd ${WarpImageMultiTransform} ${imgDimension} ${PARCELLATION_FILE_RV2} ${PARCELLATION_FILE_RV2_WARP} ${WARP_FILE} ${AFFINE_FILE} -R ${ImageToRegTo} --use-NN)
+
+echo( ${WarpCmd} )
+if (${step} < 8)
+  run( output ${WarpCmd} )
+  echo( ${output} )
+endif (${step} < 8)
