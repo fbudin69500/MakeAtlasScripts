@@ -20,16 +20,13 @@ set( TemplateFile ${ATLAS_DIR}/${TEMPLATE} )
 set ( TemplateFile_SMOOTH ${TemplateFile}  )
 
 If(${Smooth} == TRUE)
-
   set ( TemplateFile_SMOOTH ${atlasProcessDir}/${TEMPLATE_TAG}_Smooth.nrrd )
   set ( IMCmd ${ImageMath} ${TemplateFile} -outfile ${TemplateFile_SMOOTH} -smooth -gauss -type float )
-
   echo( ${IMCmd} )
   if (${step} < 1)
     run( output ${IMCmd} )
     echo( ${output} )
   endif (${step} < 1)
-
 EndIf(${Smooth} == TRUE)
 
 set( PARCELLATIONFile ${ATLAS_DIR}/${PARCELLATION_FILE_NAME} )
@@ -47,7 +44,7 @@ IF( ${IS_SCALED} == TRUE )
   set( Cmd ${ResampleVolume2} ${PARCELLATIONFile} -R ${temp}/AtlasGrid.nrrd ${temp}/AtlasResampled.nrrd -i nn )
   run( output ${Cmd} )
   echo( ${output} )
-  Set( Cmd ${ImageMath} ${temp}/AtlasResampled.nrrd -changeSp 1,1,1 -outfile ${temp}/AtlasResampled.nrrd -type float )
+  Set( Cmd ${ImageMath} ${temp}/AtlasResampled.nrrd -changeSp 1,1,1 -outfile ${temp}/AtlasResampled.nrrd )
   run( output ${Cmd} )
   echo( ${output} )
   set( PARCELLATIONFile ${temp}/AtlasResampled.nrrd )
