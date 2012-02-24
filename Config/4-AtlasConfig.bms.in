@@ -26,6 +26,8 @@ set ( Original_has_prefix TRUE )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
+##The files must have the following structure:
+##dir/case/case_suffix;dir=/rodent/Project/subProject1
 ##-10-SubProject root directory
 set( dir @ProcessingDir@ )
 ##-11-Input pre-subdir. For old data structure, the value should be "."
@@ -59,8 +61,6 @@ set( Mradius 0 )
 ##-23-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName @ConfigDirectory@/4-AtlasConfig.bms )
-##The files must have the following structure:
-##dir/case/case_suffix;dir=/rodent/Project/subProject1
 ##-24-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
 set( step 0 )
 ##-25- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the doc)
