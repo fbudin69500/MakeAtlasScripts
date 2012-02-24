@@ -65,51 +65,64 @@ ENDIF( ${IS_SCALED} == TRUE )
 set( TRANSFORM ${temp}/Init_transform.txt )
 set( RegCmd ${RegisterImages} --initialization CentersOfMass ${ImageToRegTo} ${TemplateFile_SMOOTH} --saveTransform ${TRANSFORM})
 
-  echo( ${RegCmd} )
-  if (${step} < 2)
-    run( output ${RegCmd} )
-    echo( ${output} )
-  endif (${step} < 2)
+echo( ${RegCmd} )
+if (${step} < 2)
+  run( output ${RegCmd} )
+  echo( ${output} )
+endif (${step} < 2)
 
-  #####ITKTransformTools#####################
-  set ( Grid ${temp}/Grid.nrrd )
-  set ( ITKTTCmd ${ITKTransformTools} size ${TemplateFile_SMOOTH} ${TRANSFORM} --grid ${Grid} )
+#####ITKTransformTools#####################
+set ( Grid ${temp}/Grid.nrrd )
+set ( ITKTTCmd ${ITKTransformTools} size ${TemplateFile_SMOOTH} ${TRANSFORM} --grid ${Grid} )
 
-  echo( ${ITKTTCmd} )
-  if (${step} < 3)
-    run( output ${ITKTTCmd} )
-    echo( ${output} )
-  endif (${step} < 3)
+echo( ${ITKTTCmd} )
+if (${step} < 3)
+  run( output ${ITKTTCmd} )
+  echo( ${output} )
+endif (${step} < 3)
 
-  #####ResampleVolume2#####################
-  set ( TEMPLATE_RV2 ${temp}/${TEMPLATE_TAG}_RV2.nrrd ) 
-  set ( RV2Cmd ${ResampleVolume2} -f ${TRANSFORM} -i nn -R ${Grid} ${TemplateFile_SMOOTH} ${TEMPLATE_RV2})
+#####ResampleVolume2#####################
+set ( TEMPLATE_RV2 ${temp}/${TEMPLATE_TAG}_initialized.nrrd ) 
+set ( RV2Cmd ${ResampleVolume2} -f ${TRANSFORM} -i nn -R ${Grid} ${TemplateFile_SMOOTH} ${TEMPLATE_RV2})
 
-  echo( ${RV2Cmd} )
-  if (${step} < 4)
-    run( output ${RV2Cmd} )
-    echo( ${output} )
-  endif (${step} < 4)
+echo( ${RV2Cmd} )
+if (${step} < 4)
+  run( output ${RV2Cmd} )
+  echo( ${output} )
+endif (${step} < 4)
 
 
-  set ( PARCELLATION_FILE ${ATLAS_DIR}/${PARCELLATION_FILE_NAME} )
-  set ( PARCELLATION_FILE_RV2 ${temp}/${PARCELLATION_FILE_TAG}_RV2.nrrd )
-  set ( RV2Cmd ${ResampleVolume2} -f ${TRANSFORM} -i nn -R ${Grid} ${PARCELLATION_FILE} ${PARCELLATION_FILE_RV2})
+set ( PARCELLATION_FILE ${ATLAS_DIR}/${PARCELLATION_FILE_NAME} )
+set ( PARCELLATION_FILE_RV2 ${temp}/${PARCELLATION_FILE_TAG}_initialized.nrrd )
+set ( RV2Cmd ${ResampleVolume2} -f ${TRANSFORM} -i nn -R ${Grid} ${PARCELLATION_FILE} ${PARCELLATION_FILE_RV2})
 
+echo( ${RV2Cmd} )
+if (${step} < 5)
+  run( output ${RV2Cmd} )
+  echo( ${output} )
+endif (${step} < 5)
+
+
+IF(${TEMPLATE_mask} != '' )
+  set ( TEMPLATE_MASK_FILE_RV2 ${temp}/${TEMPLATE_TAG}_mask_initialized.nrrd )
+  set ( RV2Cmd ${ResampleVolume2} -f ${TRANSFORM} -i nn -R ${Grid} ${TEMPLATE_mask} ${TEMPLATE_MASK_FILE_RV2})
   echo( ${RV2Cmd} )
   if (${step} < 5)
     run( output ${RV2Cmd} )
     echo( ${output} )
   endif (${step} < 5)
+  set( TEMPLATE_mask ${TEMPLATE_MASK_FILE_RV2} )
+ENDIF(${TEMPLATE_mask} != '' )
 
-  set( WARP_FILE ${atlasProcessDir}/${PopulationAtlas_TAG}_to_${TEMPLATE_TAG}_RV2Warp.nii.gz )
-  set( NII_FILE_PREFIX ${atlasProcessDir}/${PopulationAtlas_TAG}_to_${TEMPLATE_TAG}_RV2 )
-  set( AFFINE_FILE ${atlasProcessDir}/${PopulationAtlas_TAG}_to_${TEMPLATE_TAG}_RV2Affine.txt )
+
+set( NII_FILE_PREFIX ${atlasProcessDir}/${PopulationAtlas_TAG}_to_${TEMPLATE_TAG}_ANTS )
+set( WARP_FILE ${NII_FILE_PREFIX}Warp.nii.gz )
+set( AFFINE_FILE ${NII_FILE_PREFIX}Affine.txt )
 
 
 IF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
   #####ANTS#####################
-  set ( TEMPLATE_mask_IM ${ATLAS_DIR}/${TEMPLATE_TAG}_IM.nrrd )
+  set ( TEMPLATE_mask_IM ${ATLAS_DIR}/${TEMPLATE_TAG}_mask_IM.nrrd )
   set ( PopAtlas_mask_IM ${ATLAS_DIR}/${PopulationAtlas_TAG}_mask_IM.nrrd )
   set ( IMCmd ${ImageMath} ${TEMPLATE_mask} -outfile ${TEMPLATE_mask_IM} -threshold 0.5,42000)
   echo( ${IMCmd} )
