@@ -105,7 +105,7 @@ set( RegCmd ${RegisterImages} --initialization CentersOfMass ${ImageToRegTo} ${T
   set( NII_FILE_PREFIX ${atlasProcessDir}/${PopulationAtlas_TAG}_to_${TEMPLATE_TAG}_RV2 )
   set( AFFINE_FILE ${atlasProcessDir}/${PopulationAtlas_TAG}_to_${TEMPLATE_TAG}_RV2Affine.txt )
 
-IF(${Diffeomorphic} == FALSE )
+IF(${Diffeomorphic} == TRUE )
 #Diffeomorphic
 
   IF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
@@ -127,11 +127,11 @@ IF(${Diffeomorphic} == FALSE )
     echo( ${output} )
   endif (${step} < 6)
 
-    set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${weight}, ${bin_number}] -m MSQ[${PopAtlas_mask}, ${TEMPLATE_mask}, ${weight}, 0] -r Gauss[3,0] -i 30x20x10 -o ${NII_FILE_PREFIX} -t Elast[1.5] )
+    set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${weight}, ${bin_number}] -m MSQ[${PopAtlas_mask}, ${TEMPLATE_mask}, ${weight}, 0] -i 30x35x40 -r Gauss[1,0] -t SyN[0.25] -o ${NII_FILE_PREFIX} )
 
   ELSE(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
 
-    set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${weight}, ${bin_number}] -r Gauss[3,0] -i 30x20x10 -o ${NII_FILE_PREFIX} -t Elast[1.5] )
+    set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${weight}, ${bin_number}] -i 30x35x40 -r Gauss[1,0] -t SyN[0.25] -o ${NII_FILE_PREFIX} )
 
   ENDIF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
 
@@ -141,7 +141,7 @@ IF(${Diffeomorphic} == FALSE )
     echo( ${output} )
   endif (${step} < 6)
 
-ELSE(${Diffeomorphic} == FALSE) 
+ELSE(${Diffeomorphic} == TRUE) 
 #Elastic
   IF(${TEMPLATE_mask} != '' && ${PopAtlas_mask} != '' )
   #####ANTS#####################
@@ -159,7 +159,7 @@ set ( AntsCmd ${ANTS} ${imgDimension} -m MI[${ImageToRegTo}, ${TEMPLATE_RV2}, ${
     echo( ${output} )
   endif (${step} < 6)
 
-ENDIF(${Diffeomorphic} == FALSE)
+ENDIF(${Diffeomorphic} == TRUE)
 
    #####Warp#####################
   Set( DeformationField ${temp}/displacementFieldOldAtlas.nrrd )
