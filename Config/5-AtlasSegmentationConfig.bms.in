@@ -27,7 +27,7 @@ set( dir @ProcessingDir@ )
 ##-8-Select which kind of registration is gonna be used. FALSE = Elastic, TRUE = Diffeomorphic
 set( Diffeomorphic FALSE )
 ##-9-Do you want the smoothing? (type float)
-set ( Smooth FALSE 
+set ( Smooth FALSE )
 ##-10-Population Atlas mask (if there isn't one, set to '', if there's one, give the full path)
 set ( PopAtlas_mask '' )
 ##-11-Input pre-subdir. For old data structure, the value should be "."
