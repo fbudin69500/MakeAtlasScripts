@@ -12,7 +12,7 @@ ForEach( i ${CASES} )
   Endif( ${ScriptName} != '' )
   #####Resample atlas############
   ForEach(j ${LabelMapsSuffix} )
-    set( ResampledImage ${OutSubjDir}/${PROCESS_SUBDIR}/${i}${j} )
+    set( ResampledImage ${InSubjDir}/${i}${j} )
     foreach( k ${STAT_FILE_SUFFIX} )
       GetFilename( name ${j} NAME_WITHOUT_EXTENSION )
       GetFilename( k_noext ${k} NAME_WITHOUT_EXTENSION )
