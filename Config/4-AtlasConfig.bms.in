@@ -7,65 +7,65 @@
 #####################################################################################################
 ##-1-Cases to process
 set( CASES @cases@ )
-##-2-Input suffix of files used to create new atlas
-set( ATLAS_INPUT_SUFFIX @AtlasInputSuffix@ )
-##-3-Population atlas directories suffix
+##-2-Population atlas directories suffix
 set( AtlasDirectoriesSuffix 1 )
-##-4-Suffix of the mask created from the segmentation
+##-3-Suffix of the mask created from the segmentation
 set( NEW_MASK_TAG _mask_from_seg.nrrd )
-##-5-Suffix of the DTI image, if scalar images, set to ''
-set( DTI_SUFFIX @DTISuffix@ )
-##-6-If set to '', not used. Set DTI_SUFFIX accordingly (Not used for scalar images)
+##-4-If set to '', not used. Set DTI_SUFFIX accordingly (Not used for scalar images)
 set( TRANSFORM_SUFFIX @TransformSuffix@ )
-##-7-Suffix of the original scalar image (to the avg image). If set to '', not used. Set DTI_SUFFIX accordingly (Not used for scalar images)
+##-5-Suffix of the original scalar image (to the avg image). If set to '', not used. Set DTI_SUFFIX accordingly (Not used for scalar images)
 set( Original_SUFFIX @TransformSuffix@ )
-##-8-Recalculating the average image from the original images? (TRUE or FALSE)
+##-6-Recalculating the average image from the original images? (TRUE or FALSE)
 set( Recalculate_avg FALSE )
-##-9-Original_has_prefix : if the original is called differently than CaseName_suffix.gipl.gz. If set to FALSE, the script will look for a file which name is just Original_SUFFIX (7th param.)
+##-7-Original_has_prefix : if the original is called differently than CaseName_suffix.gipl.gz. If set to FALSE, the script will look for a file which name is just Original_SUFFIX (7th param.)
 set ( Original_has_prefix TRUE ) 
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
+##-8-Input suffix of files used to create new atlas
+set( ATLAS_INPUT_SUFFIX @AtlasInputSuffix@ )
+##-9-Suffix of the DTI image, if scalar images, set to ''
+set( DTI_SUFFIX @DTISuffix@ )
 ##The files must have the following structure:
 ##dir/case/case_suffix;dir=/rodent/Project/subProject1
 ##-10-SubProject root directory
-set( dir @ProcessingDir@ )
+set( dir @ProjectDirectory@ )
 ##-11-Input pre-subdir. For old data structure, the value should be "."
-set( INPUT_PRE_SUBDIR Results )
+set( INPUT_PRE_SUBDIR @ResultsSubDirectory@ )
 ##-12-Output pre-subdir. For old data structure, the value should be "."
-set( OUTPUT_PRE_SUBDIR Processing )
-##-13-Input pre-subdir. For new data structure, the value should be "."
-set( INPUT_POST_SUBDIR . )
-##-13b-Input post-subdir where the original image is. For new data structure, the value should be "."
+set( OUTPUT_PRE_SUBDIR @ProcessingRelativePath@ )
+##-13-Input post-subdir. For new data structure, the value should be "."
+set( INPUT_POST_SUBDIR @InputPostSubDirectory@ )
+##-14-Input post-subdir where the original image is. For new data structure, the value should be "."
 set( INPUT_POST_SUBDIR_Original . )
-##-14-Directory in which the computed population atlas and its parcellation/segmentation are saved
+##-15-Directory in which the computed population atlas and its parcellation/segmentation are saved
 set( outputDir ${dir}/${OUTPUT_PRE_SUBDIR}/Atlas-${AtlasDirectoriesSuffix} )
-##-15-Subdirectory in the case directory in which to save new case files (hfields/invhfields)
+##-16-Subdirectory in the case directory in which to save new case files (hfields/invhfields)
 set( PROCESS_SUBDIR 4-AtlasCreation-${AtlasDirectoriesSuffix} )
-##-16-Directory in which temporary files are written
+##-17-Directory in which temporary files are written
 set( atlasProcessDir ${outputDir}/temp )
-##-17-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
+##-18-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
 set( IS_SCALED FALSE )
-##-18-Histogram match for scalar images
+##-19-Histogram match for scalar images
 set( HISTOGRAM_MATCH TRUE )
-##-19-In case of a rescaling:
+##-20-In case of a rescaling:
 ##OLD: to use with Shonagh's pipeline
 ##NEW: To use with DWIResamplingSlicer3Module if scaling option is activated
 set( RESCALE_CENTER_VERSION NEW )#OLD OR NEW
-##-20-If scalar image (TRUE or FALSE)
+##-21-If scalar image (TRUE or FALSE)
 set( IS_SCALAR @IsScalar@ )
-##-21-Image grid filename
+##-22-Image grid filename
 set( IMAGE_GRID ImageGrid.nrrd )
-##-22-Median Filter images before atlas creation
+##-23-Median Filter images before atlas creation
 set( Mradius 0 )
-##-23-Name of this file (configuration file).
+##-24-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName @ConfigDirectory@/4-AtlasConfig.bms )
-##-24-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
+##-25-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
 set( step 0 )
-##-25- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the doc)
+##-26- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the doc)
 set (Measure MI)
-##-26- affine registration MI bin number
+##-27- ANTS ranges. Bin number for MI metric. Refer to ANTS doc for the other metrics
 set (rangeMax 32 )
 ###################################
 include( @ConfigDirectory@/GlobalConfig.bms )

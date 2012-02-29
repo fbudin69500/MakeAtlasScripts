@@ -9,22 +9,20 @@
 set( CASES @cases@ )
 ##-2-Input suffix of files used to create new atlas
 set( INPUT_SUFFIX @InputSuffix@ )
-##-3-Template subdirectory for brain stripping and parcellation
-set( TEMPLATE_SUB_DIR a-original )
-##-4-subdirectory in the case directory in which to save new case files
-set( PROCESS_SUBDIR 2-Registration )
-##-5-Template file name
+##-3-Template file name
 set( TEMPLATE_FILE template.mha )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
-##-6-Transform (ie: '_manual_reg.txt' )
+##-4-Atlas directory for brain stripping and parcellation
+set( ATLAS_DIR @TemplateDirectory@ )
+##-5-Transform (ie: '_manual_reg.txt' )
 set( TRANSFORM_SUFFIX '' )
 ##dir/case/case_suffix;dir=/rodent/Project/subProject1
-##-20-SubProject root directory
-set( dir @ProcessingDir@ )
-##-7-Atlas directory for brain stripping and parcellation
-set( ATLAS_DIR ${dir}/${OUTPUT_PRE_SUBDIR}/template/${TEMPLATE_SUB_DIR} )
+##-6-SubProject root directory
+set( dir @ProjectDirectory@ )
+##-7-subdirectory in the case directory in which to save new case files
+set( PROCESS_SUBDIR 2-Registration )
 ##-8-Bias correction
 set( BIAS TRUE )
 ##-9-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
@@ -40,18 +38,18 @@ set( ADDITIONAL_IMAGES_NN_SUFFIX '' )
 ##-14-Initial transform
 set( INITIAL_TRANS_SUFFIX '' )
 ##-15-Input pre-subdir. For old data structure, the value should be "."
-set( INPUT_PRE_SUBDIR Results )
+set( INPUT_PRE_SUBDIR @ResultsSubDirectory@ )
 ##-16-Output pre-subdir. For old data structure, the value should be "."
-set( OUTPUT_PRE_SUBDIR Processing )
-##-17-Input pre-subdir. For new data structure, the value should be "."
-set( INPUT_POST_SUBDIR . )
+set( OUTPUT_PRE_SUBDIR @ProcessingRelativePath@ )
+##-17-Input post-subdir. For new data structure, the value should be "."
+set( INPUT_POST_SUBDIR @InputPostSubDirectory@ )
 ##-18-directory in which temporary files are written
 set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
 ##-19-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName @ConfigDirectory@/2-RegistrationConfig.bms )
 ##The files must have the following structure:
-##-21-Type of the input image: DWI, DTI or scalar
+##-20-Type of the input image: DWI, DTI or scalar
 set( Type @InputType@ )
 ###################################
 include( @ConfigDirectory@/GlobalConfig.bms )

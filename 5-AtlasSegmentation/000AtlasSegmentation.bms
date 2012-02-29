@@ -202,7 +202,7 @@ if (${step} < 17)
 endif (${step} < 17)
 
 #####Warp atlas (parcellation)############
-set ( PARCELLATION_FILE_RV2_WARP ${PopAtlasDir}/${PARCELLATION_FILE_TAG}_ANTS_Warp.nrrd )
+set ( PARCELLATION_FILE_RV2_WARP ${PopAtlasDir}/${PARCELLATION_FILE_TAG}.nrrd )
 set( WarpCmd ${WarpImageMultiTransform} 3 ${PARCELLATION_FILE_RV2} ${PARCELLATION_FILE_RV2_WARP} ${WARP_FILE} ${AFFINE_FILE} -R ${ImageToRegTo} --use-NN)
 
 echo( ${WarpCmd} )
