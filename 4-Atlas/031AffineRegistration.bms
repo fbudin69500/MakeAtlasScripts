@@ -17,10 +17,10 @@ foreach( i ${CASES} )
   set( MOVING_IMG ${atlasProcessDir}/${i}${ATLAS_INPUT_MASKED_TAG}_hm.nrrd )
   set( HMCmd ${ImageMath} ${IMG} -matchHistogram ${RESCALED_FIXED_IMG} -outfile ${MOVING_IMG} -type float)
   echo( ${HMCmd} )
-  If(${step} < 5 && ${times} == 0 || ${step} < 11 && ${times} = 1)
+  If(${step} < 5 && ${times} == 0 || ${step} < 11 && ${times} == 1)
     run( output ${HMCmd} )
     echo( ${output} )
-  EndIf(${step} < 5 && ${times} == 0 || ${step} < 11 && ${times} = 1)
+  EndIf(${step} < 5 && ${times} == 0 || ${step} < 11 && ${times} == 1)
   ################################################
   # ANTS
   set( RESAMPLED_IMAGE ${atlasProcessDir}/${i}_to_${FIXED_CASE}.nrrd )
