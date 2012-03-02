@@ -52,6 +52,7 @@ set( ATLAS_INPUT_MASKED_TAG ${ATLAS_INPUT_MASKED_TAG}_padded )
 GetParam(FIXED_CASE ${CASES} 0)
 set( FIXED_IMG ${atlasProcessDir}/${FIXED_CASE}${ATLAS_INPUT_MASKED_TAG}.nrrd )
 set( RESCALED_FIXED_IMG ${atlasProcessDir}/${FIXED_CASE}${ATLAS_INPUT_MASKED_TAG}_hm_resc.nrrd )
+set( times 0 )
 include( 031AffineRegistration.bms )
 
 set( avgImage ${atlasProcessDir}/AverageAffineImage.nrrd )
