@@ -44,7 +44,7 @@ foreach( i ${CASES} )
     run( output ${Cmd} )
     echo( ${output} )
   EndIf( ${step} < 3 )
- endforeach( ${CASES} )
+endforeach( ${CASES} )
 
 set( ATLAS_INPUT_MASKED_TAG ${ATLAS_INPUT_MASKED_TAG}_padded )
 #########################affine registration###############################
