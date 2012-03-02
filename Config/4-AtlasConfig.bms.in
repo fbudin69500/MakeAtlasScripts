@@ -65,8 +65,8 @@ set( ScriptName @ConfigDirectory@/4-AtlasConfig.bms )
 set( step 0 )
 ##-26- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the doc)
 set (Measure MI)
-##-27- ANTS ranges. Bin number for MI metric. Refer to ANTS doc for the other metrics
-set (rangeMax 32 )
+##-27- Affine registration parameter. Bin number for MI metric. Refer to ANTS doc for the other metrics
+set (AffregParam 32 )
 ###################################
 include( @ConfigDirectory@/GlobalConfig.bms )
 ##Processes

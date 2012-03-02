@@ -32,7 +32,7 @@ set( NII_FILE ${atlasProcessDir}/${i}${ATLAS_INPUT_MASKED_TAG}_to_${FIXED_CASE}.
 set( TRANSFORM ${atlasProcessDir}/${i}${ATLAS_INPUT_MASKED_TAG}_to_${FIXED_CASE}Affine.txt )
 
 #set ( AntsCmd ANTS ${imgDimension} -m MI[${RESCALED_FIXED_IMG},${MOVING_IMG},${rangeMin},${rangeMax}] -i ${defIterations} -o ${NII_FILE} )
-set ( AntsMICmd ANTS 3 -m MI[${MOVING_IMG},${RESCALED_FIXED_IMG},1,${rangeMax}] -i 0 -o ${NII_FILE} )
+set ( AntsMICmd ANTS 3 -m MI[${MOVING_IMG},${RESCALED_FIXED_IMG},1,${AffregParam}] -i 0 -o ${NII_FILE} )
   echo( ${AntsMICmd} )
   If(${step} < 6 && ${times} == 0 || ${step} < 12 && ${times} == 1)
     run( output ${AntsMICmd} )
