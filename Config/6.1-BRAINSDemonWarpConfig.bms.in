@@ -7,12 +7,14 @@
 #####################################################################################################
 ##-1-Cases to process
 set( CASES @cases@ )
-##-3-List of images to warp (can contain multiple files)
+##-2-List of images to warp (can contain multiple files)
 set( LabelMapsToWarp template_atlas.nrrd )
-##-4-suffix of the mask created from the segmentation
+##-3-suffix of the mask created from the segmentation
 set( NEW_MASK_TAG _mask_from_seg.nrrd )
-##-5-Template mask (used for the registration if set). Template mask has to be in template directory
+##-4-Template mask (used for the registration if set). Template mask has to be in template directory
 set( TEMPLATE_MASK '' )
+##-5-Warping direction: ToCase/ToTemplate
+set( Direction ToCase )
 #####################################################################################################
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
@@ -22,24 +24,24 @@ set( Template_Image @TemplateImage@ )
 set( PROCESS_SUBDIR 6-Warping )
 ##-8-Input suffix of files used to create new atlas
 set( WARP_INPUT_SUFFIX @WarpInputSuffix@ )
-##-10-Input pre-subdir. For old data structure, the value should be "."
+##-9-Input pre-subdir. For old data structure, the value should be "."
 set( INPUT_PRE_SUBDIR @ResultsSubDirectory@ )
-##-11-Output pre-subdir. For old data structure, the value should be "."
+##-10-Output pre-subdir. For old data structure, the value should be "."
 set( OUTPUT_PRE_SUBDIR @ProcessingRelativePath@ )
-##-12-Input post-subdir. For new data structure, the value should be "."
+##-11-Input post-subdir. For new data structure, the value should be "."
 set( INPUT_POST_SUBDIR @InputPostSubDirectory@ )
 ##The files must have the following structure:
 ##dir/case/case_suffix;dir=/rodent/Project/subProject1
-##-13-SubProject root directory
+##-12-SubProject root directory
 set( dir @ProjectDirectory@ )
-##-14-directory in which the population atlas and population atlas parcellation are saved
+##-13-directory in which the population atlas and population atlas parcellation are saved
 set( AtlasDir ${dir}/${INPUT_PRE_SUBDIR}/Atlas )
-##-15-directory in which temporary files are written
+##-14-directory in which temporary files are written
 set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
-##-17-Name of this file (configuration file)
+##-15-Name of this file (configuration file)
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName @ConfigDirectory@/6-WarpConfig.bms )
 ###################################
 include( @ConfigDirectory@/GlobalConfig.bms )
 ##Processes
-include( @CMAKE_CURRENT_SOURCE_DIR@/6.1-BRAINSDemonWarp/000DemonWarpToCases.bms )
+include( @CMAKE_CURRENT_SOURCE_DIR@/6.1-BRAINSDemonWarp/000DemonWarp.bms )
