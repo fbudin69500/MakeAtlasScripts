@@ -86,7 +86,7 @@ ForEach( i ${CASES} )
     echo( ${output} )
 
    #####Warp#####################
-    Set( template_WARP ${tempDir}/${template_TAG}_ANTSWarp.nii.gz  )
+    Set( template_WARP ${OutSubjDir}/${PROCESS_SUBDIR}/${template_TAG}_ANTSWarp.nii.gz  )
     set( WarpCmd ${WarpImageMultiTransform} 3 ${template} ${template_WARP} ${WARP_FILE} ${AFFINE_FILE} -R ${MaskedImage} )
     echo( ${WarpCmd} )
     Run( output ${WarpCmd} )
