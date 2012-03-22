@@ -76,7 +76,7 @@ ForEach( i ${CASES} )
     endif( ${TEMPLATE_MASK} != '' )
 
     GetFilename( template_TAG ${Template_Image} NAME_WITHOUT_EXTENSION )
-    set( NII_FILE_PREFIX ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_to_${template_TAG}_ANTS )
+    set( NII_FILE_PREFIX ${OutSubjDir}/${PROCESS_SUBDIR}/${template_TAG}_to_${i} )
     set( AFFINE_FILE ${NII_FILE_PREFIX}Affine.txt )
     set( WARP_FILE ${NII_FILE_PREFIX}Warp.nii.gz )
     set (bin_number 32)
