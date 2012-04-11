@@ -61,7 +61,7 @@ set( IS_SCALED FALSE )
 ##-24-Number of loops: sequence(seq 0 NB_LOOPS 1)
 sequence(seq 0 0 1)
 ##-25-directory in which to find "rreg_rigid.params" and "rreg_TO_TEMPLATE.param"
-set( CONFIGDIR @CMAKE_CURRENT_SOURCE_DIR@/SkullStrip )
+set( CONFIGDIR @CMAKE_CURRENT_SOURCE_DIR@/3-SkullStrip )
 ##-26-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName @ConfigDirectory@/3-SkullStripConfig.bms )
