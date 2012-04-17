@@ -67,6 +67,8 @@ set( CONFIGDIR @CMAKE_CURRENT_SOURCE_DIR@/3-SkullStrip )
 set( ScriptName @ConfigDirectory@/3-SkullStripConfig.bms )
 ##-27-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
 set( step 0 )
+##-28-Skullstrip those files
+set( FILES_TO_SS @SSFileSuffix@ )
 #######################################################################################################
 include( @ConfigDirectory@/GlobalConfig.bms )
 ##Processes
