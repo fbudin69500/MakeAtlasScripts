@@ -19,10 +19,10 @@ set( Direction ToCase )
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
 ##-6-Population image to use for registration
-set( Template_Image @TemplateImage@ )
+set( PopulationAverage @TemplateImage@ )
 ##-7-subdirectory in the case directory in which to save new case files (mask, parcellation and statistics)
 set( PROCESS_SUBDIR 6-Warping )
-##-8-Input suffix of files used to create new atlas
+##-8-Input suffix of files used to create new average
 set( WARP_INPUT_SUFFIX @WarpInputSuffix@ )
 ##-9-Input pre-subdir. For old data structure, the value should be "."
 set( INPUT_PRE_SUBDIR @ResultsSubDirectory@ )
@@ -34,8 +34,8 @@ set( INPUT_POST_SUBDIR @InputPostSubDirectory@ )
 ##dir/case/case_suffix;dir=/rodent/Project/subProject1
 ##-12-SubProject root directory
 set( dir @ProjectDirectory@ )
-##-13-directory in which the population atlas and population atlas parcellation are saved
-set( AtlasDir ${dir}/${INPUT_PRE_SUBDIR}/Atlas )
+##-13-directory in which the population average and population average parcellation are saved
+set( AverageDir ${dir}/${INPUT_PRE_SUBDIR}/Average )
 ##-14-directory in which temporary files are written
 set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
 ##-15-Name of this file (configuration file)

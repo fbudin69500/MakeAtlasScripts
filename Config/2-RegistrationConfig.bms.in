@@ -14,8 +14,8 @@ set( TEMPLATE_FILE template.mha )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
-##-4-Atlas directory for brain stripping and parcellation
-set( ATLAS_DIR @TemplateDirectory@ )
+##-4-Template directory for brain stripping (NdMarion :?) and segmentation
+set( TEMPLATE_DIR @TemplateDirectory@ )
 ##-5-Transform (ie: '_manual_reg.txt' )
 set( TRANSFORM_SUFFIX '' )
 ##dir/case/case_suffix;dir=/rodent/Project/subProject1

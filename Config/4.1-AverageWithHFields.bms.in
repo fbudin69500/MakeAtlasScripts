@@ -13,15 +13,15 @@ set( Average_INPUT_SUFFIX @AverageInputSuffix@ )
 set( NEW_MASK_TAG _mask_from_seg.nrrd )
 ##-4- Previous (rigid) transform. If set to '', not used. Otherwise, this transform is added to the resampling step
 set( TRANSFORM_SUFFIX @TransformSuffix@ )
-##-5-Population atlas directories suffix
-set( AtlasDirectoriesSuffix 1 )
+##-5-Population average directories suffix
+set( PopAverageDirectoriesSuffix 1 )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
 ##-6-Suffix of the hfield that were computed in the population atlas creation
 set( HField_Suffix _hFieldToAtlas.mha )
-##-7-Population image - Reference image
-set( Template_Image @TemplateImage@ )
+##-7-Population image used as a reference image for resampling
+set( Reference_Image @TemplateImage@ )
 ##The files must have the following structure:
 ##dir/case/case_suffix;dir=/rodent/Project/subProject1
 ##-8-SubProject root directory
@@ -35,9 +35,9 @@ set( OUTPUT_PRE_SUBDIR @ProcessingRelativePath@ )
 ##-12-Input post-subdir. For new data structure, the value should be "."
 set( INPUT_POST_SUBDIR @InputPostSubDirectory@ )
 ##-13-Directory in which the computed average images are saved
-set( outputDir ${dir}/${OUTPUT_PRE_SUBDIR}/Atlas-${AtlasDirectoriesSuffix} )
-##-14-Directory in which the computed population atlas is
-set( PopAtlasDir ${dir}/${INPUT_PRE_SUBDIR}/Atlas )
+set( outputDir ${dir}/${OUTPUT_PRE_SUBDIR}/Average-${AtlasDirectoriesSuffix} )
+##-14-Directory in which the computed population average is
+set( PopAverageDir ${dir}/${INPUT_PRE_SUBDIR}/Average )
 ##-15-Directory in which temporary files are written
 set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
 ##-16-Median Filter images before atlas creation
