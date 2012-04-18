@@ -6,7 +6,7 @@ if( `echo $0 | grep -c -i -e '^/'` > 0 ) then
   else
     set pathScript = ''
   endif
-else
+else 
   set pathVar = `pwd`
   if( $0:h != $0:t ) then
     set localPath = $0:h
@@ -14,19 +14,22 @@ else
     set localPath = '.'
   endif
   set pathScript = $pathVar/$localPath
-endif
+endif 
 if( $nbparams < 1 ) then
   echo "Usage: Step [ConfigFile] / [ProcessingDir ResultDir] [-l file1 file2 ... filen] [-b file1 file2 ... filen][-s subDirectory]"
   exit -1
 endif
 set step=$argv[1]
-if( $step < 1 || $step > 5 ) then
+
+if( $step < 1 || $step > 7 ) then
   echo "Step number must be between 1 and 5"
   echo "1-Converted"
   echo "2-Registration"
   echo "3-Skullstrip"
-  echo "4-Atlas Creation"
-  echo "5-Warp"
+  echo "4-Atlas"
+  echo "5-Atlas Segmentation"
+  echo "6-Warp"
+  echo "7-Stats"
   exit -1
 endif
 #Steps 1 and 2
@@ -187,7 +190,7 @@ else
   end
   if( $step == 3 ) then
     set masktag = `$pathScript/ReadConfig.script $configFile NEW_MASK_TAG`
-    set ext = `$pathScript/ReadConfig.script $configFile extension`
+#   set ext = `$pathScript/ReadConfig.script $configFile extension`  given with new_mask_tag
     set bias = `$pathScript/ReadConfig.script $configFile biasFieldCorrection`
     set abcSuffix = (`$pathScript/ReadConfig.script $configFile ABC_IMAGE_SUFFIX`)
     if( $#abcSuffix > 1 ) then
@@ -196,9 +199,9 @@ else
       set suffix = abcSuffix
     endif
     foreach i ($cases)
-      ln -sf $directory/$processpredir/$i/$subDir/$i$masktag.$ext $directory/$resultspredir/$i/$i$masktag.$ext
+      ln -sf $directory/$processpredir/$i/$subDir/$i$masktag $directory/$resultspredir/$i/$i$masktag
       if( $bias == "TRUE" ) then
-        ln -sf $directory/$processpredir/$i/$subDir/$i${suffix}_corrected.$ext $directory/$resultspredir/$i/$i${suffix}_corrected.$ext
+        ln -sf $directory/$processpredir/$i/$subDir/corrected_$i${suffix} $directory/$resultspredir/$i/corrected_$i${suffix}
       endif
     end
   else if ( $step == 4 ) then
@@ -222,17 +225,62 @@ else
         ln -sf $directory/$processpredir/$i/$subDir/${i}_inv_hFieldToAtlas.mha $directory/$resultspredir/$i/${i}_inv_hFieldToAtlas.mha
       end
     endif
+
   else if ( $step == 5 ) then
-    set statSuffix = `$pathScript/ReadConfig.script $configFile STAT_FILE_SUFFIX`
-    set labelMaps = `$pathScript/ReadConfig.script $configFile LabelMapsToWarp`
-    foreach i ($cases)
-      foreach j ($labelMaps)
-        set name = $j:t
-        ln -sf $directory/$processpredir/$i/$subDir/$name $directory/$resultspredir/$i/$i_$name
-        set name_noext = $j:t:r
-        foreach k ($statSuffix)
-          set stat_noext = $k:t:r
-          ln -sf $directory/$processpredir/$i/$subDir/${name_noext}${stat_noext}_stat.txt $directory/$resultspredir/$i/$i_${name_noext}${stat_noext}_stat.txt
+    set atlasDir = `$pathScript/ReadConfig.script $configFile outputDir`
+    if( ! -d $directory/$resultspredir/Atlas ) then
+      if( -e $directory/$resultspredir/Atlas ) then
+        echo "Error: Result directory name already exists and is not a directory"
+        echo "Links not created for Atlas Segmentation"
+        break
+      else
+        mkdir $directory/$resultspredir/Atlas
+      endif
+    endif
+    if( -d $directory/$resultspredir/Atlas ) then
+      set popatlasdir = `$pathScript/ReadConfig.script $configFile PopAtlasDir`
+      set parcellationFile = `$pathScript/ReadConfig.script $configFile PARCELLATION_FILE_NAME`
+      set parcellationFileTag = $parcellationFile:r
+      ln -sf $popatlasdir/${parcellationFileTag}.nrrd $directory/$resultspredir/Atlas/${parcellationFileTag}.nrrd
+    endif
+
+  else if ( $step == 6 ) then 
+      mkdir $directory/$resultspredir/Warp/
+      set template_image = `$pathScript/ReadConfig.script $configFile Template_Image`
+      set template_tag = $template_image:r
+      set dir  = `$pathScript/ReadConfig.script $configFile dir` 
+      set output_pre_subdir = `$pathScript/ReadConfig.script $configFile OUTPUT_PRE_SUBDIR`
+      set input_pre_subdir = `$pathScript/ReadConfig.script $configFile INPUT_PRE_SUBDIR`
+      set input_post_subdir = `$pathScript/ReadConfig.script $configFile INPUT_POST_SUBDIR`
+      set invHField_suffix = `$pathScript/ReadConfig.script $configFile InvHField_Suffix`
+      set process_subdir = `$pathScript/ReadConfig.script $configFile PROCESS_SUBDIR`
+      set use_inv_hfield = `$pathScript/ReadConfig.script $configFile USE_INV_HFIELD`
+      set labelmapstowarp = `$pathScript/ReadConfig.script $configFile LabelMapsToWarp`
+      foreach i ($cases)
+      mkdir $directory/$resultspredir/Warp/$i
+        if ( $use_inv_hfield == "TRUE" ) then
+          ln -sf $dir/$input_pre_subdir/$i/$input_post_subdir/${i}${invHField_suffix} $directory/$resultspredir/Warp/$i/${i}${invHField_suffix} 
+        else if ( $use_inv_hfield == "FALSE" ) then
+          ln -sf $dir/$output_pre_subdir/$i/$process_subdir/${template_tag}_to_${i}Warp.nii.gz $directory/$resultspredir/Warp/$i/${template_tag}_to_${i}Warp.nii.gz 
+          ln -sf $dir/$output_pre_subdir/$i/$process_subdir/${template_tag}_to_${i}Warp.nii.gz $directory/$resultspredir/Warp/$i/${template_tag}_to_${i}Affine.txt 
+        endif
+        foreach j ($labelmapstowarp)
+          ln -sf $dir/$output_pre_subdir/$i/$process_subdir/${i}_to_${j} $directory/$resultspredir/Warp/$i/${i}_${j} 
+        end            
+      end
+
+  else if ( $step == 7 ) then 
+    set labelmapssuffix = `$pathScript/ReadConfig.script $configFile LabelMapsSuffix`
+    set stat_file_suffix = `$pathScript/ReadConfig.script $configFile STAT_FILE_SUFFIX`
+    set dir = `$pathScript/ReadConfig.script $configFile dir`
+    set output_pre_subdir = `$pathScript/ReadConfig.script $configFile OUTPUT_PRE_SUBDIR`
+    set process_subdir = `$pathScript/ReadConfig.script $configFile PROCESS_SUBDIR`
+    foreach i ($cases)     
+      foreach j ($labelmapssuffix)
+        set name = $j:r
+        foreach k ($stat_file_suffix)
+          set k_noext = $k:r
+          ln -sf $dir/$output_pre_subdir/$i/$process_subdir/${i}${name}${k_noext} $directory/$resultspredir/Warp/$i/${i}${name}${k_noext}
         end
       end
     end
