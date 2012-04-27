@@ -4,9 +4,9 @@
 #rreg and areg need .gipl.gz files so we convert
 #the atlas files to this format
 set( count 0)
-ForEach( file ${ATLAS_TAG} )
-  GetParam(EXT ${ATLAS_EXT} ${count})
-  Set( SrcImg ${ATLAS_DIR}/${file}${EXT} )
+ForEach( file ${TEMPLATE_TAG} )
+  GetParam(EXT ${TEMPLATE_EXT} ${count})
+  Set( SrcImg ${TEMPLATE_DIR}/${file}${EXT} )
 
   if( ${Registration} == TRUE )
      Set( DstImg ${tempDir}/${file}.gipl.gz )
@@ -26,4 +26,4 @@ ForEach( file ${ATLAS_TAG} )
   EndIf( ${step} < 1 )
   Inc(${count} 1)
   Int( ${count} )
-EndForEach( file ${ATLAS_TAG} )
+EndForEach( file ${TEMPLATE_TAG} )

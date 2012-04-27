@@ -76,7 +76,7 @@ EndIf( ${step} < 10 )
 
 
 
-ForEach( Type ${ATLAS_TAG} )
+ForEach( Type ${TEMPLATE_TAG} )
     Set (TargetFile ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.gipl.gz)
     If( ${IS_SCALED} == TRUE )
       Set ( image ${tempDir}/${Case}/${Type}.gipl.gz )
@@ -109,4 +109,4 @@ ForEach( Type ${ATLAS_TAG} )
       Run (output ${transformCmd})
       Echo (${output})
     EndIf( ${step} < 13 )
-EndForEach( Type ATLAS_TAG )
+EndForEach( Type TEMPLATE_TAG )
