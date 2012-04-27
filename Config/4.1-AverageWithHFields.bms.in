@@ -14,7 +14,7 @@ set( NEW_MASK_TAG _mask_from_seg.nrrd )
 ##-4- Previous (rigid) transform. If set to '', not used. Otherwise, this transform is added to the resampling step
 set( TRANSFORM_SUFFIX @TransformSuffix@ )
 ##-5-Population average directories suffix
-set( PopAverageDirectoriesSuffix 1 )
+set( PopAverageDirectorySuffix 1 )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
@@ -35,7 +35,7 @@ set( OUTPUT_PRE_SUBDIR @ProcessingRelativePath@ )
 ##-12-Input post-subdir. For new data structure, the value should be "."
 set( INPUT_POST_SUBDIR @InputPostSubDirectory@ )
 ##-13-Directory in which the computed average images are saved
-set( outputDir ${dir}/${OUTPUT_PRE_SUBDIR}/Average-${AtlasDirectoriesSuffix} )
+set( outputDir ${dir}/${OUTPUT_PRE_SUBDIR}/Average-${PopAverageDirectorySuffix} )
 ##-14-Directory in which the computed population average is
 set( PopAverageDir ${dir}/${INPUT_PRE_SUBDIR}/Average )
 ##-15-Directory in which temporary files are written

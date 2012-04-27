@@ -5,18 +5,18 @@
 #####################################################################################################
 ################################### Variables to set ################################################
 #####################################################################################################
-##-1-Population atlas directory suffix
-set( AtlasDirectorySuffix 1 )
-##-2-Population atlas file name
-set( PopulationAtlas @TemplateImage@ )
+##-1-Population average directory suffix
+set( PopAverageDirectorySuffix 1 )
+##-2-Population average file name
+set( PopulationAverage @TemplateImage@ )
 ##-3-External template (in probability maps directory)
 set( TEMPLATE template.mha )
 ##-4-External template mask (in probability maps directory)
 set ( TEMPLATE_mask_FILENAME '' )
-##-5-Name of the parcellation atlas. This file has to be in external template directory
+##-5-Name of the template segmentation. This file has to be in external template directory
 set( TEMPLATE_SEGMENTATION template_atlas.mha )
-##-6-Population Atlas mask (if there isn't one, set to '', if there's one, give the full path)
-set ( PopAtlas_mask_FILENAME '' )
+##-6-Population Average mask (if there isn't one, set to '', if there's one, give the full path)
+set ( PopAverage_mask_FILENAME '' )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
@@ -36,10 +36,10 @@ set( INPUT_PRE_SUBDIR @ResultsSubDirectory@ )
 set( OUTPUT_PRE_SUBDIR @ProcessingRelativePath@ )
 ##-13- Template and probability maps directory
 set( TEMPLATE_DIR @TemplateDirectory@ )
-##-14-Directory in which the computed population atlas and its segmentation are saved
-set( PopAtlasDir ${dir}/${OUTPUT_PRE_SUBDIR}/Average-${AtlasDirectoriesSuffix} )
+##-14-Directory in which the computed population average and its segmentation are saved
+set( PopAverageDir ${dir}/${OUTPUT_PRE_SUBDIR}/Average-${PopAverageDirectorySuffix} )
 ##-15-Directory in which temporary files are written
-set( averageProcessDir ${PopAtlasDir}/temp )
+set( tempDir ${PopAverageDir}/temp )
 ##-16-Image grid filename
 set( IMAGE_GRID ImageGrid.nrrd )
 ##-17- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the ANTS doc)
