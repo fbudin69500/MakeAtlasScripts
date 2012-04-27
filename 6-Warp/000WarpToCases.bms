@@ -7,14 +7,14 @@
 #ANTS
 #ITKTransformTools
 
-set( template ${AtlasDir}/${Template_Image} )
+set( template ${AverageDir}/${Template_Image} )
 set( template_mask_filtered '' )
 MakeDirectory( ${tempDir} )
 set( Mask_reg '' )
 if( ${USE_INV_HFIELD} == FALSE && ${TEMPLATE_MASK} != '' )
   #######Mask template just in case it wasn't
   set( template_masked ${tempDir}/template_masked.nii.gz )
-  set( Cmd ${ImageMath} ${template} -mask ${AtlasDir}/${TEMPLATE_MASK} -type float -outfile ${template_masked} )
+  set( Cmd ${ImageMath} ${template} -mask ${AverageDir}/${TEMPLATE_MASK} -type float -outfile ${template_masked} )
   echo( ${Cmd} )
   run( output ${Cmd} )
   echo( ${output} )
@@ -67,7 +67,7 @@ ForEach( i ${CASES} )
     #####################################################
     if( ${TEMPLATE_MASK} != '' )
       set( InitialMask ${tempDir}/${i}_initialMask.nii.gz )
-      set( Cmd ${ResampleVolume2} -R ${InitialTransformGrid} -f ${InitialTransform} ${AtlasDir}/${TEMPLATE_MASK} ${InitialMask} -i nn )
+      set( Cmd ${ResampleVolume2} -R ${InitialTransformGrid} -f ${InitialTransform} ${AverageDir}/${TEMPLATE_MASK} ${InitialMask} -i nn )
       echo( ${Cmd} )
       run( output ${Cmd} )
       echo( ${output} )
@@ -94,11 +94,11 @@ ForEach( i ${CASES} )
 
     set( hfield --hfieldtype displacement -H ${WARP_FILE} )
   endif( ${USE_INV_HFIELD} == TRUE )
-  #####Resample atlas############
+  #####Resample Average############
   ForEach(j ${LabelMapsToWarp} )
     GetFilename( name ${j} NAME )
     set( ResampledImage ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_${name} )
-    set( Cmd ${ResampleVolume2} ${AtlasDir}/${j} ${ResampledImage} -i nn -R ${image} ${hfield} )
+    set( Cmd ${ResampleVolume2} ${AverageDir}/${j} ${ResampledImage} -i nn -R ${image} ${hfield} )
     echo( ${Cmd} )
     run( output ${Cmd} )
     echo( ${output} )
