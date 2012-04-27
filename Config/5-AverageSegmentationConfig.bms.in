@@ -8,7 +8,7 @@
 ##-1-Population average directory suffix
 set( PopAverageDirectorySuffix 1 )
 ##-2-Population average file name
-set( PopulationAverage @TemplateImage@ )
+set( PopulationAverage @PopulationAverage@ )
 ##-3-External template (in probability maps directory)
 set( TEMPLATE template.mha )
 ##-4-External template mask (in probability maps directory)

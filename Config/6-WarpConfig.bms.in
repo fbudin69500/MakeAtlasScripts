@@ -19,7 +19,7 @@ set( TEMPLATE_MASK '' )
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
 ##-6-Template image to use for registration
-set( Template_Image @TemplateImage@ )
+set( Template_Image @PopulationAverage@ )
 ##-7-subdirectory in the case directory in which to save new case files (mask, parcellation and statistics)
 set( PROCESS_SUBDIR 6-Warping )
 ##-8-Input suffix of files used to create new average
