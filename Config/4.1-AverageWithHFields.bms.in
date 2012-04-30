@@ -18,9 +18,9 @@ set( PopAverageDirectorySuffix 1 )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
-##-6-Suffix of the hfield that were computed in the population atlas creation
-set( HField_Suffix _hFieldToAtlas.mha )
-##-7-Population image used as a reference image for resampling
+##-6-Suffix of the hfield that were computed in the population average creation
+set( HField_Suffix _hFieldToPopulationAverage.mha )
+##-7-Population image used as a  reference image (grid) for resampling -typically population average previously computed
 set( Reference_Image @TemplateImage@ )
 ##The files must have the following structure:
 ##dir/case/case_suffix;dir=/rodent/Project/subProject1
@@ -40,7 +40,7 @@ set( outputDir ${dir}/${OUTPUT_PRE_SUBDIR}/Average-${PopAverageDirectorySuffix} 
 set( PopAverageDir ${dir}/${INPUT_PRE_SUBDIR}/Average )
 ##-15-Directory in which temporary files are written
 set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
-##-16-Median Filter images before atlas creation
+##-16-Median Filter images before average creation
 set( Mradius 0 )
 ##-17-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory

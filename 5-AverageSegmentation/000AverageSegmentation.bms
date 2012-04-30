@@ -5,7 +5,7 @@
 #- ITKTransformTools
 #- unu
 #- ANTS
-############Register atlas with new MD/atlas image#######################
+############Register average with new MD/average image#######################
 #Variables initialization
 RegEx( TEMPLATE_SEGMENTATION_TAG ${TEMPLATE_SEGMENTATION} '\..*' REPLACE '' )
 RegEx( TEMPLATE_TAG ${TEMPLATE} '\..*' REPLACE '' )

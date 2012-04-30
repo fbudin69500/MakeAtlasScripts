@@ -7,14 +7,14 @@
 #####################################################################################################
 ##-1-Cases to process
 set( CASES @cases@ )
-##-2-Input suffix of files used to create new atlas
+##-2-Input suffix of files used to create new average
 set( INPUT_SUFFIX @InputSuffix@ )
 ##-3-Template file name
 set( TEMPLATE_FILE template.mha )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
-##-4-Template directory for brain stripping (NdMarion :?) and segmentation
+##-4-Template directory for brain stripping and segmentation
 set( TEMPLATE_DIR @TemplateDirectory@ )
 ##-5-Transform (ie: '_manual_reg.txt' )
 set( TRANSFORM_SUFFIX '' )

@@ -7,7 +7,7 @@
 #- dtiprocess
 
 ##############################################################################
-###################Transform original DTIs to atlas###########################
+###################Transform original DTIs to average###########################
 ##############################################################################
 
 foreach( i ${CASES} )
@@ -62,7 +62,7 @@ foreach( i ${CASES} )
   else( ${TRANSFORM_SUFFIX} != '' )
     set( combinedTransforms '' )
   Endif( ${TRANSFORM_SUFFIX} != '' )
-  Set( hfield ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_hFieldToAverage.mha )
+  Set( hfield ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_hFieldToPopAverage.mha )
   set( ResampleDTICmd ${ResampleDTIlogEuclidean} ${centereddtiImage} ${resampledDTIFile} ${combinedTransforms} -R ${FIXED_IMG} -H ${hfield} --transform_order input-to-output )
   echo( ${ResampleDTICmd} )
   If( ${step} < 21 )

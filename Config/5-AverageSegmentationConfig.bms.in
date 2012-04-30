@@ -14,7 +14,7 @@ set( TEMPLATE template.mha )
 ##-4-External template mask (in probability maps directory)
 set ( TEMPLATE_mask_FILENAME '' )
 ##-5-Name of the template segmentation. This file has to be in external template directory
-set( TEMPLATE_SEGMENTATION template_atlas.mha )
+set( TEMPLATE_SEGMENTATION segmentation.mha )
 ##-6-Population Average mask (if there isn't one, set to '', if there's one, give the full path)
 set ( PopAverage_mask_FILENAME '' )
 ###################################

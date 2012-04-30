@@ -8,7 +8,7 @@
 ##-1-Cases to process
 set( CASES @cases@ )
 ##-2-Labels map suffixes (can contain multiple files)
-set( LabelMapsSuffix _template_atlas.nrrd )
+set( LabelMapsSuffix _segmentation.nrrd )
 ##-3-Image files on which to compute statistics (can contain multiple files)
 set( STAT_FILE_SUFFIX @StatFileSuffix@ )
 ##-4-subdirectory in the case directory in which to save new case files (mask, parcellation and statistics)

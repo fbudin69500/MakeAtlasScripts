@@ -8,7 +8,7 @@
 ##-1-Cases to process
 set( CASES @cases@ )
 ##-2-List of images to warp (can contain multiple files)
-set( LabelMapsToWarp template_atlas.nrrd )
+set( LabelMapsToWarp segmentation.nrrd )
 ##-3-suffix of the mask created from the segmentation
 set( NEW_MASK_TAG _mask_from_seg.nrrd )
 ##-4-Template mask (used for the registration if set). Template mask has to be in template directory
@@ -18,11 +18,11 @@ set( Direction ToCase )
 #####################################################################################################
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
-##-6-Template image to use for registration
+##-6-Template image to use for registration (usually the computed population average) 
 set( Template_Image @PopulationAverage@ )
 ##-7-subdirectory in the case directory in which to save new case files (mask, parcellation and statistics)
 set( PROCESS_SUBDIR 6-Warping )
-##-8-Input suffix of files used to create new average
+##-8-Input suffix of files (typically the same as input suffix of population average)
 set( WARP_INPUT_SUFFIX @WarpInputSuffix@ )
 ##-9-Input pre-subdir. For old data structure, the value should be "."
 set( INPUT_PRE_SUBDIR @ResultsSubDirectory@ )

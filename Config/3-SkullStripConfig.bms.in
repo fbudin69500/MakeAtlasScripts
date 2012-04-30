@@ -53,7 +53,7 @@ set( PROBMAP_DIR_FILES 1.mha 2.mha 3.mha 4.mha template.mha )
 ##-20-ABC Priors
 set( PRIORS 1 1 1 1 )
 ##-21-template grid : the file that saves the original spacing when the image is scaled to 1,1,1. It is not a temporary file. 
-set( TEMPLATE_GRID AtlasGrid.nrrd ) 
+set( TEMPLATE_GRID AverageGrid.nrrd ) 
 ##-22-directory in which temporary files are written
 set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
 ##-23-was the input image scaled to 1,1,1
