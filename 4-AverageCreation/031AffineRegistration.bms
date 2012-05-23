@@ -1,3 +1,7 @@
+echo()
+echo('031AffineRegistration')
+echo()
+
 set( FIRST TRUE )
 set( TRANSFORM_LIST '')
 set( MD_CASES '' )
@@ -22,7 +26,7 @@ foreach( i ${CASES} )
   ################################################
   # ANTS
   set( RESAMPLED_IMAGE ${tempDir}/${i}_to_${FIXED_CASE}.nrrd )
-  set( ANTS_PREFIX ${tempDir}/${i}${POPULATION_AVERAGE_INPUT_MASKED_TAG}_to_${FIXED_CASE}
+  set( ANTS_PREFIX ${tempDir}/${i}${POPULATION_AVERAGE_INPUT_MASKED_TAG}_to_${FIXED_CASE})
   set( NII_FILE ${ANTS_PREFIX}.nii.gz )
   set( TRANSFORM ${ANTS_PREFIX}Affine.txt )
   set ( AntsMICmd ANTS 3 -m MI[${MOVING_IMG},${RESCALED_FIXED_IMG},1,${AffregParam}] -i 0 -o ${NII_FILE} )
@@ -37,12 +41,12 @@ foreach( i ${CASES} )
     run (output ${Warpcmd})
     echo( ${output} )
   EndIf(${step} < 7)
-  ####Convert transform files from doubles to floats for AtlasWerks###
+  ####Convert transform files from doubles to floats for AtlasWerks### STILL NEEDED?
   set( TRANSFORM_FLOAT ${tempDir}/${i}${POPULATION_AVERAGE_INPUT_MASKED_TAG}_to_${FIXED_CASE}Affine_f.txt )
   set( Cmd Double2FloatTransform ${TRANSFORM} ${TRANSFORM_FLOAT} )
   echo( ${Cmd} )
   If(${step} < 8 && ${times} == 0 || ${step} < 13 && ${times} == 1)
-    run( output ${Cmd} )
+   # run( output ${Cmd} )
     echo( ${output} )
   EndIf(${step} < 8 && ${times} == 0 || ${step} < 13 && ${times} == 1)
   set( TRANSFORM_LIST ${TRANSFORM_LIST} ${TRANSFORM_FLOAT} )
@@ -56,5 +60,5 @@ foreach( i ${CASES} )
   endif( ${FIRST} == TRUE )
 endforeach( ${CASES} )
 
-Inc( times 1 )
+Inc( ${times} 1 )
 Int( ${times} )

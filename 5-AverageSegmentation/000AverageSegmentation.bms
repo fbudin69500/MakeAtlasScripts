@@ -19,7 +19,7 @@ set( PopAverage_mask ${PopAverageDir}/${PopAverage_mask_FILENAME} )
 set( TemplateFile ${TEMPLATE_DIR}/${TEMPLATE} )
 set( TEMPLATE_mask ${TEMPLATE_DIR}/${TEMPLATE_mask_FILENAME} )
 set( SEGMENTATIONFile ${TEMPLATE_DIR}/${TEMPLATE_SEGMENTATION} )
-############Smoothes population average#######################
+############Smoothes template#######################
 If(${Smooth} == TRUE)
   set ( TemplateFile_SMOOTH ${temp}/${TEMPLATE_TAG}_Smooth.nrrd )
   set ( IMCmd ${ImageMath} ${TemplateFile} -outfile ${TemplateFile_SMOOTH} -smooth -gauss -type float )
@@ -118,7 +118,7 @@ endif (${step} < 11)
 
 
 set ( SEGMENTATION_FILE ${TEMPLATE_DIR}/${TEMPLATE_SEGMENTATION} )
-set ( SEGMENTATION_FILE_RV2 ${temp}/${SEGMENTATION_FILE_TAG}_initialized.nrrd )
+set ( SEGMENTATION_FILE_RV2 ${temp}/${TEMPLATE_SEGMENTATION_TAG}_initialized.nrrd )
 set ( RV2Cmd ${ResampleVolume2} -f ${TRANSFORM} -i nn -R ${Grid} ${SEGMENTATION_FILE} ${SEGMENTATION_FILE_RV2})
 
 echo( ${RV2Cmd} )
@@ -202,7 +202,7 @@ if (${step} < 17)
 endif (${step} < 17)
 
 #####Warp segmentation############
-set ( SEGMENTATION_FILE_RV2_WARP ${PopAverageDir}/${SEGMENTATION_FILE_TAG}.nrrd )
+set ( SEGMENTATION_FILE_RV2_WARP ${PopAverageDir}/${TEMPLATE_SEGMENTATION_TAG}.nrrd )
 set( WarpCmd ${WarpImageMultiTransform} 3 ${SEGMENTATION_FILE_RV2} ${SEGMENTATION_FILE_RV2_WARP} ${WARP_FILE} ${AFFINE_FILE} -R ${ImageToRegTo} --use-NN)
 
 echo( ${WarpCmd} )

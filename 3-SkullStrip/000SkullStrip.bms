@@ -22,7 +22,7 @@ GetFilename( NEW_MASK_TAG_NO_EXT ${NEW_MASK_TAG} NAME_WITHOUT_EXTENSION )
 #set( NB_LOOP ${NB_LOOP}-1 )
 
 ForEach (Case ${CASES})
-#  set( seq 0 1 2 )
+  set( seq 0 1 2 )
   echo('Skullstripping '${Case} )
   MakeDirectory( ${tempDir}/${Case} )
   set ( InputSubjDir ${dir}/${INPUT_PRE_SUBDIR}/${Case}/${INPUT_POST_SUBDIR})
