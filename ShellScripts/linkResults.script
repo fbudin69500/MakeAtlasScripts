@@ -22,12 +22,12 @@ endif
 set step=$argv[1]
 
 if( $step < 1 || $step > 7 ) then
-  echo "Step number must be between 1 and 5"
+  echo "Step number must be between 1 and 7"
   echo "1-Converted"
   echo "2-Registration"
   echo "3-Skullstrip"
-  echo "4-Atlas"
-  echo "5-Atlas Segmentation"
+  echo "4-Average Creation"
+  echo "5-Average Segmentation"
   echo "6-Warp"
   echo "7-Stats"
   exit -1
@@ -206,66 +206,54 @@ else
     end
   else if ( $step == 4 ) then
     set atlasDir = `$pathScript/ReadConfig.script $configFile outputDir`
-    if( ! -d $directory/$resultspredir/Atlas ) then
-      if( -e $directory/$resultspredir/Atlas ) then
+    if( ! -d $directory/$resultspredir/Average ) then
+      if( -e $directory/$resultspredir/Average ) then
         echo "Error: Result directory name already exists and is not a directory"
-        echo "Links not created for Atlas"
+        echo "Links not created for Average"
         break
       else
-        mkdir $directory/$resultspredir/Atlas
+        mkdir $directory/$resultspredir/Average
       endif
     endif
-    if( -d $directory/$resultspredir/Atlas ) then
+    if( -d $directory/$resultspredir/Average ) then
       set tolink = `\ls $atlasDir | grep '.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.mhd'|grep -v '~'`
       foreach j ($tolink)
-        ln -sf $atlasDir/$j $directory/$resultspredir/Atlas/$j
+        ln -sf $atlasDir/$j $directory/$resultspredir/Average/$j
       end
       foreach i ($cases)
-        ln -sf $directory/$processpredir/$i/$subDir/${i}_hFieldToAtlas.mha $directory/$resultspredir/$i/${i}_hFieldToAtlas.mha
-        ln -sf $directory/$processpredir/$i/$subDir/${i}_inv_hFieldToAtlas.mha $directory/$resultspredir/$i/${i}_inv_hFieldToAtlas.mha
+        ln -sf $directory/$processpredir/$i/$subDir/${i}_hFieldToPopAverage.mha $directory/$resultspredir/$i/${i}_hFieldToPopAverage.mha
+        ln -sf $directory/$processpredir/$i/$subDir/${i}_inv_hFieldToPopAverage.mha $directory/$resultspredir/$i/${i}_inv_hFieldToPopAverage.mha
       end
     endif
 
   else if ( $step == 5 ) then
     set atlasDir = `$pathScript/ReadConfig.script $configFile outputDir`
-    if( ! -d $directory/$resultspredir/Atlas ) then
-      if( -e $directory/$resultspredir/Atlas ) then
+    if( ! -d $directory/$resultspredir/Average ) then
+      if( -e $directory/$resultspredir/Average ) then
         echo "Error: Result directory name already exists and is not a directory"
-        echo "Links not created for Atlas Segmentation"
+        echo "Links not created for Average Segmentation"
         break
       else
-        mkdir $directory/$resultspredir/Atlas
+        mkdir $directory/$resultspredir/Average
       endif
     endif
-    if( -d $directory/$resultspredir/Atlas ) then
-      set popatlasdir = `$pathScript/ReadConfig.script $configFile PopAtlasDir`
-      set parcellationFile = `$pathScript/ReadConfig.script $configFile PARCELLATION_FILE_NAME`
+    if( -d $directory/$resultspredir/Average ) then
+      set popatlasdir = `$pathScript/ReadConfig.script $configFile PopAverageDir`
+      set parcellationFile = `$pathScript/ReadConfig.script $configFile TEMPLATE_SEGMENTATION`
       set parcellationFileTag = $parcellationFile:r
-      ln -sf $popatlasdir/${parcellationFileTag}.nrrd $directory/$resultspredir/Atlas/${parcellationFileTag}.nrrd
+      ln -sf $popatlasdir/${parcellationFileTag}.nrrd $directory/$resultspredir/Average/${parcellationFileTag}.nrrd
     endif
 
   else if ( $step == 6 ) then 
-      mkdir $directory/$resultspredir/Warp/
-      set template_image = `$pathScript/ReadConfig.script $configFile Template_Image`
-      set template_tag = $template_image:r
       set dir  = `$pathScript/ReadConfig.script $configFile dir` 
       set output_pre_subdir = `$pathScript/ReadConfig.script $configFile OUTPUT_PRE_SUBDIR`
-      set input_pre_subdir = `$pathScript/ReadConfig.script $configFile INPUT_PRE_SUBDIR`
-      set input_post_subdir = `$pathScript/ReadConfig.script $configFile INPUT_POST_SUBDIR`
-      set invHField_suffix = `$pathScript/ReadConfig.script $configFile InvHField_Suffix`
       set process_subdir = `$pathScript/ReadConfig.script $configFile PROCESS_SUBDIR`
-      set use_inv_hfield = `$pathScript/ReadConfig.script $configFile USE_INV_HFIELD`
       set labelmapstowarp = `$pathScript/ReadConfig.script $configFile LabelMapsToWarp`
       foreach i ($cases)
-      mkdir $directory/$resultspredir/Warp/$i
-        if ( $use_inv_hfield == "TRUE" ) then
-          ln -sf $dir/$input_pre_subdir/$i/$input_post_subdir/${i}${invHField_suffix} $directory/$resultspredir/Warp/$i/${i}${invHField_suffix} 
-        else if ( $use_inv_hfield == "FALSE" ) then
-          ln -sf $dir/$output_pre_subdir/$i/$process_subdir/${template_tag}_to_${i}Warp.nii.gz $directory/$resultspredir/Warp/$i/${template_tag}_to_${i}Warp.nii.gz 
-          ln -sf $dir/$output_pre_subdir/$i/$process_subdir/${template_tag}_to_${i}Warp.nii.gz $directory/$resultspredir/Warp/$i/${template_tag}_to_${i}Affine.txt 
-        endif
         foreach j ($labelmapstowarp)
-          ln -sf $dir/$output_pre_subdir/$i/$process_subdir/${i}_to_${j} $directory/$resultspredir/Warp/$i/${i}_${j} 
+          set labelmapstag = $j:r
+          ln -s $dir/$output_pre_subdir/$i/$process_subdir/${i}_${labelmapstag}.nrrd $directory/$resultspredir/$i/${i}_${labelmapstag}.nrrd 
+          echo "ln -s "$dir"/"$output_pre_subdir"/"$i"/"$process_subdir"/"${i}"_"${labelmapstag}".nrrd" $directory"/"$resultspredir"/"$i"/"${i}"_"${labelmapstag}".nrrd"
         end            
       end
 
@@ -280,7 +268,7 @@ else
         set name = $j:r
         foreach k ($stat_file_suffix)
           set k_noext = $k:r
-          ln -sf $dir/$output_pre_subdir/$i/$process_subdir/${i}${name}${k_noext} $directory/$resultspredir/Warp/$i/${i}${name}${k_noext}
+          ln -s $dir/$output_pre_subdir/$i/$process_subdir/${i}${name}${k_noext}_stat.txt $directory/$resultspredir/$i/${i}${name}${k_noext}.txt
         end
       end
     end
