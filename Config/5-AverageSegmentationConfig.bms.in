@@ -54,4 +54,4 @@ set( ScriptName @ConfigDirectory@/5-AtlasSegmentationConfig.bms )
 ###################################
 include( @ConfigDirectory@/GlobalConfig.bms )
 ##Processes
-include( @CMAKE_CURRENT_SOURCE_DIR@/5-AtlasSegmentation/000AtlasSegmentation.bms )
+include( @CMAKE_CURRENT_SOURCE_DIR@/5-AtlasSegmentation/000AverageSegmentation.bms )

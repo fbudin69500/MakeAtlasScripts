@@ -19,7 +19,7 @@ set( PopAverageDirectorySuffix 1 )
 #Extra parameters. Normally no need to modified
 ###################################
 ##-6-Suffix of the hfield that were computed in the population average creation
-set( HField_Suffix _hFieldToPopulationAverage.mha )
+set( HField_Suffix _hFieldToPopAverage.mha )
 ##-7-Population image used as a  reference image (grid) for resampling -typically population average previously computed
 set( Reference_Image @TemplateImage@ )
 ##The files must have the following structure:
