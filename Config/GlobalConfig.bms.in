@@ -49,3 +49,19 @@ set ( ANTS '@ANTSTOOL@' )
 set ( WarpImageMultiTransform '@WarpImageMultiTransformTOOL@' )
 #buildtemplateparallel
 set ( buildtemplateparallel '@buildtemplateparallelTOOL@' )
+#dtiestim
+set ( dtiestim '/tools/bin_linux64/dtiestim')
+#ManualImageOrient
+set ( ManualImageOrient '/rodent/bin_linux64/ManualImageOrient')
+#ResampleDTI
+set ( ResampleDTI '/tools/Slicer3/Slicer3-3.6.3-2011-03-04-linux-x86_64/lib/Slicer3/Plugins/ResampleDTI')
+#DiffusionTensorEstimation
+set ( DiffusionTensorEstimation '/tools/Slicer3/Slicer3-3.6.3-2011-03-04-linux-x86_64/lib/Slicer3/Plugins/DiffusionTensorEstimation')
+#HistogramMatching
+set ( HistogramMatching '/rodent/bin_linux64/toolsApril2012/HistogramMatching')
+#CreateMRML
+set ( CreateMRML '/tools/bin_linux64/CreateMRML')
+#N4ITKBiasFieldCorrection 
+Set ( N4ITKBiasFieldCorrection '/rodent/bin_linux64/toolsApril2012/N4ITKBiasFieldCorrection')
+#MaskComputationWithThresholding
+Set ( MaskComputationWithThresholding '/rodent/bin_linux64/MaskComputationWithThresholding')
