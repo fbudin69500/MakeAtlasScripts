@@ -58,7 +58,7 @@ Else( ${SCALE} == TRUE )
 EndIf( ${SCALE} == TRUE )
 
 if( ${SKULLSTRIP} == TRUE )
-  include( MaskImage.bms )
+  include( 024MaskImage.bms )
   ##Apply mask
   RegEx( MASKED_MOVING ${MOVING_IMAGE} '\.'\${Reg_Ext} REPLACE '' )
   GetFilename( MASKED_MOVING ${MASKED_MOVING} NAME )

@@ -196,4 +196,4 @@ Set( DONT_COPY_INPUTS_TRANS FALSE)
 #  script += "include( " ;
 #  script += BatchMake_WRAPPED_APPLICATION_DIR ;
 #  script += "/BatchMakeScript.bms )\n" ;
-include( BatchMakeScript.bms)
+include( 020BatchMakeScript.bms)

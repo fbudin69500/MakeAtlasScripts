@@ -124,7 +124,7 @@ If( ${INPUTTYPE} == 'DWI' )
 EndIf( ${INPUTTYPE} == 'DWI' )
 
 If( ${BiasCorrection} == TRUE && N4PATH )
-  include( BiasFieldCorrection.bms )
+  include( 022BiasFieldCorrection.bms )
 EndIf( ${BiasCorrection} == TRUE && N4PATH )
 
 If(${InitialTransform} != '' )
