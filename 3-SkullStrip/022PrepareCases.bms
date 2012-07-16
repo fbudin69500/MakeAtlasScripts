@@ -3,13 +3,12 @@
 #- ResampleVolume2
 ###############################
 #prepare files before computation
-#rreg and areg need .gipl.gz files so we convert everything that
-#these softare are going to use to this format
 
 #convert
 if( ${Registration} == TRUE )
+
   Set( Img ${InputSubjDir}/${Case}${RIGID_REGISTRATION_IMAGE_SUFFIX} )
-  Set( DestImg ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}_noDirection.gipl.gz )
+  Set( DestImg ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.nii.gz )
 
   if( ${IS_SCALAR} == FALSE )
     echo( "DTI image" )
@@ -33,26 +32,6 @@ if( ${Registration} == TRUE )
     Echo (${output})
   EndIf( ${step} < 2 )
 
-  Set( Direction ${tempDir}/${Case}/${Case}_direction.tfm )
-  Set( Cmd ${ITKTransformTools} direction ${Img} ${Direction} )
-  If( ${step} < 3 )
-    Run( output ${Cmd} )
-    echo( ${output} )
-  EndIf( ${step} < 3 )
-
-  Set( directionGrid ${tempDir}/${Case}/${Case}_directionGrid.nrrd )
-  Set( Cmd ${ITKTransformTools} size ${DestImg} ${Direction} --grid ${directionGrid} )
-  If( ${step} < 4 )
-    Run( output ${Cmd} )
-    echo( ${output} )
-  EndIf( ${step} < 4 )
-
-  Set( directionIMG ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.gipl.gz )
-  Set( Cmd ${ResampleVolume2} ${DestImg} -f ${Direction} -R ${directionGrid} -d 1,0,0,0,1,0,0,0,1 ${directionIMG} )
-  If( ${step} < 5 )
-    Run( output ${Cmd} )
-    echo( ${output} )
-  EndIf( ${step} < 5 )
 EndIf( ${Registration} == TRUE )
 
 
@@ -60,11 +39,11 @@ EndIf( ${Registration} == TRUE )
 
 set( count 0 )
 If( ${IS_SCALED} == TRUE )
-  ForEach( file ${TEMPLATE_TAG} )
-    GetParam(EXT ${TEMPLATE_EXT} ${count})
+  ForEach( file ${PROBMAP_FILES_TAG} )
+    GetParam(EXT ${PROBMAP_FILES_EXT} ${count})
     Set( SrcImg ${TEMPLATE_DIR}/${file}${EXT} )
     if( ${Registration} == TRUE )
-      Set( DstImg ${tempDir}/${Case}/${file}.gipl.gz )
+      Set( DstImg ${tempDir}/${Case}/${file}.nii.gz )
     else( ${Registration} == TRUE )
       Set( DstImg ${tempDir}/${Case}/${file}.mha )
     endif( ${Registration} == TRUE )
@@ -78,5 +57,5 @@ If( ${IS_SCALED} == TRUE )
     echo( ${output} )
     Inc( ${count} 1 )
     Int( ${count} )
-  EndForEach( file ${TEMPLATE_TAG} )
+  EndForEach( file ${PROBMAP_FILES_TAG} )
 EndIf( ${IS_SCALED} )
