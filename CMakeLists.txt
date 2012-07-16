@@ -10,9 +10,9 @@ ABC
 SegPostProcessCLP
 ImageMath
 ResampleVolume2
-rreg
-transformation
-areg
+#rreg
+#transformation
+#areg
 RegisterImages
 Double2FloatTransform
 AtlasWerks
@@ -87,7 +87,7 @@ if( ${InputType} STREQUAL scalar )
   set(PopulationAverageInputSuffix .nhdr )
   set(DTISuffix '' )
   set(TransformSuffix '' )
-#  set(TransformSuffixAverage '' )
+  set(TransformSuffixAverage '' )
   set(StatFileSuffix _reg.nrrd )
   set(WarpInputSuffix _reg.nrrd )
   set(PopulationAverage AverageImage_SS.nrrd )
@@ -96,6 +96,7 @@ if( ${InputType} STREQUAL scalar )
 endif()
 
 if( ${InputType} STREQUAL DWI )
+  set(PopulationAverage AverageTensor_SS.nrrd )
   set(InputSuffix _dwi.nhdr )
   set(RigidRegistrationImageSuffix _idwi_toTemplate.nhdr )
   set(IsScalar FALSE )
@@ -110,10 +111,11 @@ if( ${InputType} STREQUAL DWI )
 endif()
 
 if( ${InputType} STREQUAL DTI )
+  set(PopulationAverage AverageTensor_SS.nrrd )
   set(InputSuffix _dti_f.nhdr )
   set(RigidRegistrationImageSuffix _MD_toTemplate.nhdr )
   set(IsScalar FALSE )
-  set(PopAverageInputSuffix _dti_f_toTemplate_MD.nhdr )
+  set(PopulationAverageInputSuffix _dti_f_toTemplate_MD.nhdr )
   set(DTISuffix _dti_f.nhdr )
   set(TransformSuffix _toTemplateCombined.txt )
   set(StatFileSuffix "_dti_f_reg_AD.nrrd _dti_f_reg_FA.nrrd _dti_f_reg_MD.nrrd _dti_f_reg_RD.nrrd" )
