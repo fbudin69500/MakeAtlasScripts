@@ -6,7 +6,7 @@ set( AverageImageSS_orig ${outputDir}/AverageImage_SS_orig.nrrd )
 set( AverageImageNSS_orig ${outputDir}/AverageImage_NSS_orig.nrrd )
 
 #########################################################################################
-				HISTOGRAM MATCH = FALSE
+#				HISTOGRAM MATCH = FALSE
 #########################################################################################
 
 IF (${HISTOGRAM_MATCH} == FALSE)
@@ -158,7 +158,7 @@ Set( Cmd ${ImageMath} ${FIRST_NSS_ORIGIMAGES} -avg ${LIST_NSS_ORIGIMAGES} -outfi
 EndIf (${Recalculate_avg} == TRUE)
 
 #########################################################################################
-				HISTOGRAM MATCH = TRUE
+#				HISTOGRAM MATCH = TRUE
 #########################################################################################
 
 ELSE (${HISTOGRAM_MATCH} == FALSE)
