@@ -34,6 +34,15 @@ ForEach( i ${CASES} )
   Set( image ${InSubjDir}/${i}${WARP_INPUT_SUFFIX} )
   if( ${USE_INV_HFIELD} == TRUE )
     set( hfield -H ${InSubjDir}/${i}${InvHField_Suffix} )
+    #####Resample images############
+    ForEach(j ${LabelMapsToWarp} )
+      GetFilename( name ${j} NAME )
+      set( ResampledImage ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_${name} )
+      set( Cmd ${ResampleVolume2} ${AverageDir}/${j} ${ResampledImage} -i nn -R ${image} ${hfield} )
+      echo( ${Cmd} )
+      run( output ${Cmd} )
+      echo( ${output} )
+    EndForEach(j ${LabelMapsToWarp} )
   else( ${USE_INV_HFIELD} == TRUE )
     #######Mask input image
     Set( mask ${InSubjDir}/${i}${NEW_MASK_TAG} )
@@ -44,13 +53,13 @@ ForEach( i ${CASES} )
     echo( ${output} )
 
     ########Initial registration
-    set( InitialTransform ${tempDir}/${i}_initialTransform.txt )
+    set( InitialTransform ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_initialTransform.txt )
     Set( Cmd ${RegisterImages} --initialization CentersOfMass --saveTransform ${InitialTransform} --registration Initial ${MaskedImage} ${template} )
     echo( ${Cmd} )
     run( output ${Cmd} )
     echo( ${output} )
 
-    set( InitialTransformGrid ${tempDir}/${i}_template_initialTransformGrid.nii.gz )
+    set( InitialTransformGrid ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_template_initialTransformGrid.nii.gz )
     set( Cmd ${ITKTransformTools} size ${template} ${InitialTransform} --grid ${InitialTransformGrid} )
     echo( ${Cmd} )
     run( output ${Cmd} )
@@ -61,6 +70,16 @@ ForEach( i ${CASES} )
     echo( ${Cmd} )
     run( output ${Cmd} )
     echo( ${output} )
+
+
+    ForEach(j ${LabelMapsToWarp} )
+      GetFilename( name ${j} NAME )
+      set( ResampledImage ${tempDir}/${i}_initialTransform_${name} )
+      set( Cmd ${ResampleVolume2} ${AverageDir}/${j} ${ResampledImage} -i nn -R ${InitialTransformGrid} -f ${InitialTransform} )
+      echo( ${Cmd} )
+      run( output ${Cmd} )
+      echo( ${output} )
+    EndForEach(j ${LabelMapsToWarp} )
   
     #####################################################
     #######################ANTS##########################
@@ -87,21 +106,59 @@ ForEach( i ${CASES} )
 
    #####Warp#####################
     Set( template_WARP ${OutSubjDir}/${PROCESS_SUBDIR}/${template_TAG}_ANTSWarp.nii.gz  )
-    set( WarpCmd ${WarpImageMultiTransform} 3 ${template} ${template_WARP} ${WARP_FILE} ${AFFINE_FILE} -R ${MaskedImage} )
+    set( WarpCmd ${WarpImageMultiTransform} 3 ${InitialTemplate} ${template_WARP} ${WARP_FILE} ${AFFINE_FILE} -R ${MaskedImage} )
     echo( ${WarpCmd} )
     Run( output ${WarpCmd} )
     echo( ${output} )
 
-    set( hfield --hfieldtype displacement -H ${WARP_FILE} )
-  endif( ${USE_INV_HFIELD} == TRUE )
-  #####Resample Average############
-  ForEach(j ${LabelMapsToWarp} )
-    GetFilename( name ${j} NAME )
-    set( ResampledImage ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_${name} )
-    set( Cmd ${ResampleVolume2} ${AverageDir}/${j} ${ResampledImage} -i nn -R ${image} ${hfield} )
+######Merge transforms#########
+    set( affineTransform ${tempDir}/${i}_ANTSaffine.txt )
+    set( Cmd ITKTransformTools MO2Aff ${AFFINE_FILE} ${affineTransform} )
     echo( ${Cmd} )
     run( output ${Cmd} )
     echo( ${output} )
-  EndForEach(j ${LabelMapsToWarp} )
+
+    set( compose ${tempDir}/${i}_affineCompose.txt )
+    set( Cmd ITKTransformTools compose ${InitialTransform} ${AFFINE_FILE} ${compose} )
+    echo( ${Cmd} )
+    run( output ${Cmd} )
+    echo( ${output} )
+
+    set( displacementAffine ${tempDir}/${i}_DisplacementAffine.nrrd )
+    set( Cmd ResampleDTIlogEuclidean ${InSubjDir}/${i}_dti_f_toTemplate.nhdr ${tempDir}/dummy.nrrd -f ${compose} -R ${image} --outputDisplacementField ${displacementAffine} --concatenationOnly )
+    echo( ${Cmd} )
+    run( output ${Cmd} )
+    echo( ${output} )
+
+    set( Concatenated ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_DisplacementField.nrrd )
+    set( Cmd TransformDeformationField --outputConcatenate ${Concatenated} --concatenate ${WARP_FILE},${displacementAffine} -R ${image} --hfieldtype displacement,displacement )
+    echo( ${Cmd} )
+    run( output ${Cmd} )
+    echo( ${output} )
+
+    set( InverseDisplacementAffine ${tempDir}/${i}_InverseDisplacementAffine.nrrd )
+    set( Cmd ResampleDTIlogEuclidean ${InSubjDir}/${i}_dti_f_toTemplate.nhdr ${tempDir}/dummy.nrrd -f ${compose} -b -R ${template} --outputDisplacementField ${InverseDisplacementAffine} --concatenationOnly )
+    echo( ${Cmd} )
+    run( output ${Cmd} )
+    echo( ${output} )
+
+    set( InverseConcatenated ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_InverseDisplacementField.nrrd )
+    set( Cmd TransformDeformationField --outputConcatenate ${InverseConcatenated} --concatenate ${InverseDisplacementAffine},${WARP_FILE} -R ${template} --hfieldtype displacement,displacement )
+    echo( ${Cmd} )
+    run( output ${Cmd} )
+    echo( ${output} )
+
+###############################
+
+    ForEach(j ${LabelMapsToWarp} )
+      GetFilename( name ${j} NAME )
+      set( initialImage ${tempDir}/${i}_initialTransform_${name} )
+      set( ResampledImage ${OutSubjDir}/${PROCESS_SUBDIR}/${i}_${name} )
+      set( Cmd ${WarpImageMultiTransform} 3 ${initialImage} ${ResampledImage} ${WARP_FILE} ${AFFINE_FILE} -R ${MaskedImage} --use-NN)
+      echo( ${Cmd} )
+      run( output ${Cmd} )
+      echo( ${output} )
+    EndForEach(j ${LabelMapsToWarp} )
+  endif( ${USE_INV_HFIELD} == TRUE )
 EndForEach( i ${CASES} )
 
