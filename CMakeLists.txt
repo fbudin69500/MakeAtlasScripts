@@ -78,7 +78,7 @@ if( NOT( ${InputType} STREQUAL scalar )
   message( FATAL_ERROR "InputType must be either scalar or DWI or DTI" )
 endif()
 
-set( ConfigVersion 2.1 )
+set( ConfigVersion 2.2 )
 
 if( ${InputType} STREQUAL scalar )
   set(InputSuffix .nhdr )
