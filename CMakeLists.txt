@@ -27,6 +27,13 @@ ImageStat
 ANTS
 WarpImageMultiTransform
 buildtemplateparallel.sh
+dtiestim
+ManualImageOrient
+DiffusionTensorEstimation
+HistogramMatching
+CreateMRML
+N4ITKBiasFieldCorrection
+MaskComputationWithThresholding
 )
 
 set( ToolsDirectory "/rodent/bin_linux64/toolsApril2012" CACHE PATH "Tools
