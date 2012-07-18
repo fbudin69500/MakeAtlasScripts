@@ -7,47 +7,37 @@
 #####################################################################################################
 ##-1-Cases to process
 set( CASES @cases@ )
-##-2-Input suffix of files used to create new average
-set( INPUT_SUFFIX @InputSuffix@ )
+##-2-Input files used to create new average
+set( INPUT_FILE @ProjectDirectory@/@ProcessingRelativePath@/*/1-Converted/*@InputSuffix@ )
 ##-3-Template file name
-set( TEMPLATE_FILE template.mha )
+set( TEMPLATE_FILE @TemplateDirectory@/template.mha )
+##-5-Transform
+#ie: @ProjectDirectory@/@ProcessingRelativePath@/2-ManualTransform/*_manual_reg.txt
+set( MANUAL_TRANSFORM '' )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
-##-4-Template directory for brain stripping and segmentation
-set( TEMPLATE_DIR @TemplateDirectory@ )
-##-5-Transform (ie: '_manual_reg.txt' )
-set( TRANSFORM_SUFFIX '' )
-##dir/case/case_suffix;dir=/rodent/Project/subProject1
-##-6-SubProject root directory
-set( dir @ProjectDirectory@ )
-##-7-subdirectory in the case directory in which to save new case files
-set( PROCESS_SUBDIR 2-Registration )
+##-11-Manual orientation (ie: LPS )
+set( orientation '' )
+##-12-Additional images (to interpolate with linear interpolator) (ie: @ProjectDirectory@/@ProcessingRelativePath@/*/1-Converted/*_T1.nrrd)
+set( ADDITIONAL_IMAGES '' )
+##-13-Additional images (to interpolate with nearest neighbor interpolator) (ie: @ProjectDirectory@/@ProcessingRelativePath@/*/1-Converted/*_segmentation.nrrd)
+set( ADDITIONAL_IMAGES_NN '' )
+##-14-Initial transform (ie: @ProjectDirectory@/@ProcessingRelativePath@/*/1-Converted/*_initialTransform.txt)
+set( INITIAL_TRANS '' )
+##-16-Output directory
+set( OUTPUT_DIR @ProjectDirectory@/@ProcessingRelativePath@/*/2-Registration )
+##-19-Name of this file (configuration file).
+##Set to '' if you don't want to save the configuration file in the output directory
+set( ScriptName @ConfigDirectory@/2-RegistrationConfig.bms )
+##-18-directory in which temporary files are written
+set( tempDir @ProjectDirectory@/@ProcessingRelativePath@/temp )
 ##-8-Bias correction
 set( BIAS TRUE )
 ##-9-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
 set( SCALE FALSE )
 ##-10-Skullstrip the image using a simple intensity based algorithm
 set( SKULLSTRIP FALSE )
-##-11-Manual orientation (ie: LPS )
-set( orientation '' )
-##-12-Additional images (to interpolate with linear interpolator)
-set( ADDITIONAL_IMAGES_SUFFIX '' )
-##-13-Additional images (to interpolate with nearest neighbor interpolator)
-set( ADDITIONAL_IMAGES_NN_SUFFIX '' )
-##-14-Initial transform
-set( INITIAL_TRANS_SUFFIX '' )
-##-15-Input pre-subdir. For old data structure, the value should be "."
-set( INPUT_PRE_SUBDIR @ResultsSubDirectory@ )
-##-16-Output pre-subdir. For old data structure, the value should be "."
-set( OUTPUT_PRE_SUBDIR @ProcessingRelativePath@ )
-##-17-Input post-subdir. For new data structure, the value should be "."
-set( INPUT_POST_SUBDIR @InputPostSubDirectory@ )
-##-18-directory in which temporary files are written
-set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
-##-19-Name of this file (configuration file).
-##Set to '' if you don't want to save the configuration file in the output directory
-set( ScriptName @ConfigDirectory@/2-RegistrationConfig.bms )
 ##The files must have the following structure:
 ##-20-Type of the input image: DWI, DTI or scalar
 set( Type @InputType@ )

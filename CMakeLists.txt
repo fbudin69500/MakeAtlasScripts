@@ -3,7 +3,7 @@ CMAKE_POLICY(VERSION 2.8)
 
 project(MakeAtlasScripts NONE)
 
-
+#######################################Tools used######################################
 set( listTools
 DWIProcessPipeline
 ABC
@@ -39,7 +39,7 @@ MaskComputationWithThresholding
 set( ToolsDirectory "/rodent/bin_linux64/toolsApril2012" CACHE PATH "Tools
 directory")
 
-#Find tools
+##########################Find tools##############################################
 foreach( var ${listTools} )
   find_program(${var}TOOL ${ToolsDirectory}/${var} )
   if(NOT ${var}TOOL )
@@ -77,9 +77,9 @@ if( NOT( ${InputType} STREQUAL scalar )
   )
   message( FATAL_ERROR "InputType must be either scalar or DWI or DTI" )
 endif()
-
-set( ConfigVersion 2.2 )
-
+###########################Version of the pipeline############################################
+set( ConfigVersion 3 )
+###########################set variables values depending on project type######################
 if( ${InputType} STREQUAL scalar )
   set(InputSuffix .nhdr )
   set(RigidRegistrationImageSuffix .nhdr )
@@ -124,7 +124,7 @@ if( ${InputType} STREQUAL DTI )
   set(AverageInputSuffix "_dti_f_reg_AD.nrrd _dti_f_reg_FA.nrrd _dti_f_reg_MD.nrrd _dti_f_reg_RD.nrrd" )
   set(HISTOGRAM_MATCH_VAL "FALSE FALSE FALSE FALSE" )
 endif()
-
+#####################################################################################################
 FILE(GLOB config_files "${CMAKE_CURRENT_SOURCE_DIR}/Config/*.bms.in")
 
 if( DEFINED oldProcessingDir )
@@ -132,6 +132,9 @@ else( DEFINED oldProcessingDir )
   set( oldProcessingDir "notdefined" CACHE INTERNAL "oldProcessDir" FORCE )
 endif()
 
+
+###########Find the cases in the processing folder########################
+###########and configures the path properly########################
 if( NOT( ${ProcessingDirectory} STREQUAL ${oldProcessingDir} ) )
   FILE(GLOB casesGlob "${ProcessingDirectory}/*")
   set( casesValues "" )
@@ -156,11 +159,12 @@ if( NOT( ${ProcessingDirectory} STREQUAL ${oldProcessingDir} ) )
   set( ProjectDirectory "${changeProjectDirectory}" CACHE PATH "Project directory" FORCE )
 endif()
 
+###################################################
 get_filename_component(ProcessingDirRealPath ${ProcessingDirectory} REALPATH )
 get_filename_component(ProjectDirectoryRealPath ${ProjectDirectory} REALPATH )
 
 file(RELATIVE_PATH ProcessingRelativePath ${ProjectDirectoryRealPath} ${ProcessingDirRealPath} )
-
+##############Writes configured files##############################################
 foreach( var ${config_files} )
   string(REPLACE ".bms.in" ".bms" var2 ${var} )
   string(REGEX REPLACE ".*/" "" var2 ${var2} )
