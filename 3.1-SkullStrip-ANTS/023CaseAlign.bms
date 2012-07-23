@@ -1,0 +1,190 @@
+### The script uses:
+#- rreg
+#- transformation
+#- areg
+#- ResampleVolume2
+###############################
+# iterate over all cases and do initial registration onto template frame
+
+Echo ('Registering '${Case})
+
+	# requires three files
+	# 1) source file (subject image)
+	# 2) destination file (template image)
+	# 3) transformation file
+	# 4) registration parameter file (if necessary)
+
+set ( TemplateFile_TAG template )
+
+If( ${IS_SCALED} == TRUE )
+  Set ( TemplateFile ${tempDir}/${Case}/${TemplateFile_TAG}.nii.gz )
+Else( ${IS_SCALED} == TRUE )
+  Set ( TemplateFile ${tempDir}/${TemplateFile_TAG}.nii.gz )
+EndIf( ${IS_SCALED} == TRUE )
+
+If( ${i} != 0 )
+  Set( CaseImg ${CORRECTED} )
+  set( masked_image ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}_masked${i}.nii.gz)
+  set( Cmd ${ImageMath} ${CaseImg} -mask ${dilatedMASK} -outfile ${masked_image} -type float )
+  If( ${step} < 6 )
+    run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 6 )
+  set ( CaseImg ${masked_image} )
+  set ( CaseImg_TAG ${Case}${RIGID_REGISTRATION_IMAGE_TAG}_masked${i})
+Else( ${i} != 0 )
+  Set (CaseImg ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.nii.gz)
+  set (CaseImg_TAG ${Case}${RIGID_REGISTRATION_IMAGE_TAG})
+EndIf( ${i} != 0 )
+
+
+#############################################################
+#histogram match
+#############################################################
+Set( CaseImg_hm ${tempDir}/${Case}/${TemplateFile_TAG}_hm.nii.gz )
+Set( IMCmd ImageMath ${CaseImg} -matchHistogram ${TemplateFile} -outfile ${CaseImg_hm} -type float )
+
+If( ${step} < 8 )
+  Run( output ${IMCmd} )
+  Echo( ${output} )
+EndIf( ${step} < 8 )
+
+##############################################
+# alignment of TemplateFile and SrcFile : init transform
+##############################################
+
+  #####Uses RI for an initialization and saves transform#############
+set( INIT_TRANSFORM ${tempDir}/${Case}/Init_transform.txt )
+set( RegCmd ${RegisterImages} --initialization CentersOfMass --registration Initial ${CaseImg_hm} ${TemplateFile} --saveTransform ${INIT_TRANSFORM})
+
+echo( ${RegCmd} )
+if (${step} < 8)
+  run( output ${RegCmd} )
+  echo( ${output} )
+endif (${step} < 8)
+
+  #####ITKTransformTools#####################
+set ( Grid ${tempDir}/${Case}/Grid.nrrd )
+#creating grid with the moving image
+set ( ITKTTCmd ${ITKTransformTools} size ${TemplateFile} ${INIT_TRANSFORM} --grid ${Grid} )
+
+echo( ${ITKTTCmd} )
+if (${step} < 9)
+  run( output ${ITKTTCmd} )
+  echo( ${output} )
+endif (${step} < 9)
+
+  #####ResampleVolume2#####################
+#applying transform to the moving image
+set ( DstImg_TAG ${TemplateFile_TAG}_Initialized )
+set ( DstImg ${tempDir}/${Case}/${DstImg_TAG}.nrrd ) 
+
+set ( RV2Cmd ${ResampleVolume2} -f ${INIT_TRANSFORM} -i nn -R ${Grid} ${TemplateFile} ${DstImg})
+
+echo( ${RV2Cmd} )
+if (${step} < 10)
+  run( output ${RV2Cmd} )
+  echo( ${output} )
+endif (${step} < 10)
+
+#############################################################
+#registration with ants
+#############################################################
+
+set ( RigidTransform  '' )
+Set ( SrcImg ${DstImg} )
+Set ( SrcImg_TAG ${DstImg_TAG})
+
+if( ${Rigid} == TRUE )
+  #############################################################
+  #rigid registration 
+  set( NII_FILE_PREFIX ${tempDir}/${Case}/${SrcImg_TAG}_to_${CaseImg_TAG} )
+  set( RIGID_TRANSFORM ${NII_FILE_PREFIX}Affine.txt )
+
+  #ants fixed moving
+  set ( AntsCmd ${ANTS} 3 -m MI[${CaseImg_hm}, ${SrcImg}, 1, 128] -i 0 --rigid-affine true -o ${NII_FILE_PREFIX} )
+  echo (${AntsCmd})
+  If( ${step} < 11 )
+    Run (output ${AntsCmd})
+    Echo (${output})
+  EndIf( ${step} < 11 )
+
+  Set ( SrcImg ${DstImg} )
+  Set( DstImg ${tempDir}/${Case}/${SrcImg_TAG}_rigid${i}.nii.gz )
+  Set ( RIGID_TRANSFORM_ITKTT ${NII_FILE_PREFIX}Rigid_ITKTT.txt )
+
+  Set ( ITKTTCmd ${ITKTransformTools} MO2Aff ${RIGID_TRANSFORM} ${RIGID_TRANSFORM_ITKTT})  
+  Echo (${ITKTTCmd})
+  If( ${step} < 12 )
+    Run (output ${ITKTTCmd})
+    Echo (${output})
+  EndIf( ${step} < 12 )
+
+  Set (RV2Cmd ${ResampleVolume2} -f ${RIGID_TRANSFORM_ITKTT} -R ${CaseImg} ${SrcImg} ${DstImg} )
+  echo (${RV2Cmd})
+  If( ${step} < 12 )
+    Run (output ${RV2Cmd})
+    Echo (${output})
+  EndIf( ${step} < 12 )
+
+  set ( RigidTransform  ${RIGID_TRANSFORM_ITKTT} )
+  set ( SrcImg ${DstImg} ) 
+  set ( SrcImg_TAG ${SrcImg_TAG}_rigid${i} )
+
+Endif( ${Rigid} == TRUE )
+
+#############################################################
+#affine registration of DstImg with TemplateFile
+#############################################################
+set( NII_FILE_PREFIX ${tempDir}/${Case}/${SrcImg_TAG}_to_${CaseImg_TAG} )
+set( AFFINE_TRANSFORM ${NII_FILE_PREFIX}Affine.txt )
+
+set ( AntsCmd ${ANTS} 3 -m MI[${CaseImg}, ${SrcImg}, 1, 128] -i 0 -o ${NII_FILE_PREFIX})
+Echo (${AntsCmd})
+If( ${step} < 13 )
+  Run (output ${AntsCmd})
+  Echo (${output})
+EndIf( ${step} < 13 )
+
+Set ( AFFINE_TRANSFORM_ITKTT ${NII_FILE_PREFIX}Affine_ITKTT.txt )
+
+Set ( ITKTTCmd ${ITKTransformTools} MO2Aff ${AFFINE_TRANSFORM} ${AFFINE_TRANSFORM_ITKTT})  
+Echo (${ITKTTCmd})
+If( ${step} < 13 )
+  Run (output ${ITKTTCmd})
+  Echo (${output})
+EndIf( ${step} < 13 )
+
+#############################################################
+#fusion of the 3 transforms
+#############################################################
+set ( GLOBAL_TRANSFORM ${tempDir}/${Case}/Global.txt )
+
+set ( FusionCmd ${ITKTransformTools} combine ${INIT_TRANSFORM} ${RigidTransform} ${AFFINE_TRANSFORM_ITKTT} -o ${GLOBAL_TRANSFORM})
+Echo (${FusionCmd})
+If( ${step} < 14 )
+  Run (output ${FusionCmd})
+  Echo (${output})
+EndIf( ${step} < 14 )
+
+#############################################################
+#applying global transform to proba maps
+#############################################################
+
+ForEach( Type ${PROBMAP_FILES_TAG} )
+  If( ${IS_SCALED} == TRUE )
+    Set ( image ${tempDir}/${Case}/${Type}.nii.gz )
+  Else( ${IS_SCALED} == TRUE )
+    Set ( image ${tempDir}/${Type}.nii.gz )
+  EndIf( ${IS_SCALED} == TRUE )
+
+  Set( DstImg ${ABC_Case_DIR}/${Type}.mha )
+
+  Set (RV2Cmd ${ResampleVolume2} -f ${GLOBAL_TRANSFORM} -i nn -R ${CaseImg} ${image} ${DstImg} )
+  Echo (${RV2Cmd})
+  If( ${step} < 16 )
+    Run (output ${RV2Cmd})
+    Echo (${output})
+  EndIf( ${step} < 16 )
+
+EndForEach( Type PROBMAP_FILES_TAG )

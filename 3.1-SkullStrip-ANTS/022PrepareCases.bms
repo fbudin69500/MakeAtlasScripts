@@ -1,0 +1,61 @@
+### The script uses:
+#- ImageMath
+#- ResampleVolume2
+###############################
+#prepare files before computation
+
+#convert
+if( ${Registration} == TRUE )
+  RegEx( Img ${RIGID_REGISTRATION_IMAGE} '\*' REPLACE ${Case} )
+
+  Set( DestImg ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.nii.gz )
+
+  if( ${IS_SCALAR} == FALSE )
+    echo( "DTI image" )
+    if( ${RIGID_IS_MD} == TRUE )
+      echo( "MD image" )
+      set( Cmd ${ImageMath} ${Img} -constOper 2,100000 -outfile ${DestImg} )
+    else( ${RIGID_IS_MD} == TRUE )
+      if( ${RIGID_IS_FA} == TRUE )
+         echo( "FA image" )
+         set( Cmd ${ImageMath} ${Img} -constOper 2,10000 -outfile ${DestImg} )
+      else( ${RIGID_IS_FA} == TRUE )
+         Set( Cmd ${ResampleVolume2} ${Img} ${DestImg} -i nn )
+      EndIf( ${RIGID_IS_FA} == TRUE )
+    EndIf( ${RIGID_IS_MD} == TRUE )
+  else( ${IS_SCALAR} == FALSE )
+    echo( "Scalar image" )
+    Set( Cmd ${ResampleVolume2} ${Img} ${DestImg} -i nn )
+  endif( ${IS_SCALAR} == FALSE )
+  If( ${step} < 2 )
+    Run (output ${Cmd})
+    Echo (${output})
+  EndIf( ${step} < 2 )
+
+EndIf( ${Registration} == TRUE )
+
+
+
+RegEx( TEMPLATE_GRID_case ${TEMPLATE_GRID} '\*' REPLACE ${Case} )
+set( count 0 )
+If( ${IS_SCALED} == TRUE )
+  ForEach( file ${PROBMAP_FILES_TAG} )
+    GetParam(EXT ${PROBMAP_FILES_EXT} ${count})
+    Set( SrcImg ${TEMPLATE_DIR}/${file}${EXT} )
+    if( ${Registration} == TRUE )
+      Set( DstImg ${tempDir}/${Case}/${file}.nii.gz )
+    else( ${Registration} == TRUE )
+      Set( DstImg ${tempDir}/${Case}/${file}.mha )
+    endif( ${Registration} == TRUE )
+    Set (transformCmd ${ResampleVolume2} ${SrcImg} ${DstImg} -R ${TEMPLATE_GRID_case} )
+    echo(${transformCmd})
+    Run (output ${transformCmd})
+    Echo (${output})
+    Set( ImageMathCmd ${ImageMath} ${DstImg} -changeSp 1,1,1 -outfile ${DstImg} -type float )
+    echo( ${ImageMathCmd} )
+    Run( output ${ImageMathCmd} )
+    echo( ${output} )
+    Inc( ${count} 1 )
+    Int( ${count} )
+  EndForEach( file ${PROBMAP_FILES_TAG} )
+EndIf( ${IS_SCALED} )

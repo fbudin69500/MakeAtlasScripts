@@ -1,0 +1,61 @@
+##Check that the version is the same in the example and in the config file you are modifying.
+##If not, copy and modify this example to have a version of the configuration file that is up
+##to date.
+##Version:@ConfigVersion@
+#####################################################################################################
+################################### Variables to set ################################################
+#####################################################################################################
+##-1-Cases to process
+set( CASES @cases@ )
+##-2-suffix of the image used to register the input image to the template to compute segmentation
+set( RIGID_REGISTRATION_IMAGE @ProcessingDirectory@/*/2-Registration/@RigidRegistrationImageFile@ )
+#####################################################################################################
+######################## Advanced options that you should not have to modify ########################
+#####################################################################################################
+##-3-subdirectory in the case directory in which to save new case files (mask and parcellation)
+set( OUTPUT_DIR @ProcessingDirectory@/*/3-SkullStripping-ANTS )
+##-4-Mask file name
+set( OUTPUT_MASK_FILE *_mask_from_seg.nrrd )
+##-6-type of image used for segmentation. Can hold multiple types
+set( ABC_IMAGE ${RIGID_REGISTRATION_IMAGE} )
+##-7-Register the images or not (skips both rigid and affine registration if set to FALSE )
+set( Registration TRUE )
+##-8-Rigid or only affine registration
+set( Rigid TRUE )
+##-9-Bias field correction (TRUE/FALSE)
+set( biasFieldCorrection FALSE )
+##-13-(External) Template and probability maps directory
+set( TEMPLATE_DIR @TemplateDirectory@ )
+##-14-Is the image used for the registration the MD image? In that case, we'll multiply its values
+##by 100000 before converting it to integers
+set( RIGID_IS_MD FALSE )
+##-15-Is the image used for the registration the FA image? In that case, we'll multiply its values
+##by 10000 before converting it to integers
+set( RIGID_IS_FA FALSE )
+##-16-if scalar image (TRUE or FALSE)
+set( IS_SCALAR @IsScalar@ )
+##-17-Closing radius to smooth mask computed from segmentation
+set( MASK_CLOSING_RADIUS 5 )
+##-18-Filter method: if set to true, ABC will use the 'Curvature flow'. Otherwise, it will use 'Grad aniso diffusion'
+set( FILTERCURVATURE TRUE )
+##-19-Files in probability maps directory. ([1-4].mha + one file that must be called template.${ext})
+set( PROBMAP_DIR_FILES 1.mha 2.mha 3.mha 4.mha template.mha )
+##-20-ABC Priors
+set( PRIORS 1 1 1 1 )
+##-21-template grid : the file that saves the original spacing when the image is scaled to 1,1,1. It is not a temporary file. 
+set( TEMPLATE_GRID  @ProcessingDirectory@/*/2-Registration/AverageGrid.nrrd ) 
+##-22-directory in which temporary files are written
+set( tempDir @ProcessingDirectory@/temp/3.1-SkullStripping-ANTS )
+##-23-was the input image scaled to 1,1,1
+set( IS_SCALED FALSE )
+##-24-Number of loops: sequence(seq 0 NB_LOOPS 1)
+sequence(seq 0 0 1)
+##-26-Name of this file (configuration file).
+##Set to '' if you don't want to save the configuration file in the output directory
+set( ScriptName @ConfigDirectory@/3.1-SkullStripANTSConfig.bms )
+##-27-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
+set( step 0 )
+#######################################################################################################
+include( @ConfigDirectory@/GlobalConfig.bms )
+##Processes
+include( @CMAKE_CURRENT_SOURCE_DIR@/3.1-SkullStrip-ANTS/000SkullStrip.bms )
