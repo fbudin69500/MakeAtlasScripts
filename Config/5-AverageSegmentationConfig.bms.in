@@ -5,16 +5,14 @@
 #####################################################################################################
 ################################### Variables to set ################################################
 #####################################################################################################
-##-1-Population average directory suffix
-set( PopAverageDirectorySuffix 1 )
 ##-2-Population average file name
-set( PopulationAverage @PopulationAverage@ )
+set( PopulationAverage @ProcessingDirectory@/4-AtlasCreation/@PopulationAverage@ )
 ##-3-External template (in probability maps directory)
-set( TEMPLATE template.mha )
+set( TEMPLATE @TemplateDirectory@/template.mha )
 ##-4-External template mask (in probability maps directory)
 set ( TEMPLATE_mask_FILENAME '' )
 ##-5-Name of the template segmentation. This file has to be in external template directory
-set( TEMPLATE_SEGMENTATION segmentation.mha )
+set( TEMPLATE_SEGMENTATION @TemplateDirectory@/segmentation.mha )
 ##-6-Population Average mask (if there isn't one, set to '', if there's one, give the full path)
 set ( PopAverage_mask_FILENAME '' )
 ###################################
@@ -26,22 +24,12 @@ set( IS_SCALED FALSE )
 set( Diffeomorphic TRUE )
 ##-9-Do you want the smoothing? (type float)
 set ( Smooth FALSE )
-##The files must have the following structure:
-##dir/case/case_suffix;dir=/rodent/Project/subProject1
-##-10-SubProject root directory
-set( dir @ProjectDirectory@ )
-##-11-Input pre-subdir. For old data structure, the value should be "."
-set( INPUT_PRE_SUBDIR @ResultsSubDirectory@ )
-##-12-Output pre-subdir. For old data structure, the value should be "."
-set( OUTPUT_PRE_SUBDIR @ProcessingRelativePath@ )
-##-13- Template and probability maps directory
-set( TEMPLATE_DIR @TemplateDirectory@ )
-##-14-Directory in which the computed population average and its segmentation are saved
-set( PopAverageDir ${dir}/${OUTPUT_PRE_SUBDIR}/Average-${PopAverageDirectorySuffix} )
+##-14-Directory in which the segmentation is saved
+set( OutputDir @ProcessingDirectory@/5-AverageSegmentation )
 ##-15-Directory in which temporary files are written
-set( tempDir ${PopAverageDir}/temp )
+set( tempDir @ProcessingDirectory@/temp/5-AverageSegmentation )
 ##-16-Image grid filename
-set( IMAGE_GRID ImageGrid.nrrd )
+set( IMAGE_GRID @ProcessingDirectory@/4-AtlasCreation//ImageGrid.nrrd )
 ##-17- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the ANTS doc)
 set (Measure MI)
 ##-18- ANTS ranges. Bin number for MI metric. Refer to ANTS doc for the other metrics
@@ -50,8 +38,8 @@ set (bin_number 32 )
 set( step 0 )
 ##-20-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
-set( ScriptName @ConfigDirectory@/5-AtlasSegmentationConfig.bms )
+set( ScriptName @ConfigDirectory@/5-AverageSegmentationConfig.bms )
 ###################################
 include( @ConfigDirectory@/GlobalConfig.bms )
 ##Processes
-include( @CMAKE_CURRENT_SOURCE_DIR@/5-AtlasSegmentation/000AverageSegmentation.bms )
+include( @CMAKE_CURRENT_SOURCE_DIR@/5-AverageSegmentation/000AverageSegmentation.bms )

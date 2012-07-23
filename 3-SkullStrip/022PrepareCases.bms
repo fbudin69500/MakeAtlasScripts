@@ -3,12 +3,13 @@
 #- ResampleVolume2
 ###############################
 #prepare files before computation
+#rreg and areg need .gipl.gz files so we convert everything that
+#these softare are going to use to this format
 
 #convert
 if( ${Registration} == TRUE )
-
-  Set( Img ${InputSubjDir}/${Case}${RIGID_REGISTRATION_IMAGE_SUFFIX} )
-  Set( DestImg ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.nii.gz )
+  RegEx( Img ${RIGID_REGISTRATION_IMAGE} '\*' REPLACE ${Case} )
+  Set( DestImg ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}_noDirection.gipl.gz )
 
   if( ${IS_SCALAR} == FALSE )
     echo( "DTI image" )
@@ -32,22 +33,42 @@ if( ${Registration} == TRUE )
     Echo (${output})
   EndIf( ${step} < 2 )
 
+  Set( Direction ${tempDir}/${Case}/${Case}_direction.tfm )
+  Set( Cmd ${ITKTransformTools} direction ${Img} ${Direction} )
+  If( ${step} < 3 )
+    Run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 3 )
+
+  Set( directionGrid ${tempDir}/${Case}/${Case}_directionGrid.nrrd )
+  Set( Cmd ${ITKTransformTools} size ${DestImg} ${Direction} --grid ${directionGrid} )
+  If( ${step} < 4 )
+    Run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 4 )
+
+  Set( directionIMG ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.gipl.gz )
+  Set( Cmd ${ResampleVolume2} ${DestImg} -f ${Direction} -R ${directionGrid} -d 1,0,0,0,1,0,0,0,1 ${directionIMG} )
+  If( ${step} < 5 )
+    Run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 5 )
 EndIf( ${Registration} == TRUE )
 
 
 
-
+RegEx( TEMPLATE_GRID_case ${TEMPLATE_GRID} '\*' REPLACE ${Case} )
 set( count 0 )
 If( ${IS_SCALED} == TRUE )
   ForEach( file ${PROBMAP_FILES_TAG} )
     GetParam(EXT ${PROBMAP_FILES_EXT} ${count})
     Set( SrcImg ${TEMPLATE_DIR}/${file}${EXT} )
     if( ${Registration} == TRUE )
-      Set( DstImg ${tempDir}/${Case}/${file}.nii.gz )
+      Set( DstImg ${tempDir}/${Case}/${file}.gipl.gz )
     else( ${Registration} == TRUE )
       Set( DstImg ${tempDir}/${Case}/${file}.mha )
     endif( ${Registration} == TRUE )
-    Set (transformCmd ${ResampleVolume2} ${SrcImg} ${DstImg} -R ${InputSubjDir}/${TEMPLATE_GRID} )
+    Set (transformCmd ${ResampleVolume2} ${SrcImg} ${DstImg} -R ${TEMPLATE_GRID_case} )
     echo(${transformCmd})
     Run (output ${transformCmd})
     Echo (${output})

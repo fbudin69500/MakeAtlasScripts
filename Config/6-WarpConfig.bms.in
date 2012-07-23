@@ -10,36 +10,24 @@ set( CASES @cases@ )
 ##-2-Use the inverse h-field computed with the population atlas creation
 set( USE_INV_HFIELD TRUE )
 ##-3-List of images to warp (can contain multiple files)
-set( LabelMapsToWarp segmentation.nrrd )
-##-4-suffix of the mask created from the segmentation
-set( NEW_MASK_TAG _mask_from_seg.nrrd )
-##-5-Template mask (used for the registration if set). Template mask has to be in template directory
+set( LabelMapsToWarp  @ProcessingDirectory@/5-AverageSegmentation/segmentation.nrrd )
+##-4-mask created from the segmentation
+set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-SkullStripping/*_mask_from_seg.nrrd )
+##-5-Template mask (used for the registration if set)
 set( TEMPLATE_MASK '' )
 #####################################################################################################
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
 ##-6-Template image to use for registration (usually the computed population average) 
-set( Template_Image @PopulationAverage@ )
-##-7-subdirectory in the case directory in which to save new case files (mask, parcellation and statistics)
-set( PROCESS_SUBDIR 6-Warping )
+set( Template_Image @ProcessingDirectory@/4-AverageCreation/@PopulationAverage@ )
+##-7-directory in the case directory in which to save new case files (mask, parcellation and statistics)
+set( OUTPUT_DIR @ProcessingDirectory@/*/6-Warping )
 ##-8-Input suffix of files used to create new average
-set( WARP_INPUT_SUFFIX @WarpInputSuffix@ )
+set( WARP_INPUT_FILE @ProcessingDirectory@/*/2-Registration/@WarpInputSuffix@ )
 ##-9-Suffix of the inverse hfield that are computed in the population average creation
-set( InvHField_Suffix _inv_hFieldToPopulationAverage.mha )
-##-10-Input pre-subdir. For old data structure, the value should be "."
-set( INPUT_PRE_SUBDIR @ResultsSubDirectory@ )
-##-11-Output pre-subdir. For old data structure, the value should be "."
-set( OUTPUT_PRE_SUBDIR @ProcessingRelativePath@ )
-##-12-Input post-subdir. For new data structure, the value should be "."
-set( INPUT_POST_SUBDIR @InputPostSubDirectory@ )
-##The files must have the following structure:
-##dir/case/case_suffix;dir=/rodent/Project/subProject1
-##-13-SubProject root directory
-set( dir @ProjectDirectory@ )
-##-14-directory in which the population average and population average parcellation are saved
-set( AverageDir ${dir}/${INPUT_PRE_SUBDIR}/Average )
+set( InvHField @ProcessingDirectory@/*/4-AverageCreation/*_inv_hFieldToPopulationAverage.mha )
 ##-15-directory in which temporary files are written
-set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
+set( tempDir @ProcessingDirectory@/temp/6-Warping )
 ##-16-Iteration number
 set( IterationNumber 100x100x100x20 )
 ##-17-Name of this file (configuration file)

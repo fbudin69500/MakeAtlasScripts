@@ -1,5 +1,4 @@
-#Variables initialization
-RegEx( DTI_TAG ${DTI_SUFFIX} '\..*' REPLACE '' )
-RegEx( POPULATION_AVERAGE_INPUT_TAG ${POPULATION_AVERAGE_INPUT_SUFFIX} '\..*' REPLACE '' )
-set( POPULATION_AVERAGE_INPUT_MASKED_TAG ${POPULATION_AVERAGE_INPUT_TAG}_masked_from_seg )
-
+MakeDirectory( ${outputDir} )
+MakeDirectory( ${tempDir} )
+set( MASK_TAG _masked_from_seg )
+GetFileName( POPULATION_AVERAGE_INPUT_TAG ${POPULATION_AVERAGE_INPUT_FILES} NAME_WITHOUT_EXTENSION )

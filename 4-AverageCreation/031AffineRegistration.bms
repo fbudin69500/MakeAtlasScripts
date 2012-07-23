@@ -15,8 +15,9 @@ EndIf(${step} < 4 && ${times} == 0)
 
 foreach( i ${CASES} )
   ###Histogram Match###
-  set( IMG ${tempDir}/${i}${POPULATION_AVERAGE_INPUT_MASKED_TAG}.nrrd )
-  set( MOVING_IMG ${tempDir}/${i}${POPULATION_AVERAGE_INPUT_MASKED_TAG}_hm.nrrd )
+  RegEx( MASKED_INPUT_TAG ${POPULATION_AVERAGE_INPUT_TAG}${MASK_TAG} '\*' REPLACE ${i} )
+  set( IMG ${tempDir}/${MASKED_INPUT_TAG}.nrrd )
+  set( MOVING_IMG ${tempDir}/${MASKED_INPUT_TAG}_hm.nrrd )
   set( HMCmd ${ImageMath} ${IMG} -matchHistogram ${RESCALED_FIXED_IMG} -outfile ${MOVING_IMG} -type float)
   echo( ${HMCmd} )
   If(${step} < 5 && ${times} == 0 || ${step} < 11 && ${times} == 1)
@@ -26,7 +27,7 @@ foreach( i ${CASES} )
   ################################################
   # ANTS
   set( RESAMPLED_IMAGE ${tempDir}/${i}_to_${FIXED_CASE}.nrrd )
-  set( ANTS_PREFIX ${tempDir}/${i}${POPULATION_AVERAGE_INPUT_MASKED_TAG}_to_${FIXED_CASE})
+  set( ANTS_PREFIX ${tempDir}/${MASKED_INPUT_TAG}_to_${FIXED_CASE})
   set( NII_FILE ${ANTS_PREFIX}.nii.gz )
   set( TRANSFORM ${ANTS_PREFIX}Affine.txt )
   set ( AntsMICmd ANTS 3 -m MI[${MOVING_IMG},${RESCALED_FIXED_IMG},1,${AffregParam}] -i 0 -o ${NII_FILE} )
@@ -41,7 +42,23 @@ foreach( i ${CASES} )
     run (output ${Warpcmd})
     echo( ${output} )
   EndIf(${step} < 7)
-  set( TRANSFORM_LIST ${TRANSFORM_LIST} ${TRANSFORM} )
+
+
+  ####Convert transform files from MatrixOffsetTransformBase_double_3_3 to AffineTransform_double_3_3 for AtlasWerks###
+  set( TRANSFORM_DOUBLE ${tempDir}/${MASKED_INPUT_TAG}_to_${FIXED_CASE}Affine_d.txt )
+  set( TRANSFORM_FLOAT ${tempDir}/${MASKED_INPUT_TAG}_to_${FIXED_CASE}Affine_f.txt )
+  set( Cmd  ITKTransformTools MO2Aff ${TRANSFORM} ${TRANSFORM_DOUBLE} )
+  set( Cmdd2f Double2FloatTransform ${TRANSFORM_DOUBLE} ${TRANSFORM_FLOAT} )
+  echo( ${Cmd} )
+  echo( ${Cmdd2f} )
+  If(${step} < 8 && ${times} == 0 || ${step} < 13 && ${times} == 1)
+    run( output ${Cmd} )
+    echo( ${output} )
+    run( output ${Cmdd2f} )
+    echo( ${output} )
+  EndIf(${step} < 8 && ${times} == 0 || ${step} < 13 && ${times} == 1)
+
+  set( TRANSFORM_LIST ${TRANSFORM_LIST} ${TRANSFORM_FLOAT} )
   set( MD_CASES ${MD_CASES} ${MOVING_IMG} )
   ####List of images to compute average affinely registered images
   if( ${FIRST} == TRUE )

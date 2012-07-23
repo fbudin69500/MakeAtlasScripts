@@ -1,18 +1,15 @@
 ### The script uses:
 #- ResampleVolume2
 #prepare files before computation
+#rreg and areg need .gipl.gz files so we convert
+#the atlas files to this format
 set( count 0)
-
-RegEx(tempDirclean ${tempDir} '\.' REPLACE '')
-
-set(tempDir ${tempDirclean}) 
-
 ForEach( file ${PROBMAP_FILES_TAG} )
   GetParam(EXT ${PROBMAP_FILES_EXT} ${count})
   Set( SrcImg ${TEMPLATE_DIR}/${file}${EXT} )
 
   if( ${Registration} == TRUE )
-     Set( DstImg ${tempDir}/${file}.nii.gz )
+     Set( DstImg ${tempDir}/${file}.gipl.gz )
   else( ${Registration} == TRUE )
      Set( DstImg ${tempDir}/${file}.mha )
   endif( ${Registration} == TRUE )
@@ -21,10 +18,6 @@ ForEach( file ${PROBMAP_FILES_TAG} )
     Set (transformCmd ${ImageMath} ${SrcImg} -rescale 0,10000 -outfile ${DstImg} )
   Else( ${file} == 'template' )
     Set (transformCmd ${ResampleVolume2} ${SrcImg} ${DstImg} -i nn )
-   # set (imgDimension 3)
-   # set (weight 1)
-   # set (bin_number 3)
-   # set (transformCmd  ${ANTS} ${imgDimension} -m MI[${SrcImg}, ${DstImg}, ${weight}, ${bin_number}] -o ${NII_FILE_PREFIX} --use-NN )
   EndIf( ${file} == 'template' )
   echo(${transformCmd})
   If( ${step} < 1 )

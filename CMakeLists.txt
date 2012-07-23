@@ -5,14 +5,13 @@ project(MakeAtlasScripts NONE)
 
 #######################################Tools used######################################
 set( listTools
-DWIProcessPipeline
 ABC
 SegPostProcessCLP
 ImageMath
 ResampleVolume2
-#rreg
-#transformation
-#areg
+rreg
+transformation
+areg
 RegisterImages
 Double2FloatTransform
 AtlasWerks
@@ -26,17 +25,17 @@ MedianImageFilter
 ImageStat
 ANTS
 WarpImageMultiTransform
-buildtemplateparallel.sh
+#buildtemplateparallel.sh
 dtiestim
 ManualImageOrient
 DiffusionTensorEstimation
 HistogramMatching
-CreateMRML
+#CreateMRML
 N4ITKBiasFieldCorrection
 MaskComputationWithThresholding
 )
 
-set( ToolsDirectory "/rodent/bin_linux64/toolsApril2012" CACHE PATH "Tools
+set( ToolsDirectory "/rodent/bin_linux64/toolsJuly2012" CACHE PATH "Tools
 directory")
 
 ##########################Find tools##############################################
@@ -46,8 +45,8 @@ foreach( var ${listTools} )
     find_program(${var}TOOL ${var})
     if(${var}TOOL)
     message( WARNING "${var} was not in ${ToolsDirectory}.  The path was set
-to the dynamic executable path set as default on your machine")
-#    endif(${var}TOOL)
+ to the dynamic executable path set as default on your machine:
+ ${${var}TOOL} ")
     else(${var}TOOL )
         message( WARNING "${var} not found. Path not set")
     endif(${var}TOOL)
@@ -59,14 +58,7 @@ mark_as_advanced( CMAKE_BUILD_TYPE CMAKE_INSTALL_PREFIX )
 set( ConfigDirectory "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "Config directory" )
 
 get_filename_component(initProcessingDirectory ${CMAKE_CURRENT_SOURCE_DIR}/.. REALPATH )
-Set( ProcessingDirectory "${initProcessingDirectory}" CACHE PATH "Processing directory" )
-
-
-set( ResultsSubDirectory Results CACHE STRING "Results subdirectory" )
-mark_as_advanced( ResultsSubDirectory )
-set( InputPostSubDirectory . CACHE STRING "Input Post subdirectory" )
-mark_as_advanced( InputPostSubDirectory )
-
+set( ProcessingDirectory "${initProcessingDirectory}" CACHE PATH "Processing directory" )
 
 
 
@@ -77,51 +69,58 @@ if( NOT( ${InputType} STREQUAL scalar )
   )
   message( FATAL_ERROR "InputType must be either scalar or DWI or DTI" )
 endif()
+set(InputFile *.nhdr CACHE STRING "input image in 1-Converted, ie: *_T1.nrrd; *
+will be replaced by the case name. It is not compulsary" )
+get_filename_component( InputTag ${InputFile} NAME_WE )
+if( ${InputTag} MATCHES "\\*" )
+  set( rootName ${InputTag} )
+  message( WARNING "found star" )
+else()
+  set( rootName "*_${InputTag}" )
+  message( WARNING "not found star" )
+endif()
 ###########################Version of the pipeline############################################
-set( ConfigVersion 3 )
+set( ConfigVersion 3.00 )
 ###########################set variables values depending on project type######################
 if( ${InputType} STREQUAL scalar )
-  set(InputSuffix .nhdr )
-  set(RigidRegistrationImageSuffix .nhdr )
+  set(RigidRegistrationImageFile ${rootName}_reg.nrrd )
   set(IsScalar TRUE )
-  set(PopulationAverageInputSuffix .nhdr )
-  set(DTISuffix '' )
-  set(TransformSuffix '' )
+  set(PopulationAverageInputFiles ${rootName}_reg.nrrd )
+  set(Original_Image ${InputFile} )
+  set(TransformFile ${rootName}_reg.mat )
   set(TransformSuffixAverage '' )
-  set(StatFileSuffix _reg.nrrd )
-  set(WarpInputSuffix _reg.nrrd )
+  set(StatFile ${rootName}_reg.nrrd )
+  set(WarpInputFile ${rootName}_reg.nrrd )
   set(PopulationAverage AverageImage_SS.nrrd )
-  set(AverageInputSuffix .nhdr )
+  set(AverageInputFile @ProcessingDirectory@/*/2-Registration/${rootName}_reg.nrrd )
   set(HISTOGRAM_MATCH_VAL TRUE )
 endif()
 
 if( ${InputType} STREQUAL DWI )
   set(PopulationAverage AverageTensor_SS.nrrd )
-  set(InputSuffix _dwi.nhdr )
-  set(RigidRegistrationImageSuffix _idwi_biasCorrected.nrrd )
+  set(RigidRegistrationImageFile ${rootName}_idwi_biasCorrected_reg.nrrd )
   set(IsScalar FALSE )
-  set(PopulationAverageInputSuffix _dti_f_reg_MD.nhdr )
-  set(DTISuffix _dti_f.nhdr )
-  set(TransformSuffix _toTemplateCombined.txt )
-  set(StatFileSuffix "_dti_f_reg_AD.nrrd _dti_f_reg_FA.nrrd _dti_f_reg_MD.nrrd _dti_f_reg_RD.nrrd _b0_biasCorrected_reg.nrrd _idwi_biasCorrected_reg.nrrd" )
-  set(WarpInputSuffix _dti_f_toTemplate_MD.nhdr )
+  set(PopulationAverageInputFiles ${rootName}_dti_f_reg_MD.nrrd )
+  set(Original_Image ${rootName}_dti_f_reg.nrrd )
+  set(TransformFile ${rootName}_reg.mat )
+  set(StatFile "${rootName}_reg_AD.nrrd ${rootName}_dti_f_reg_FA.nrrd ${rootName}_dti_f_reg_MD.nrrd ${rootName}_dti_f_reg_RD.nrrd ${rootName}_b0_biasCorrected_reg.nrrd ${rootName}_idwi_biasCorrected_reg.nrrd" )
+  set(WarpInputFile ${rootName}_dti_f_reg_MD.nrrd )
   set(TemplateImage AverageTensor_SS_MD.nrrd )
-  set(AverageInputSuffix "_dti_f_reg_AD.nrrd _dti_f_reg_FA.nrrd _dti_f_reg_MD.nrrd _dti_f_reg_RD.nrrd _b0_biasCorrected_reg.nrrd _idwi_biasCorrected_reg.nrrd" )
-  set(HISTOGRAM_MATCH_VAL FALSE FALSE FALSE FALSE FALSE FALSE )
+  set(AverageInputFile "@ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_AD.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_FA.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_MD.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_RD.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_b0_biasCorrected_reg.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_idwi_biasCorrected_reg.nrrd" )
+  set(HISTOGRAM_MATCH_VAL "FALSE FALSE FALSE FALSE FALSE FALSE" )
 endif()
 
 if( ${InputType} STREQUAL DTI )
   set(PopulationAverage AverageTensor_SS.nrrd )
-  set(InputSuffix _dti_f.nhdr )
-  set(RigidRegistrationImageSuffix _dti_f_reg_MD.nrrd )
+  set(RigidRegistrationImageFile ${rootName}_dti_f_reg_MD.nrrd )
   set(IsScalar FALSE )
-  set(PopulationAverageInputSuffix _dti_f_reg_MD.nrrd )
-  set(DTISuffix _dti_f.nhdr )
-  set(TransformSuffix _toTemplateCombined.txt )
-  set(StatFileSuffix "_dti_f_reg_AD.nrrd _dti_f_reg_FA.nrrd _dti_f_reg_MD.nrrd _dti_f_reg_RD.nrrd" )
-  set(WarpInputSuffix _dti_f_toTemplate_MD.nhdr )
+  set(PopulationAverageInputFiles ${rootName}_dti_f_reg_MD.nrrd )
+  set(Original_Image ${InputFile} )
+  set(TransformFile ${rootName}_reg.mat )
+  set(StatFile "${rootName}_dti_f_reg_AD.nrrd ${rootName}_dti_f_reg_FA.nrrd ${rootName}_dti_f_reg_MD.nrrd ${rootName}_dti_f_reg_RD.nrrd" )
+  set(WarpInputFile ${rootName}_dti_f_reg_MD.nrrd )
   set(TemplateImage AverageTensor_SS_MD.nrrd )
-  set(AverageInputSuffix "_dti_f_reg_AD.nrrd _dti_f_reg_FA.nrrd _dti_f_reg_MD.nrrd _dti_f_reg_RD.nrrd" )
+  set(AverageInputFile "@ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_AD.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_FA.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_MD.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_RD.nrrd" )
   set(HISTOGRAM_MATCH_VAL "FALSE FALSE FALSE FALSE" )
 endif()
 #####################################################################################################
@@ -155,15 +154,9 @@ if( NOT( ${ProcessingDirectory} STREQUAL ${oldProcessingDir} ) )
   set( oldProcessingDir ${ProcessingDirectory} CACHE INTERNAL "oldProcessDir" FORCE)
   Set( cases ${casesValues} CACHE STRING "cases to process" FORCE)
   set(TemplateDirectory "${ProcessingDirectory}/template/a-original" CACHE PATH "Template directory" FORCE )
-  get_filename_component(changeProjectDirectory ${ProcessingDirectory}/.. REALPATH )
-  set( ProjectDirectory "${changeProjectDirectory}" CACHE PATH "Project directory" FORCE )
+
 endif()
 
-###################################################
-get_filename_component(ProcessingDirRealPath ${ProcessingDirectory} REALPATH )
-get_filename_component(ProjectDirectoryRealPath ${ProjectDirectory} REALPATH )
-
-file(RELATIVE_PATH ProcessingRelativePath ${ProjectDirectoryRealPath} ${ProcessingDirRealPath} )
 ##############Writes configured files##############################################
 foreach( var ${config_files} )
   string(REPLACE ".bms.in" ".bms" var2 ${var} )

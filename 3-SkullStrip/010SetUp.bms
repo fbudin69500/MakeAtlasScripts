@@ -1,26 +1,13 @@
 
 #Variables initialization
-GetFilename( MD_TAG ${MD_SUFFIX} NAME_WITHOUT_EXTENSION )
-GetFilename( MD_EXT ${MD_SUFFIX} EXTENSION )
-#RegEx( MD_TAG ${MD_SUFFIX} '\..*' REPLACE '' )
-#RegEx( MD_EXT ${MD_SUFFIX} '\..*' MATCH )
 
-GetFilename( FA_TAG ${FA_SUFFIX} NAME_WITHOUT_EXTENSION )
-GetFilename( FA_EXT ${FA_SUFFIX} EXTENSION )
-#RegEx( FA_TAG ${FA_SUFFIX} '\..*' REPLACE '' )
-#RegEx( FA_EXT ${FA_SUFFIX} '\..*' MATCH )
-
-GetFilename( RIGID_REGISTRATION_IMAGE_TAG ${RIGID_REGISTRATION_IMAGE_SUFFIX} NAME_WITHOUT_EXTENSION )
-GetFilename( RIGID_REGISTRATION_IMAGE_EXT ${RIGID_REGISTRATION_IMAGE_SUFFIX} EXTENSION )
-
-#RegEx( RIGID_REGISTRATION_IMAGE_TAG ${RIGID_REGISTRATION_IMAGE_SUFFIX} '\..*' REPLACE '' )
-#RegEx( RIGID_REGISTRATION_IMAGE_EXT ${RIGID_REGISTRATION_IMAGE_SUFFIX} '\..*' MATCH )
+GetFilename( RIGID_REGISTRATION_IMAGE_TAG ${RIGID_REGISTRATION_IMAGE} NAME_WITHOUT_EXTENSION )
+GetFilename( RIGID_REGISTRATION_IMAGE_EXT ${RIGID_REGISTRATION_IMAGE} EXTENSION )
+RegEx( RIGID_REGISTRATION_IMAGE_TAG ${RIGID_REGISTRATION_IMAGE_TAG} '.*\*' REPLACE '' )
 
 ForEach( file ${PROBMAP_DIR_FILES})
   GetFilename( temp_TAG ${file} NAME_WITHOUT_EXTENSION )
   GetFilename( temp_EXT ${file} EXTENSION )
-#  RegEx( temp_TAG ${file} '\..*' REPLACE '' )
-#  RegEx( temp_EXT ${file} '\..*' MATCH )
   Set( PROBMAP_FILES_TAG ${temp_TAG} ${PROBMAP_FILES_TAG})
   Set( PROBMAP_FILES_EXT ${temp_EXT} ${PROBMAP_FILES_EXT})
   if( ${temp_TAG} == template )
@@ -28,6 +15,10 @@ ForEach( file ${PROBMAP_DIR_FILES})
   endif( ${temp_TAG} == template )
 EndForEach( file ${PROBMAP_DIR_FILES})
 
-
+RegEx(found ${tempDir} '\.' MATCH )
+if( ${found} != '' )
+  RegEx(tempDirclean ${tempDir} '\.' REPLACE '')
+  set(tempDir ${tempDirclean})
+endif()
 MakeDirectory( ${tempDir} )
 

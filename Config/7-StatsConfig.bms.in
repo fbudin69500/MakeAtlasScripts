@@ -10,7 +10,7 @@ set( CASES @cases@ )
 ##-2-Labels map suffixes (can contain multiple files)
 set( LabelMaps @ProjectDirectory@/@ProcessingRelativePath@/*/6-Warping/*_segmentation.nrrd )
 ##-3-Image files on which to compute statistics (can contain multiple files)
-set( STAT_FILE @ProjectDirectory@/@ProcessingRelativePath@/*/2-Registration/*@StatFileSuffix@ )
+set( STAT_FILE @ProjectDirectory@/@ProcessingRelativePath@/*/2-Registration/@StatFile@ )
 ##-4-Output directory
 set( outputDir @ProjectDirectory@/@ProcessingRelativePath@/*/7-Stats )
 ##-8-Name of this file (configuration file).

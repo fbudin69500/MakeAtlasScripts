@@ -8,32 +8,22 @@
 ##-1-Cases to process
 set( CASES @cases@ )
 ##-2-suffix of the image used to register the input image to the template to compute segmentation
-set( RIGID_REGISTRATION_IMAGE_SUFFIX @RigidRegistrationImageSuffix@ )
+set( RIGID_REGISTRATION_IMAGE @ProcessingDirectory@/*/2-Registration/@RigidRegistrationImageFile@ )
 #####################################################################################################
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
-##-3-subdirectory in the case directory in which to save new case files (mask and parcellation)
-set( PROCESS_SUBDIR 3-SkullStripping-a )
-##-4-suffix of the mask created from the segmentation.
-set( NEW_MASK_TAG _mask_from_seg.nrrd )
-##The files must have the following structure:
-##dir/case/case_suffix;dir=/rodent/Project/subProject1
-##-5-SubProject root directory
-set( dir @ProjectDirectory@ )
+##-3-Directory in the case directory in which to save new case files (mask and parcellation)
+set( OUTPUT_DIR @ProcessingDirectory@/*/3-SkullStripping )
+##-4-Mask file name
+set( OUTPUT_MASK_FILE *_mask_from_seg.nrrd )
 ##-6-type of image used for segmentation. Can hold multiple types
-set( ABC_IMAGE_SUFFIX ${RIGID_REGISTRATION_IMAGE_SUFFIX} )
+set( ABC_IMAGE ${RIGID_REGISTRATION_IMAGE} )
 ##-7-Register the images or not (skips both rigid and affine registration if set to FALSE )
 set( Registration TRUE )
 ##-8-Rigid or only affine registration
 set( Rigid TRUE )
 ##-9-Bias field correction (TRUE/FALSE)
 set( biasFieldCorrection FALSE )
-##-10-Input pre-subdir. For old data structure, the value should be "."
-set( INPUT_PRE_SUBDIR @ResultsSubDirectory@ )
-##-11-Output pre-subdir. For old data structure, the value should be "."
-set( OUTPUT_PRE_SUBDIR @ProcessingRelativePath@ )
-##-12-Input post-subdir. For new data structure, the value should be "."
-set( INPUT_POST_SUBDIR @InputPostSubDirectory@ )
 ##-13-(External) Template and probability maps directory
 set( TEMPLATE_DIR @TemplateDirectory@ )
 ##-14-Is the image used for the registration the MD image? In that case, we'll multiply its values
@@ -52,14 +42,16 @@ set( FILTERCURVATURE TRUE )
 set( PROBMAP_DIR_FILES 1.mha 2.mha 3.mha 4.mha template.mha )
 ##-20-ABC Priors
 set( PRIORS 1 1 1 1 )
-##-21-template grid : the file that saves the original spacing when the image is scaled to 1,1,1. It is not a temporary file. 
-set( TEMPLATE_GRID AverageGrid.nrrd ) 
+##-21-template grid : the file that saves the original spacing when the image is scaled to 1,1,1. It is not a temporary file. (AtlasGrid.nrrd???)
+set( TEMPLATE_GRID  @ProcessingDirectory@/*/2-Registration/AverageGrid.nrrd ) 
 ##-22-directory in which temporary files are written
-set( tempDir ${dir}/${OUTPUT_PRE_SUBDIR}/temp )
+set( tempDir @ProcessingDirectory@/temp/3-SkullStripping )
 ##-23-was the input image scaled to 1,1,1
 set( IS_SCALED FALSE )
 ##-24-Number of loops: sequence(seq 0 NB_LOOPS 1)
 sequence(seq 0 0 1)
+##-25-directory in which to find "rreg_rigid.params" and "rreg_TO_TEMPLATE.param"
+set( CONFIGDIR @CMAKE_CURRENT_SOURCE_DIR@/3-SkullStrip )
 ##-26-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName @ConfigDirectory@/3-SkullStripConfig.bms )
