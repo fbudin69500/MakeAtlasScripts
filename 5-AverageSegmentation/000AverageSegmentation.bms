@@ -134,7 +134,7 @@ endif (${step} < 12)
 
 IF(${TEMPLATE_mask_FILENAME} != '' )
   set ( TEMPLATE_MASK_FILE_RV2 ${temp}/${TEMPLATE_TAG}_mask_initialized.nrrd )
-  set ( RV2Cmd ${ResampleVolume2} -f ${TRANSFORM} -i nn -R ${Grid} ${TEMPLATE_mask} ${TEMPLATE_MASK_FILE_RV2})
+  set ( RV2Cmd ${ResampleVolume2} -f ${TRANSFORM} -i nn -R ${Grid} ${TEMPLATE_mask_FILENAME} ${TEMPLATE_MASK_FILE_RV2})
   echo( ${RV2Cmd} )
   if (${step} < 13)
     run( output ${RV2Cmd} )
@@ -206,7 +206,7 @@ if (${step} < 17)
 endif (${step} < 17)
 
 #####Warp segmentation############
-set ( SEGMENTATION_FILE_RV2_WARP ${PopAverageDir}/${TEMPLATE_SEGMENTATION_TAG}.nrrd )
+set ( SEGMENTATION_FILE_RV2_WARP ${OutputDir}/${TEMPLATE_SEGMENTATION_TAG}.nrrd )
 set( WarpCmd ${WarpImageMultiTransform} 3 ${SEGMENTATION_FILE_RV2} ${SEGMENTATION_FILE_RV2_WARP} ${WARP_FILE} ${AFFINE_FILE} -R ${ImageToRegTo} --use-NN)
 
 echo( ${WarpCmd} )
