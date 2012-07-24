@@ -47,12 +47,38 @@ if( ${Registration} == TRUE )
     echo( ${output} )
   EndIf( ${step} < 4 )
 
-  Set( directionIMG ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.gipl.gz )
+  Set( directionIMG ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}_originalType.gipl.gz )
   Set( Cmd ${ResampleVolume2} ${DestImg} -f ${Direction} -R ${directionGrid} -d 1,0,0,0,1,0,0,0,1 ${directionIMG} )
   If( ${step} < 5 )
     Run( output ${Cmd} )
     echo( ${output} )
   EndIf( ${step} < 5 )
+
+  ##########Convert to float#####################
+  set( img ${directionIMG} )
+  set( nrrdImg ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.nrrd )
+  set( Cmd ${ResampleVolume2} ${img} ${nrrdImg} -i nn )
+  If( ${step} < 5 )
+    Run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 5 )
+  set( img ${nrrdImg} )
+  set( floatImg ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}_f.nrrd )
+  set( Cmd ${unu} convert -i ${img} -o ${floatImg} -t float )
+  If( ${step} < 5 )
+    Run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 5 )
+  set( img ${floatImg} )
+  set( floatgipl ${tempDir}/${Case}/${Case}${RIGID_REGISTRATION_IMAGE_TAG}.gipl.gz )
+  set( Cmd ${ResampleVolume2} ${img} ${floatgipl} -i nn )
+  If( ${step} < 5 )
+    Run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 5 )
+
+
+
 EndIf( ${Registration} == TRUE )
 
 
