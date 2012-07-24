@@ -13,7 +13,7 @@ set( RIGID_REGISTRATION_IMAGE @ProcessingDirectory@/*/2-Registration/@RigidRegis
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
 ##-3-subdirectory in the case directory in which to save new case files (mask and parcellation)
-set( OUTPUT_DIR @ProcessingDirectory@/*/3-SkullStripping-ANTS )
+set( OUTPUT_DIR @ProcessingDirectory@/*/3.1-SkullStripping-ANTS )
 ##-4-Mask file name
 set( OUTPUT_MASK_FILE *_mask_from_seg.nrrd )
 ##-6-type of image used for segmentation. Can hold multiple types
