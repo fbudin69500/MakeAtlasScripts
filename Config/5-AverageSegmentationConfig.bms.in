@@ -6,7 +6,7 @@
 ################################### Variables to set ################################################
 #####################################################################################################
 ##-2-Population average file name
-set( PopulationAverage @ProcessingDirectory@/4-AtlasCreation/@PopulationAverage@ )
+set( PopulationAverage @ProcessingDirectory@/4-AverageCreation/@PopulationAverage@ )
 ##-3-External template (in probability maps directory)
 set( TEMPLATE @TemplateDirectory@/template.mha )
 ##-4-External template mask (in probability maps directory)
@@ -29,7 +29,7 @@ set( OutputDir @ProcessingDirectory@/5-AverageSegmentation )
 ##-15-Directory in which temporary files are written
 set( tempDir @ProcessingDirectory@/temp/5-AverageSegmentation )
 ##-16-Image grid filename
-set( IMAGE_GRID @ProcessingDirectory@/4-AtlasCreation//ImageGrid.nrrd )
+set( IMAGE_GRID @ProcessingDirectory@/4-AverageCreation/ImageGrid.nrrd )
 ##-17- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the ANTS doc)
 set (Measure MI)
 ##-18- ANTS ranges. Bin number for MI metric. Refer to ANTS doc for the other metrics
