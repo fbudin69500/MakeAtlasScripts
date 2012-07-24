@@ -131,8 +131,8 @@ IF( ${IS_SCALED} == TRUE )
   EndIf( ${step} < 45 )
 ENDIF( ${IS_SCALED} == TRUE )
 
-Set( ImageForMask ${tempDir}/avg_2.mhd )
-Set( ImageForMaskNrrd ${tempDir}/avg_2.nrrd )
+Set( ImageForMask ${tempDir}/avg.mhd )
+Set( ImageForMaskNrrd ${tempDir}/avg.nrrd )
 Set( Mask ${tempDir}/mask.nrrd )
 
 Set( Cmd ${ResampleVolume2} ${ImageForMask} ${ImageForMaskNrrd} -i nn )
