@@ -23,7 +23,7 @@ set( Template_Image @ProcessingDirectory@/4-AverageCreation/@PopulationAverage@ 
 ##-7-directory in the case directory in which to save new case files (mask, parcellation and statistics)
 set( OUTPUT_DIR @ProcessingDirectory@/*/6-Warping )
 ##-8-Input suffix of files used to create new average
-set( WARP_INPUT_FILE @ProcessingDirectory@/*/2-Registration/@WarpInputSuffix@ )
+set( WARP_INPUT_FILE @ProcessingDirectory@/*/2-Registration/@WarpInputFile@ )
 ##-9-Suffix of the inverse hfield that are computed in the population average creation
 set( InvHField @ProcessingDirectory@/*/4-AverageCreation/*_inv_hFieldToPopulationAverage.mha )
 ##-15-directory in which temporary files are written

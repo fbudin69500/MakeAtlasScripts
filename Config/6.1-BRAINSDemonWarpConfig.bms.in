@@ -23,7 +23,7 @@ set( Template_Image @ProcessingDirectory@/4-AverageCreation/@PopulationAverage@ 
 ##-7-directory in the case directory in which to save new case files (mask, parcellation and statistics)
 set( OUTPUT_DIR @ProcessingDirectory@/*/6.1-BRAINSDemonWarping )
 ##-8-Input suffix of files (typically the same as input suffix of population average)
-set( WARP_INPUT_FILE @ProcessingDirectory@/*/2-Registration/@WarpInputSuffix@ )
+set( WARP_INPUT_FILE @ProcessingDirectory@/*/2-Registration/@WarpInputFile@ )
 ##-14-directory in which temporary files are written
 set( tempDir @ProcessingDirectory@/temp/6-BRAINSDemonWarping )
 ##-15-Name of this file (configuration file)
