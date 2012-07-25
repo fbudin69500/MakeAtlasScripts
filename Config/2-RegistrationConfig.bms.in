@@ -33,7 +33,7 @@ set( OUTPUT_DIR @ProcessingDirectory@/*/2-Registration )
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName @ConfigDirectory@/2-RegistrationConfig.bms )
 ##-18-directory in which temporary files are written
-set( tempDir @ProcessingDirectory@/temp/2-Registration )
+set( roottempDir @ProcessingDirectory@/temp/2-Registration )
 ##-8-Bias correction
 set( BIAS TRUE )
 ##-9-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)

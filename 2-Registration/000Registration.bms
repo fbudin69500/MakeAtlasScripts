@@ -1,6 +1,6 @@
 Int(${step})
 #########################################################
-MakeDirectory( ${tempDir} )
+MakeDirectory( ${roottempDir} )
 
 Set( CREATEB0 FALSE )
 Set( CREATEIDWI FALSE )
@@ -45,6 +45,8 @@ If( ${orientation} != '' )
 EndIf( ${orientation} != '' )
 
 ForEach( i ${CASES} )
+  set( tempDir ${roottempDir}/${i} )
+  MakeDirectory( ${tempDir} )
   RegEx( outputDirectory ${OUTPUT_DIR} '\*' REPLACE ${i} )
   RegEx( inputImage ${INPUT_FILE} '\*' REPLACE ${i} )
   RegEx( rootName ${RawRootName} '\*' REPLACE ${i} )
