@@ -39,9 +39,9 @@ set( MASK_CLOSING_RADIUS 5 )
 ##-18-Filter method: if set to true, ABC will use the 'Curvature flow'. Otherwise, it will use 'Grad aniso diffusion'
 set( FILTERCURVATURE TRUE )
 ##-19-Files in probability maps directory. ([1-4].mha + one file that must be called template.${ext})
-set( PROBMAP_DIR_FILES 1.mha 2.mha 3.mha 4.mha template.mha )
+set( PROBMAP_DIR_FILES @ProbaListFiles@ template.mha )
 ##-20-ABC Priors
-set( PRIORS 1 1 1 1 )
+set( PRIORS @PRIORS@ )
 ##-21-template grid : the file that saves the original spacing when the image is scaled to 1,1,1. It is not a temporary file. (AtlasGrid.nrrd???)
 set( TEMPLATE_GRID  @ProcessingDirectory@/*/2-Registration/AverageGrid.nrrd ) 
 ##-22-directory in which temporary files are written
