@@ -75,7 +75,7 @@ if( ${ScriptName} != '' )
 Endif( ${ScriptName} != '' )
 include( 034CreateXML.bms )
 
-set ( atlasWerksCmd ${AtlasWerks} -f ${tempDir}/AW.xml)
+set ( atlasWerksCmd ${AtlasWerks} -f ${tempDir}/AW.xml -o ${tempDir}/AtlasWerksParsedOutput.xml )
 
 If( ${step} < 15 )
   run ( output ${atlasWerksCmd})
