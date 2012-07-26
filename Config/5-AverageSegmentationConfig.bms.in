@@ -12,14 +12,14 @@ set( TEMPLATE @TemplateDirectory@/template.mha )
 ##-4-External template mask (in probability maps directory)
 set ( TEMPLATE_mask_FILENAME '' )
 ##-5-Name of the template segmentation. This file has to be in external template directory
-set( TEMPLATE_SEGMENTATION @TemplateDirectory@/segmentation.mha )
+set( TEMPLATE_SEGMENTATION @ExternalSegmentation@ )
 ##-6-Population Average mask (if there isn't one, set to '', if there's one, give the full path)
 set ( PopAverage_mask_FILENAME '' )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
 ##-7-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
-set( IS_SCALED FALSE )
+set( IS_SCALED @Scale@ )
 ##-8-Select which kind of registration is gonna be used. FALSE = Elastic, TRUE = Diffeomorphic
 set( Diffeomorphic TRUE )
 ##-9-Do you want the smoothing? (type float)

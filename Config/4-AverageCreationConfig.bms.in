@@ -28,7 +28,7 @@ set( outputDir @ProcessingDirectory@/4-AverageCreation )
 ##-17-Directory in which temporary files are written
 set( tempDir @ProcessingDirectory@/temp/4-AverageCreation )
 ##-18-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
-set( IS_SCALED FALSE )
+set( IS_SCALED @Scale@ )
 ##-19-Histogram match for scalar images
 set( HISTOGRAM_MATCH TRUE )
 ##-21-If scalar image (TRUE or FALSE)

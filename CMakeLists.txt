@@ -3,6 +3,12 @@ CMAKE_POLICY(VERSION 2.8)
 
 project(MakeAtlasScripts NONE)
 
+if( DEFINED TemplateDirectory )
+  set( templatePathDefinedInline TRUE )
+else()
+  set( templatePathDefinedInline FALSE )
+endif()
+
 #######################################Tools used######################################
 set( listTools
 ABC
@@ -86,7 +92,6 @@ if( ${InputType} STREQUAL scalar )
   set(PopulationAverageInputFiles ${rootName}_reg.nrrd )
   set(Original_Image ${InputFile} )
   set(TransformFile ${rootName}_reg.mat )
-  set(TransformSuffixAverage '' )
   set(StatFile ${rootName}_reg.nrrd )
   set(WarpInputFile ${rootName}_reg.nrrd )
   set(PopulationAverage AverageImage_SS.nrrd )
@@ -124,6 +129,23 @@ endif()
 #####################################################################################################
 FILE(GLOB config_files "${CMAKE_CURRENT_SOURCE_DIR}/Config/*.bms.in")
 
+set( Scale "OFF" CACHE BOOL "Images are scaled to 1,1,1 for registration purposes" )
+set( ManualTransform "" CACHE FILEPATH "Manual Transform file To rigidly register the images. No additional registration will be performed" )
+set( InitialTransform "" CACHE FILEPATH "Initial Transform file To rigidly register the images. And additional registration will be performed" )
+mark_as_advanced( Scale InitialTransform ManualTransform)
+
+if( NOT ManualTransform )
+  set( ManualTransformSTRING '' CACHE INTERNAL "" FORCE )
+else()
+  set( ManualTransformSTRING ${ManualTransform} CACHE INTERNAL "" FORCE )
+endif()
+
+if( NOT InitialTransform )
+  set( InitialTransformSTRING '' CACHE INTERNAL "" FORCE )
+else()
+  set( InitialTransformSTRING ${InitialTransform} CACHE INTERNAL "" FORCE )
+endif()
+
 if( DEFINED oldProcessingDir )
 else( DEFINED oldProcessingDir )
   set( oldProcessingDir "notdefined" CACHE INTERNAL "oldProcessDir" FORCE )
@@ -151,8 +173,10 @@ if( NOT( ${ProcessingDirectory} STREQUAL ${oldProcessingDir} ) )
   endforeach( var )
   set( oldProcessingDir ${ProcessingDirectory} CACHE INTERNAL "oldProcessDir" FORCE)
   Set( cases ${casesValues} CACHE STRING "cases to process" FORCE)
-  set(TemplateDirectory "${ProcessingDirectory}/template/a-original" CACHE PATH "Template directory" FORCE )
-
+  if( NOT ${templatePathDefinedInline} )
+    set(TemplateDirectory "${ProcessingDirectory}/template/a-original" CACHE PATH "Template directory" FORCE )
+  endif()
+  set( ExternalSegmentation "${TemplateDirectory}/segmentation.nrrd" CACHE FILEPATH "External segmentation file" FORCE )
 endif()
 
 ##############Writes configured files##############################################

@@ -47,7 +47,7 @@ set( TEMPLATE_GRID  @ProcessingDirectory@/*/2-Registration/AverageGrid.nrrd )
 ##-22-directory in which temporary files are written
 set( tempDir @ProcessingDirectory@/temp/3.1-SkullStripping-ANTS )
 ##-23-was the input image scaled to 1,1,1
-set( IS_SCALED FALSE )
+set( IS_SCALED @Scale@ )
 ##-24-Number of loops: sequence(seq 0 NB_LOOPS 1)
 sequence(seq 0 0 1)
 ##-26-Name of this file (configuration file).

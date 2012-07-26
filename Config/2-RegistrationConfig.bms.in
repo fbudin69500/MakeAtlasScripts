@@ -13,7 +13,7 @@ set( INPUT_FILE @ProcessingDirectory@/*/1-Converted/@InputFile@ )
 set( TEMPLATE_FILE @TemplateDirectory@/template.mha )
 ##-5-Transform
 #ie: @ProcessingDirectory@/2-ManualTransform/*_manual_reg.txt
-set( MANUAL_TRANSFORM '' )
+set( MANUAL_TRANSFORM @ManualTransformSTRING@ )
 ##-6-Root name (ie: *_T1 )
 set( RawRootName @rootName@ )
 ###################################
@@ -26,7 +26,7 @@ set( ADDITIONAL_IMAGES '' )
 ##-13-Additional images (to interpolate with nearest neighbor interpolator) (ie: @ProcessingDirectory@/*/1-Converted/*_segmentation.nrrd)
 set( ADDITIONAL_IMAGES_NN '' )
 ##-14-Initial transform (ie: @ProcessingDirectory@/*/1-Converted/*_initialTransform.txt)
-set( INITIAL_TRANS '' )
+set( INITIAL_TRANS @InitialTransformSTRING@ )
 ##-16-Output directory
 set( OUTPUT_DIR @ProcessingDirectory@/*/2-Registration )
 ##-19-Name of this file (configuration file).
@@ -37,7 +37,7 @@ set( roottempDir @ProcessingDirectory@/temp/2-Registration )
 ##-8-Bias correction
 set( BIAS TRUE )
 ##-9-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
-set( SCALE FALSE )
+set( SCALE @Scale@ )
 ##-10-Skullstrip the image using a simple intensity based algorithm
 set( SKULLSTRIP FALSE )
 ##The files must have the following structure:
