@@ -19,11 +19,11 @@ set( Direction ToCase )
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
 ##-6-Template image to use for registration (usually the computed population average) 
-set( Template_Image @ProcessingDirectory@/4-AverageCreation/@PopulationAverage@ )
+set( Template_Image @PopulationAverage@ )
 ##-7-directory in the case directory in which to save new case files (mask, parcellation and statistics)
 set( OUTPUT_DIR @ProcessingDirectory@/*/6.1-BRAINSDemonWarping )
 ##-8-Input suffix of files (typically the same as input suffix of population average)
-set( WARP_INPUT_FILE @ProcessingDirectory@/*/2-Registration/@WarpInputFile@ )
+set( WARP_INPUT_FILE @WarpInputFile@ )
 ##-14-directory in which temporary files are written
 set( tempDir @ProcessingDirectory@/temp/6-BRAINSDemonWarping )
 ##-15-Name of this file (configuration file)

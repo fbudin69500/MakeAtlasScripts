@@ -8,7 +8,7 @@
 ##-1-Cases to process
 set( CASES @cases@ )
 ##-2-suffix of the image used to register the input image to the template to compute segmentation
-set( RIGID_REGISTRATION_IMAGE @ProcessingDirectory@/*/2-Registration/@RigidRegistrationImageFile@ )
+set( RIGID_REGISTRATION_IMAGE @RigidRegistrationImageFile@ )
 #####################################################################################################
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################

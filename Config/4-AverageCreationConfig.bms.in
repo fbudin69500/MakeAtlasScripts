@@ -8,9 +8,9 @@
 ##-1-Cases to process
 set( CASES @cases@ )
 ##-4-If set to '', not used. Set Original_Image accordingly
-set( TRANSFORM_FILE @ProcessingDirectory@/*/2-Registration/@TransformFile@ )
+set( TRANSFORM_FILE @TransformFile@ )
 ##-5-Suffix of the original scalar image (to the avg image) or the DTI image before the rigid registration.
-set( Original_Image @ProcessingDirectory@/*/1-Converted/@Original_Image@ )
+set( Original_Image @Original_Image@ )
 ##-4-Mask file name
 set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-SkullStripping/*_mask_from_seg.nrrd )
 ###################################fill in those if you want to recompute average from original images###################################
@@ -20,7 +20,7 @@ set( Recalculate_avg FALSE )
 #Extra parameters. Normally no need to modified
 ###################################
 ##-8-Input file used to create population average
-set( POPULATION_AVERAGE_INPUT_FILES @ProcessingDirectory@/*/2-Registration/@PopulationAverageInputFiles@ )
+set( POPULATION_AVERAGE_INPUT_FILES @PopulationAverageInputFiles@ )
 ##-12-Output directories for each case
 set( CASES_OUTPUT_DIR @ProcessingDirectory@/*/4-AverageCreation )
 ##-15-Directory in which the new population average is saved

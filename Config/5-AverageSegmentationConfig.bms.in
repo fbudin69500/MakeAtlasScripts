@@ -6,7 +6,7 @@
 ################################### Variables to set ################################################
 #####################################################################################################
 ##-2-Population average file name
-set( PopulationAverage @ProcessingDirectory@/4-AverageCreation/@PopulationAverage@ )
+set( PopulationAverage @PopulationAverage@ )
 ##-3-External template (in probability maps directory)
 set( TEMPLATE @TemplateDirectory@/template.mha )
 ##-4-External template mask (in probability maps directory)

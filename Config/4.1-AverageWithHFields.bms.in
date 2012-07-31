@@ -20,7 +20,7 @@ set( TRANSFORM_FILE '')
 ##-6-Suffix of the hfield that were computed in the population average creation
 set( HField_File @ProcessingDirectory@/*/4-AverageCreation/*_hFieldToPopAverage.mha )
 ##-7-Population image used as a  reference image (grid) for resampling -typically population average previously computed
-set( Reference_Image @ProcessingDirectory@/4-AverageCreation/@TemplateImage@ )
+set( Reference_Image @TemplateImage@ )
 ##-9-Histogram match for scalar images. Should contain as many values as there are suffixes in 2-
 set( HISTOGRAM_MATCH @HISTOGRAM_MATCH_VAL@ )
 ##-13-Directory in which the computed average images are saved

@@ -8,7 +8,7 @@
 ##-1-Cases to process
 set( CASES @cases@ )
 ##-2-Input files used to create new average
-set( INPUT_FILE @ProcessingDirectory@/*/1-Converted/@InputFile@ )
+set( INPUT_FILE @InputFile@ )
 ##-3-Template file name
 set( TEMPLATE_FILE @TemplateDirectory@/template.mha )
 ##-5-Transform
