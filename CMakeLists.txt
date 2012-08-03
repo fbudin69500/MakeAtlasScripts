@@ -93,7 +93,8 @@ else()
 endif()
 ###########################Version of the pipeline############################################
 set( ConfigVersion 3.00 )
-set(LabelMapsToWarpFile @ProcessingDirectory@/5-AverageSegmentation/${segmentationTag}.nrrd )
+set( LabelMapsToWarpFile @ProcessingDirectory@/5-AverageSegmentation/${segmentationTag}.nrrd )
+set( LabelMapsTag @ProcessingDirectory@/*/6-Warping/*_${segmentationTag}.nrrd )
 set(TransformFile @ProcessingDirectory@/*/2-Registration/${rootName}_reg.mat )
 ###########################set variables values depending on project type######################
 if( ${InputType} STREQUAL scalar )
