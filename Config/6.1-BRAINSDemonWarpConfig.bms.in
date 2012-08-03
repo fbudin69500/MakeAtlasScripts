@@ -8,7 +8,7 @@
 ##-1-Cases to process
 set( CASES @cases@ )
 ##-2-List of images to warp (can contain multiple files)
-set( LabelMapsToWarp  @ProcessingDirectory@/5-AverageSegmentation/segmentation.nrrd )
+set( LabelMapsToWarp  @LabelMapsToWarpFile@ )
 ##-3-mask created from the segmentation
 set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-SkullStripping/*_mask_from_seg.nrrd )
 ##-4-Template mask (used for the registration if set). Template mask has to be in template directory

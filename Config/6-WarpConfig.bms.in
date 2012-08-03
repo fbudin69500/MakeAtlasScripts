@@ -10,7 +10,7 @@ set( CASES @cases@ )
 ##-2-Use the inverse h-field computed with the population atlas creation
 set( USE_INV_HFIELD TRUE )
 ##-3-List of images to warp (can contain multiple files)
-set( LabelMapsToWarp  @ProcessingDirectory@/5-AverageSegmentation/segmentation.nrrd )
+set( LabelMapsToWarp  @LabelMapsToWarpFile@ )
 ##-4-mask created from the segmentation
 set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-SkullStripping/*_mask_from_seg.nrrd )
 ##-5-Template mask (used for the registration if set)
@@ -25,7 +25,7 @@ set( OUTPUT_DIR @ProcessingDirectory@/*/6-Warping )
 ##-8-Input suffix of files used to create new average
 set( WARP_INPUT_FILE @WarpInputFile@ )
 ##-9-Suffix of the inverse hfield that are computed in the population average creation
-set( InvHField @ProcessingDirectory@/*/4-AverageCreation/*_inv_hFieldToPopulationAverage.mha )
+set( InvHField @ProcessingDirectory@/*/4-AverageCreation/*_inv_hFieldToPopAverage.mha )
 ##-15-directory in which temporary files are written
 set( tempDir @ProcessingDirectory@/temp/6-Warping )
 ##-16-Iteration number
