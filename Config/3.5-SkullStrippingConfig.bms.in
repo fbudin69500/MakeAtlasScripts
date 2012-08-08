@@ -1,0 +1,22 @@
+##Check that the version is the same in the example and in the config file you are modifying.
+##If not, copy and modify this example to have a version of the configuration file that is up
+##to date.
+##Version:@ConfigVersion@
+#####################################################################################################
+################################### Variables to set ################################################
+#####################################################################################################
+##-1-Cases to process
+set( CASES @cases@ )
+##-2-Images created after 2-Registration
+set( REGISTERED_IMAGES @SSImages@ )
+##-3-Directory in the case directory in which to save new case files (mask and parcellation)
+set( OUTPUT_DIR @ProcessingDirectory@/*/3.5-SkullStrippedImages )
+##-4-Mask file name
+set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-BrainMaskComputation/*_mask_from_seg.nrrd )
+##-5-Name of this file (configuration file).
+##Set to '' if you don't want to save the configuration file in the output directory
+set( ScriptName @ConfigDirectory@/3.5-SkullStrippingConfig.bms )
+#######################################################################################################
+include( @ConfigDirectory@/GlobalConfig.bms )
+##Processes
+include( @CMAKE_CURRENT_SOURCE_DIR@/3.5-SkullStripping/000SkullStrip.bms )

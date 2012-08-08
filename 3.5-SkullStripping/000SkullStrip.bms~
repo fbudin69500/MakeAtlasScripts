@@ -1,0 +1,19 @@
+### The script uses:
+#-ImageMath
+
+ForEach (Case ${CASES})
+  echo('Skullstripping '${Case} )
+  RegEx( OutputSubjDir ${OUTPUT_DIR} '\*' REPLACE ${Case} )
+  MakeDirectory( ${OutputSubjDir} )
+  RegEx( mask_FILE ${INPUT_MASK_FILE} '\*' REPLACE ${Case} )
+  ForEach( image ${REGISTERED_IMAGES} )
+    RegEx( image_FILE ${image} '\*' REPLACE ${Case} )
+    GetFilename( output_file_TAG ${image_FILE} NAME_WITHOUT_EXTENSION )
+    set( outputFileName ${OutputSubjDir}/${output_file_TAG}.nrrd )
+    set(Cmd  ${ImageMath} ${image_FILE} -mask ${mask_FILE} -outfile ${outputFileName} -type float )
+  EndForEach()
+  if( ${ScriptName} != '' )
+    GetFilename( name ${ScriptName} NAME )
+    CopyFile( ${ScriptName} ${OutputSubjDir}/${name} )
+  Endif( ${ScriptName} != '' )
+EndForEach( ${CASES} )
