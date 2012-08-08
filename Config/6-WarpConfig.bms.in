@@ -12,7 +12,7 @@ set( USE_INV_HFIELD TRUE )
 ##-3-List of images to warp (can contain multiple files)
 set( LabelMapsToWarp  @LabelMapsToWarpFile@ )
 ##-4-mask created from the segmentation
-set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-SkullStripping/*_mask_from_seg.nrrd )
+set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-BrainMaskComputation/*_mask_from_seg.nrrd )
 ##-5-Template mask (used for the registration if set)
 set( TEMPLATE_MASK '' )
 #####################################################################################################

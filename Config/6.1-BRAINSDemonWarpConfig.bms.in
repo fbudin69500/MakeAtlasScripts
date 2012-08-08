@@ -10,7 +10,7 @@ set( CASES @cases@ )
 ##-2-List of images to warp (can contain multiple files)
 set( LabelMapsToWarp  @LabelMapsToWarpFile@ )
 ##-3-mask created from the segmentation
-set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-SkullStripping/*_mask_from_seg.nrrd )
+set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-BrainMaskComputation/*_mask_from_seg.nrrd )
 ##-4-Template mask (used for the registration if set). Template mask has to be in template directory
 set( TEMPLATE_MASK '' )
 ##-5-Warping direction: ToCase/ToTemplate

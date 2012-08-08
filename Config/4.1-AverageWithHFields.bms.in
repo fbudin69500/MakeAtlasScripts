@@ -10,7 +10,7 @@ set( CASES @cases@ )
 ##-2-Input files used to create average image. May contain multiple suffixes
 set( Average_INPUT_FILES @AverageInputFile@ )
 ##-4-Mask file name
-set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-SkullStripping/*_mask_from_seg.nrrd )
+set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-BrainMaskComputation/*_mask_from_seg.nrrd )
 ##-4- Previous (rigid) transform. If set to '', not used. Otherwise, this transform is added to the resampling step
 ##ie: @ProcessingDirectory@/*/2-Registration/${rootName}_reg.mat
 set( TRANSFORM_FILE '')

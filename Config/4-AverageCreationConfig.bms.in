@@ -12,7 +12,7 @@ set( TRANSFORM_FILE @TransformFile@ )
 ##-5-Suffix of the original scalar image (to the avg image) or the DTI image before the rigid registration.
 set( Original_Image @Original_Image@ )
 ##-4-Mask file name
-set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-SkullStripping/*_mask_from_seg.nrrd )
+set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-BrainMaskComputation/*_mask_from_seg.nrrd )
 ###################################fill in those if you want to recompute average from original images###################################
 ##-6-Recalculating the average image a second time with the original images instead of the registered ones? (TRUE or FALSE - if true, go check params 5 and 7)
 set( Recalculate_avg FALSE )
