@@ -120,7 +120,7 @@ ForEach( i ${CASES} )
 #    echo( ${output} )
 
 #    set( compose ${tempDir}/${i}_affineCompose.txt )
-#    set( Cmd ITKTransformTools compose ${InitialTransform} ${AFFINE_FILE} ${compose} )
+#    set( Cmd ITKTransformTools compose ${InitialTransform} ${affineTransform} ${compose} )
 #    echo( ${Cmd} )
 #    run( output ${Cmd} )
 #    echo( ${output} )
