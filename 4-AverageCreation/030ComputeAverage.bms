@@ -75,7 +75,7 @@ if( ${ScriptName} != '' )
 Endif( ${ScriptName} != '' )
 
 #set ( atlasWerksCmd ${AtlasWerks} -f ${tempDir}/AW.xml -o ${tempDir}/AtlasWerksParsedOutput.xml )
-set ( atlasWerksCmd ${AtlasWerks}  --outputImageFilenamePrefix=${tempDir}/avg --outputDeformedImageFilenamePrefix=${tempDir}/DeformedImage --outputHFieldFilenamePrefix=${tempDir}/h_ --outputHInvFieldFilenamePrefix=${tempDir}/inv_h_ --scaleLevel=4 --numberOfIterations=200 --maxPerturbation=0.1 --scaleLevel=2 --numberOfIterations=50 --maxPerturbation=0.1 --scaleLevel=1 --numberOfIterations=25 --maxPerturbation=0.1 ${MD_CASES} ${TRANSFORM_LIST} )
+set ( atlasWerksCmd ${AtlasWerks}  --outputImageFilenamePrefix=${tempDir}/avg_ --outputDeformedImageFilenamePrefix=${tempDir}/DeformedImage --outputHFieldFilenamePrefix=${tempDir}/h_ --outputHInvFieldFilenamePrefix=${tempDir}/inv_h_ --scaleLevel=4 --numberOfIterations=200 --maxPerturbation=0.1 --scaleLevel=2 --numberOfIterations=50 --maxPerturbation=0.1 --scaleLevel=1 --numberOfIterations=25 --maxPerturbation=0.1 ${MD_CASES} ${TRANSFORM_LIST} )
 
 If( ${step} < 15 )
   run ( output ${atlasWerksCmd})

@@ -174,7 +174,7 @@ ELSE (${HISTOGRAM_MATCH} == FALSE)
       Int( ${count} )
     endforeach( ${CASES} )
     ############################# SET PATH CORRECTLY
-    set( Histo ${ResampleVolume2} ${tempDir}/avg.mhd ${AverageImageSS} -i nn)
+    set( Histo ${ResampleVolume2} ${tempDir}/avg_2.mhd ${AverageImageSS} -i nn)
     echo("haha")
     If( ${step} < 43 )
       echo( "plop")
