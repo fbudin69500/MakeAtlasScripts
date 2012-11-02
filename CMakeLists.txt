@@ -94,7 +94,7 @@ else()
   set( rootName "*_${InputTag}" )
 endif()
 ###########################Version of the pipeline############################################
-set( ConfigVersion 3.01 )
+set( ConfigVersion 3.02 )
 set( LabelMapsToWarpFile @ProcessingDirectory@/5-AverageSegmentation/${segmentationTag}.nrrd )
 set( LabelMapsTag @ProcessingDirectory@/*/6-Warping/*_${segmentationTag}.nrrd )
 set(TransformFile @ProcessingDirectory@/*/2-Registration/${rootName}_reg.mat )
