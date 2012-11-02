@@ -24,7 +24,7 @@ set( RegisterImages '@RegisterImagesTOOL@' )
 #Double2FloatTransform
 set( Double2FloatTransform '@Double2FloatTransformTOOL@' )
 #AtlasWerks
-set( AtlasWerks '@AtlasWerksTOOL@' )
+set( AtlasWerks '@AtlasWerks_oldTOOL@' )
 #ResampleDTIlogEuclidean
 set( ResampleDTIlogEuclidean '@ResampleDTIlogEuclideanTOOL@' )
 #BRAINSDemonWarp

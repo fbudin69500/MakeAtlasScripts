@@ -27,7 +27,7 @@ transformation
 areg
 RegisterImages
 Double2FloatTransform
-AtlasWerks
+AtlasWerks_old
 ResampleDTIlogEuclidean
 BRAINSDemonWarp
 dtiaverage

@@ -73,11 +73,9 @@ if( ${ScriptName} != '' )
   CopyFile( ${ScriptName} ${outputDir}/${name} )
   ExitOnError( 'FALSE' )
 Endif( ${ScriptName} != '' )
-If( ${step} < 14 )
-  include( 034CreateXML.bms )
-Endif( ${step} < 14 )
 
-set ( atlasWerksCmd ${AtlasWerks} -f ${tempDir}/AW.xml -o ${tempDir}/AtlasWerksParsedOutput.xml )
+#set ( atlasWerksCmd ${AtlasWerks} -f ${tempDir}/AW.xml -o ${tempDir}/AtlasWerksParsedOutput.xml )
+set ( atlasWerksCmd ${AtlasWerks}  --outputImageFilenamePrefix=${tempDir}/avg --outputDeformedImageFilenamePrefix=${tempDir}/DeformedImage --outputHFieldFilenamePrefix=${tempDir}/h_ --outputHInvFieldFilenamePrefix=${tempDir}/inv_h_ --scaleLevel=4 --numberOfIterations=200 --maxPerturbation=0.1 --scaleLevel=2 --numberOfIterations=50 --maxPerturbation=0.1 --scaleLevel=1 --numberOfIterations=25 --maxPerturbation=0.1 ${MD_CASES} ${TRANSFORM_LIST} )
 
 If( ${step} < 15 )
   run ( output ${atlasWerksCmd})
@@ -133,7 +131,7 @@ IF( ${IS_SCALED} == TRUE )
   EndIf( ${step} < 45 )
 ENDIF( ${IS_SCALED} == TRUE )
 
-Set( ImageForMask ${tempDir}/avg.mhd )
+Set( ImageForMask ${tempDir}/avg_2.mhd )
 Set( ImageForMaskNrrd ${tempDir}/avg.nrrd )
 Set( Mask ${tempDir}/mask.nrrd )
 
