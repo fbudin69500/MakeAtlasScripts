@@ -16,7 +16,7 @@ else
   set pathScript = $pathVar/$localPath
 endif 
 if( $nbparams < 1 ) then
-  echo "Usage: Step [ConfigFile] / [ProcessingDir ResultDir] [-l file1 file2 ... filen] [-b file1 file2 ... filen][-s subDirectory]"
+  echo "Usage: Step [ConfigFile] [ResultsDir] / [ProcessingDir ResultDir] [-l file1 file2 ... filen] [-b file1 file2 ... filen][-s subDirectory]"
   exit -1
 endif
 set step=$argv[1]
@@ -33,7 +33,7 @@ if( $step < 1 || $step > 7 ) then
   exit -1
 endif
 #Steps 1 and 2
-if( $step == 1 || $step == 2 ) then
+if( $step == 1 ) then
   if( $nbparams < 3 ) then
     echo "Usage: Step ProcessingDir ResultDir [-l file1 file2 ... filen] [-b file1 file2 ... filen][-s subDirectory]"
     exit -1
@@ -134,27 +134,9 @@ if( $step == 1 || $step == 2 ) then
       end
     end
   endif
-  if( $step == 2 ) then
-    foreach i ($ListCases)
-      if( $subdirName == '' ) then
-        if( `\ls $Processing_dir/$i | grep 2-Registration | wc -l` > 1 ) then
-          echo "Multiple subdirectories contain 2-Registration. Please set the correct name manually"
-          exit -1
-        endif
-        set subdirNameTemp=`\ls $Processing_dir/$i | grep 2-Registration`
-        set subdirNameCase="$subdirNameTemp:h"
-      else
-        set subdirNameCase=$subdirName
-      endif
-      set tolink = `\ls $Processing_dir/$i/$subdirNameCase | grep '.txt\|.tfm\|.mat\|.nii\|.gipl\|.nhdr\|.nrrd\|.mha\|.raw\|.raw.gz\|.mhd'|grep -v '~'`
-      foreach j ($tolink)
-        ln -sf $Processing_dir/$i/$subdirNameCase/$j $Result_dir/$i/$j
-      end
-    end
-  endif
 else
-  if( $nbparams != 2 ) then
-    echo "Usage: Step ConfigFile"
+  if( $nbparams != 3 ) then
+    echo "Usage: Step ConfigFile ResultDir"
     exit -1
   endif
   set configFile=$argv[2]
@@ -162,46 +144,231 @@ else
     echo "Error: config file does not exist"
     exit -1
   endif
+  set Result_dir=$argv[3]
   #Get values in config file
   set cases = `$pathScript/ReadConfig.script $configFile CASES`
-  set directory = `$pathScript/ReadConfig.script $configFile dir`
-  set resultspredir = `$pathScript/ReadConfig.script $configFile INPUT_PRE_SUBDIR`
-  set processpredir = `$pathScript/ReadConfig.script $configFile OUTPUT_PRE_SUBDIR`
-  set subDir = `$pathScript/ReadConfig.script $configFile PROCESS_SUBDIR`
+#  set directory = `$pathScript/ReadConfig.script $configFile dir`
+#  set resultspredir = `$pathScript/ReadConfig.script $configFile INPUT_PRE_SUBDIR`
+#  set processpredir = `$pathScript/ReadConfig.script $configFile OUTPUT_DIR`
+  set outputdir = `$pathScript/ReadConfig.script $configFile OUTPUT_DIR`
+#  set subDir = `$pathScript/ReadConfig.script $configFile PROCESS_SUBDIR`
   #creates output directory if necessary
-  if( ! -d $directory/$resultspredir ) then
-    if( -e $directory/$resultspredir ) then
+  if( ! -d $Result_dir ) then
+    if( -e $Result_dir ) then
       echo "Error: Result directory name already exists and is not a directory"
       exit -1
     else
-      mkdir $directory/$resultspredir
+      mkdir $Result_dir
+    endif
+  endif
+  if( ! -d $Result_dir/Cases ) then
+    if( -e $Result_dir/Cases ) then
+      echo "Error: Result directory name already exists and is not a directory"
+      exit -1
+    else
+      mkdir $Result_dir/Cases
     endif
   endif
   foreach i ($cases)
-    if( ! -d $directory/$resultspredir/$i ) then
-      if( -e $directory/$resultspredir/$i ) then
+    if( ! -d $Result_dir/Cases/$i ) then
+      if( -e $Result_dir/Cases/$i ) then
         echo "Error: Result directory name already exists and is not a directory"
         echo "Links not created for "$i
         break
       else
-        mkdir $directory/$resultspredir/$i
+        mkdir $Result_dir/Cases/$i
       endif
     endif
   end
+  
+  if( $step == 2 ) then
+    set outputdir = "`$pathScript/ReadConfig.script $configFile OUTPUT_DIR`"
+    set imageType = "`$pathScript/ReadConfig.script $configFile Type`"
+    set rawRootName = "`$pathScript/ReadConfig.script $configFile RawRootName`"
+    set inputfile = "`$pathScript/ReadConfig.script $configFile INPUT_FILE`"
+    set additionalImagesNN = "`$pathScript/ReadConfig.script $configFile ADDITIONAL_IMAGES_NN`"
+    set additionalImages = "`$pathScript/ReadConfig.script $configFile ADDITIONAL_IMAGES`"
+    set bias = `$pathScript/ReadConfig.script $configFile BIAS`
+    if( ! -d $Result_dir/2-Registration ) then
+      if( -e $Result_dir/2-Registration ) then
+        echo "Error: Result directory name already exists and is not a directory"
+        exit -1
+      else
+        mkdir $Result_dir/2-Registration
+      endif
+    endif
+    if( $imageType == "scalar") then
+      if( ! -d $Result_dir/2-Registration/ImageReg ) then
+        if( -e $Result_dir/2-Registration/ImageReg ) then
+          echo "Error: Result directory name already exists and is not a directory"
+          exit -1
+        else
+          mkdir $Result_dir/2-Registration/ImageReg
+        endif
+      endif
+      foreach i (${cases})
+        set rootname = `echo "$rawRootName"| sed "s/\*/$i/g"`
+        set caseFolder=`echo "$outputdir"| sed "s/\*/$i/g"`
+        set inputCase=`echo "$inputfile"| sed "s/\*/$i/g"`
+        ln -sf $caseFolder/${rootname}_reg.nrrd $Result_dir/2-Registration/ImageReg/${rootname}_reg.nrrd
+        ln -sf $caseFolder/${rootname}_reg.nrrd $Result_dir/Cases/$i/${rootname}_reg.nrrd
+      end
+    endif
+    if( $imageType == "DTI" || $imageType == "DWI" ) then
+      if( ! -d $Result_dir/2-Registration/MD ) then
+        if( -e $Result_dir/2-Registration/MD ) then
+          echo "Error: Result directory name already exists and is not a directory"
+          exit -1
+        else
+          mkdir $Result_dir/2-Registration/MD
+        endif
+      endif
+      if( ! -d $Result_dir/2-Registration/FA ) then
+        if( -e $Result_dir/2-Registration/FA ) then
+          echo "Error: Result directory name already exists and is not a directory"
+          exit -1
+        else
+          mkdir $Result_dir/2-Registration/FA
+        endif
+      endif
+      if( ! -d $Result_dir/2-Registration/AD ) then
+        if( -e $Result_dir/2-Registration/AD ) then
+          echo "Error: Result directory name already exists and is not a directory"
+          exit -1
+        else
+          mkdir $Result_dir/2-Registration/AD
+        endif
+      endif
+      if( ! -d $Result_dir/2-Registration/RD ) then
+        if( -e $Result_dir/2-Registration/RD ) then
+          echo "Error: Result directory name already exists and is not a directory"
+          exit -1
+        else
+          mkdir $Result_dir/2-Registration/RD
+        endif
+      endif
+      if( ! -d $Result_dir/2-Registration/ColorFA ) then
+        if( -e $Result_dir/2-Registration/ColorFA ) then
+          echo "Error: Result directory name already exists and is not a directory"
+          exit -1
+        else
+          mkdir $Result_dir/2-Registration/ColorFA
+        endif
+      endif
+      if( ! -d $Result_dir/2-Registration/RegTensor ) then
+        if( -e $Result_dir/2-Registration/RegTensor ) then
+          echo "Error: Result directory name already exists and is not a directory"
+          exit -1
+        else
+          mkdir $Result_dir/2-Registration/RegTensor
+        endif
+      endif
+      foreach i (${cases})
+        set rootname = `echo "$rawRootName"| sed "s/\*/$i/g"`
+        set caseFolder=`echo "$outputdir"| sed "s/\*/$i/g"`
+        set inputCase=`echo "$inputfile"| sed "s/\*/$i/g"`
+        ln -sf $caseFolder/${rootname}_dti_f_reg_MD.nrrd $Result_dir/2-Registration/MD/${rootname}_dti_f_reg_MD.nrrd
+        ln -sf $caseFolder/${rootname}_dti_f_reg_MD.nrrd $Result_dir/Cases/$i/${rootname}_dti_f_reg_MD.nrrd
+        ln -sf $caseFolder/${rootname}_dti_f_reg_FA.nrrd $Result_dir/2-Registration/FA/${rootname}_dti_f_reg_FA.nrrd
+        ln -sf $caseFolder/${rootname}_dti_f_reg_FA.nrrd $Result_dir/Cases/$i/${rootname}_dti_f_reg_FA.nrrd
+        ln -sf $caseFolder/${rootname}_dti_f_reg_RD.nrrd $Result_dir/2-Registration/RD/${rootname}_dti_f_reg_RD.nrrd
+        ln -sf $caseFolder/${rootname}_dti_f_reg_RD.nrrd $Result_dir/Cases/$i/${rootname}_dti_f_reg_RD.nrrd
+        ln -sf $caseFolder/${rootname}_dti_f_reg_AD.nrrd $Result_dir/2-Registration/AD/${rootname}_dti_f_reg_AD.nrrd
+        ln -sf $caseFolder/${rootname}_dti_f_reg_AD.nrrd $Result_dir/Cases/$i/${rootname}_dti_f_reg_AD.nrrd
+        ln -sf $caseFolder/${rootname}_dti_f_reg_ColorFA.nrrd $Result_dir/2-Registration/ColorFA/${rootname}_dti_f_reg_ColorFA.nrrd
+        ln -sf $caseFolder/${rootname}_dti_f_reg_ColorFA.nrrd $Result_dir/Cases/$i/${rootname}_dti_f_reg_ColorFA.nrrd
+        ln -sf $caseFolder/${rootname}_dti_f_reg.nrrd $Result_dir/2-Registration/RegTensor/${rootname}_dti_f_reg.nrrd
+        ln -sf $caseFolder/${rootname}_dti_f_reg.nrrd $Result_dir/Cases/$i/${rootname}_dti_f_reg.nrrd
+      end
+    endif
+    if( $imageType == "DWI" ) then
+      if( ! -d $Result_dir/2-Registration/B0 ) then
+        if( -e $Result_dir/2-Registration/B0 ) then
+          echo "Error: Result directory name already exists and is not a directory"
+          exit -1
+        else
+          mkdir $Result_dir/2-Registration/B0
+        endif
+      endif
+      if( ! -d $Result_dir/2-Registration/iDWI ) then
+        if( -e $Result_dir/2-Registration/iDWI ) then
+          echo "Error: Result directory name already exists and is not a directory"
+          exit -1
+        else
+          mkdir $Result_dir/2-Registration/iDWI
+        endif
+      endif
+      if( ! -d $Result_dir/2-Registration/OrigTensor ) then
+        if( -e $Result_dir/2-Registration/OrigTensor ) then
+          echo "Error: Result directory name already exists and is not a directory"
+          exit -1
+        else
+          mkdir $Result_dir/2-Registration/OrigTensor
+        endif
+      endif
+      foreach i (${cases})
+        set rootname = `echo "$rawRootName"| sed "s/\*/$i/g"`
+        set caseFolder=`echo "$outputdir"| sed "s/\*/$i/g"`
+        set inputCase=`echo "$inputfile"| sed "s/\*/$i/g"`
+        if( ${bias} == "TRUE" ) then
+          set bias_suffix = "_biasCorrected"
+        else
+          set bias_suffix = ""
+        endif
+        ln -sf $caseFolder/${rootname}_b0${bias_suffix}_reg.nrrd $Result_dir/2-Registration/B0/${rootname}_b0${bias_suffix}_reg.nrrd
+        ln -sf $caseFolder/${rootname}_b0${bias_suffix}_reg.nrrd $Result_dir/Cases/$i/${rootname}_b0${bias_suffix}_reg.nrrd
+        ln -sf $caseFolder/${rootname}_idwi${bias_suffix}_reg.nrrd $Result_dir/2-Registration/iDWI/${rootname}_idwi${bias_suffix}_reg.nrrd
+        ln -sf $caseFolder/${rootname}_idwi${bias_suffix}_reg.nrrd $Result_dir/Cases/$i/${rootname}_idwi${bias_suffix}_reg.nrrd
+        ln -sf $caseFolder/${rootname}_dti_f.nrrd $Result_dir/2-Registration/OrigTensor/${rootname}_dti_f.nrrd
+        ln -sf $caseFolder/${rootname}_dti_f.nrrd $Result_dir/Cases/$i/${rootname}_dti_f.nrrd
+      end
+    endif
+    if( $additionalImagesNN != "''" ) then
+      echo "Linking Additional NN images not implemented yet"
+    endif
+    if( $additionalImages != "''" ) then
+      echo "Linking Additional images not implemented yet"
+    endif
+  endif
   if( $step == 3 ) then
-    set masktag = `$pathScript/ReadConfig.script $configFile NEW_MASK_TAG`
-#   set ext = `$pathScript/ReadConfig.script $configFile extension`  given with new_mask_tag
+    set maskfile = `$pathScript/ReadConfig.script $configFile OUTPUT_MASK_FILE`
     set bias = `$pathScript/ReadConfig.script $configFile biasFieldCorrection`
-    set abcSuffix = (`$pathScript/ReadConfig.script $configFile ABC_IMAGE_SUFFIX`)
-    if( $#abcSuffix > 1 ) then
-      set suffix = abcSuffix[1]
-    else
-      set suffix = abcSuffix
+    set outputdir = "`$pathScript/ReadConfig.script $configFile OUTPUT_DIR`"
+    set abc_image = "`$pathScript/ReadConfig.script $configFile ABC_IMAGE`"
+    set abcSuffix = "seg"
+    if( ! -d $Result_dir/3-BrainMaskComputation ) then
+      if( -e $Result_dir/3-BrainMaskComputation ) then
+        echo "Error: Result directory name already exists and is not a directory"
+        exit -1
+      else
+        mkdir $Result_dir/3-BrainMaskComputation
+      endif
+    endif
+    if( ! -d $Result_dir/3-BrainMaskComputation/BrainMasks ) then
+      if( -e $Result_dir/3-BrainMaskComputation/BrainMasks ) then
+        echo "Error: Result directory name already exists and is not a directory"
+        exit -1
+      else
+        mkdir $Result_dir/3-BrainMaskComputation/BrainMasks
+      endif
+    endif
+    if( ${bias} == "TRUE" ) then
+      if( ! -d $Result_dir/3-BrainMaskComputation/BiasCorrected ) then
+        if( -e $Result_dir/3-BrainMaskComputation/BiasCorrected ) then
+          echo "Error: Result directory name already exists and is not a directory"
+          exit -1
+        else
+          mkdir $Result_dir/3-BrainMaskComputation/BiasCorrected
+        endif
+      endif
     endif
     foreach i ($cases)
-      ln -sf $directory/$processpredir/$i/$subDir/$i$masktag $directory/$resultspredir/$i/$i$masktag
+      set caseFolder=`echo "$outputdir"| sed "s/\*/$i/g"`
+      set maskCase=`echo "$maskfile"| sed "s/\*/$i/g"`
+      ln -sf $caseFolder/${maskCase} $Result_dir/Cases/$i/${maskCase}
+      ln -sf $caseFolder/${maskCase} $Result_dir/3-BrainMaskComputation/BrainMasks/${maskCase}
       if( $bias == "TRUE" ) then
-        ln -sf $directory/$processpredir/$i/$subDir/corrected_$i${suffix} $directory/$resultspredir/$i/corrected_$i${suffix}
+        echo "Linking bias field corrected image not implemented yet"
       endif
     end
   else if ( $step == 4 ) then

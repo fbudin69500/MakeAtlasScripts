@@ -12,7 +12,6 @@ if( ! -e $configFile ) then
   echo "Error: config file does not exist"
   exit -1
 endif
-
 set lc = `wc -l $configFile`
 set i = $lc[1]
 set listVar = ''
@@ -21,7 +20,7 @@ while($i >= 0 )
   set out = `head -${i} ${configFile} | tail -1 | sed 's/{/:/g' | sed 's/\}/,/g'| sed 's/\$/;/g'`
   set good = 0 
   if( `echo "$out" | grep -c $var` ) then
-    if( `echo $out | grep -c -i -e '\(^[[:blank:]]*\(set[[:blank:]]*(\|(\?\)\)[[:blank:]]*'$var'\([[:blank:]]*\|$\|#\)' ` > 0 ) then
+    if( `echo "$out" | grep -c -i -e '\(^[[:blank:]]*\(set[[:blank:]]*(\|(\?\)\)[[:blank:]]*'$var'\([[:blank:]]*\|$\|#\)' ` > 0 ) then
       @ good = 1
     endif
   endif
@@ -30,11 +29,12 @@ while($i >= 0 )
     set k = $i
     set listVar = ''
     while( $endPar == 0 && $k <= $lc[1] )
-      set out = `echo $out | sed "s/#.*//" `
+      set outo = "$out:gas/#.*//"
+      set out = `echo "$outo" | sed "s/\*/@/g"`
       set endParPos = 0
       set j = $#out
       while( $j >= 0 )
-        if( `echo $out[$j] | grep -c ')' ` > 0 ) then
+        if( `echo "$out[$j]" | grep -c ')' ` > 0 ) then
           @ endParPos = $j
           @ endPar = 1
           break
@@ -81,7 +81,9 @@ foreach i (`seq 1 $#listVar`)
     set temp = `echo "$listVar[$i]" | sed "s/.*;://" | sed "s/,.*//"`
     set tempVal = `$pathScript $configFile $temp | sed "s/\//\\\//g"`
     set test = `echo "$listVar[$i]" | sed "s/;:$temp,/$tempVal/"`
-    set listVar[$i]=$test
+    set listVar[$i]="$test"
   end
+  set temp="$listVar[$i]"
+  set listVar[$i]="$temp:gas/@/*/"
 end
-echo $listVar
+echo "$listVar"
