@@ -12,7 +12,7 @@ set( INPUT_FILE @InputFile@ )
 ##-3-Template file name
 set( TEMPLATE_FILE @TemplateDirectory@/template.mha )
 ##-5-Transform
-#ie: @ProcessingDirectory@/2-ManualTransform/*_manual_reg.txt
+#ie: @ProcessingDirectory@/*/2-ManualTransform/*_manual_reg.txt
 set( MANUAL_TRANSFORM @ManualTransformSTRING@ )
 ##-6-Root name (ie: *_T1 )
 set( RawRootName @rootName@ )
