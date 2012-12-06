@@ -70,7 +70,8 @@ endforeach( var )
 mark_as_advanced( CMAKE_BUILD_TYPE CMAKE_INSTALL_PREFIX )
 set( ConfigDirectory "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "Config directory" )
 
-get_filename_component(initProcessingDirectory ${CMAKE_CURRENT_SOURCE_DIR}/.. REALPATH )
+get_filename_component(initProcessingDirectory ${CMAKE_CURRENT_BINARY_DIR}/../../Processing REALPATH )
+get_filename_component(toolsDirectory ${CMAKE_CURRENT_BINARY_DIR}/.. REALPATH )
 set( ProcessingDirectory "${initProcessingDirectory}" CACHE PATH "Processing directory" )
 
 
@@ -82,7 +83,7 @@ if( NOT( ${InputType} STREQUAL scalar )
   )
   message( FATAL_ERROR "InputType must be either scalar or DWI or DTI" )
 endif()
-set(InputFile "" CACHE PATH "input image in 1-Converted, ie: /Project/*/1-Converted/*_T1.nrrd; *
+set(InputFile "${initProcessingDirectory}/*/1-Converted/*_T1.nrrd" CACHE PATH "input image in 1-Converted, ie: /Project/*/1-Converted/*_T1.nrrd; *
 will be replaced by the case name. It is not compulsary" )
 get_filename_component( InputTag ${InputFile} NAME_WE )
 if( DEFINED segmentationFile )
@@ -94,11 +95,11 @@ else()
   set( rootName "*_${InputTag}" )
 endif()
 ###########################Version of the pipeline############################################
-set( ConfigVersion 3.02 )
+set( ConfigVersion 3.03 )
+###########################set variables values depending on project type######################
 set( LabelMapsToWarpFile @ProcessingDirectory@/5-AverageSegmentation/${segmentationTag}.nrrd )
 set( LabelMapsTag @ProcessingDirectory@/*/6-Warping/*_${segmentationTag}.nrrd )
 set(TransformFile @ProcessingDirectory@/*/2-Registration/${rootName}_reg.mat )
-###########################set variables values depending on project type######################
 if( ${InputType} STREQUAL scalar )
   set(RigidRegistrationImageFile @ProcessingDirectory@/*/2-Registration/${rootName}_reg.nrrd )
   set(IsScalar TRUE )
@@ -188,7 +189,7 @@ if( NOT( ${ProcessingDirectory} STREQUAL ${oldProcessingDir} ) )
   set( oldProcessingDir ${ProcessingDirectory} CACHE INTERNAL "oldProcessDir" FORCE)
   Set( cases ${casesValues} CACHE STRING "cases to process" FORCE)
   if( NOT ${templatePathDefinedInline} )
-    set(TemplateDirectory "${ProcessingDirectory}/template/a-original" CACHE PATH "Template directory" FORCE )
+    set(TemplateDirectory "${toolsDirectory}/template/" CACHE PATH "Template directory" FORCE )
   endif()
   if( NOT ${segPathDefinedInline} )
     set( ExternalSegmentation "${TemplateDirectory}/segmentation.nrrd" CACHE FILEPATH "External segmentation file" FORCE )
