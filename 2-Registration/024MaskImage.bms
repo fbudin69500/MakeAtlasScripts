@@ -46,12 +46,7 @@ Else( ${INPUTTYPE} == 'DWI' || ${INPUTTYPE} == 'DTI' )
   Set( FLAG -n 1 )
   Set( image ${MOVING_IMAGE} )
 EndIf( ${INPUTTYPE} == 'DWI' || ${INPUTTYPE} == 'DTI' )
-##Quantize input image
-Set( quantizedImage ${TEMPDIR}/quantized.nrrd )
-Set( Cmd unu quantize -i ${image} -o ${quantizedImage} -b 16 )
-Run( output ${Cmd} )
-echo( ${output} )
 ##Compute mask
-Set( Cmd ${MaskComputationPATH} ${quantizedImage} -a -o ${TEMPDIR}/${ROOTNAME}_Mask.nrrd ${FLAG} )
+Set( Cmd ${MaskComputationPATH} ${image} -a -o ${TEMPDIR}/${ROOTNAME}_Mask.nrrd ${FLAG} )
 Run( output ${Cmd} )
 echo( ${output} )
