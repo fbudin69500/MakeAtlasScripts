@@ -47,7 +47,7 @@ N4ITKBiasFieldCorrection
 MaskComputationWithThresholding
 )
 
-set( ToolsDirectory "/rodent/bin_linux64/toolsJuly2012" CACHE PATH "Tools
+set( ToolsDirectory "/rodent/bin_linux64/toolsApril2013" CACHE PATH "Tools
 directory")
 
 ##########################Find tools##############################################
