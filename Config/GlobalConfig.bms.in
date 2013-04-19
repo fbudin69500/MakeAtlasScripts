@@ -19,8 +19,6 @@ set( rreg '@rregTOOL@' )
 set( transformation '@transformationTOOL@' )
 #areg
 set( areg '@aregTOOL@' )
-#RegisterImages
-set( RegisterImages '@RegisterImagesTOOL@' )
 #Double2FloatTransform
 set( Double2FloatTransform '@Double2FloatTransformTOOL@' )
 #AtlasWerks
@@ -29,6 +27,8 @@ set( AtlasWerks '@AtlasWerks_oldTOOL@' )
 set( ResampleDTIlogEuclidean '@ResampleDTIlogEuclideanTOOL@' )
 #BRAINSDemonWarp
 set( BRAINSDemonWarp '@BRAINSDemonWarpTOOL@' )
+#BRAINSFit
+set( BRAINSFit '@BRAINSFitTOOL@' )
 #dtiaverage
 set( dtiaverage '@dtiaverageTOOL@' )
 #unu

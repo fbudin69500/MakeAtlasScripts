@@ -83,6 +83,7 @@ endif( ${SKULLSTRIP} == TRUE )
 
 
 echo('Registration')
-Set( RegCmd ${RegisterImagesPATH} ${FIXED} ${MOVING_IMAGE} --saveTransform ${TRANSFORMFILE} --sampleFromOverlap --registration PipelineRigid --rigidMaxIterations 200 --rigidSamplingRatio 0.2 --resampledImage ${TEMPDIR}/${ROOTNAME}_RegisterImagesOutput.nrrd)
+Set( RegCmd ${BRAINSFitPATH --movingVolume ${MOVING_IMAGE} --fixedVolume ${FIXED} --outputVolume ${TEMPDIR}/${ROOTNAME}_RegisterImagesOutput.nrrd --linearTransform ${TEMPDIR}/affine_transform.txt --transformType Affine --costMetric MMI --initializeTransformMode useGeometryAlign --minimumStepLength .00001 --translationScale 10 --strippedOutputTransform ${TRANSFORMFILE}
+
 Run( output ${RegCmd} )
 echo( ${output} )
