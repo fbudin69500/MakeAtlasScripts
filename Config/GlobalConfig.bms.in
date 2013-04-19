@@ -53,8 +53,6 @@ set ( dtiestim '@dtiestimTOOL@')
 set ( ManualImageOrient '@ManualImageOrientTOOL@')
 #ResampleDTI
 #set ( ResampleDTI '/tools/Slicer3/Slicer3-3.6.3-2011-03-04-linux-x86_64/lib/Slicer3/Plugins/ResampleDTI')
-#DiffusionTensorEstimation
-set ( DiffusionTensorEstimation '@DiffusionTensorEstimationTOOL@')
 #HistogramMatching
 set ( HistogramMatching '@HistogramMatchingTOOL@')
 #CreateMRML

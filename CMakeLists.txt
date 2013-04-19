@@ -41,7 +41,6 @@ WarpImageMultiTransform
 #buildtemplateparallel.sh
 dtiestim
 ManualImageOrient
-DiffusionTensorEstimation
 HistogramMatching
 #CreateMRML
 N4ITKBiasFieldCorrection
