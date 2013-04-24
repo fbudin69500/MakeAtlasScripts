@@ -83,7 +83,7 @@ endif( ${SKULLSTRIP} == TRUE )
 
 
 echo('Registration')
-Set( RegCmd ${BRAINSFitPATH} --movingVolume ${MOVING_IMAGE} --fixedVolume ${FIXED} --outputVolume ${TEMPDIR}/${ROOTNAME}_RegisterImagesOutput.nrrd --linearTransform ${TEMPDIR}/affine_transform.txt --transformType Affine --costMetric MMI --initializeTransformMode useGeometryAlign --minimumStepLength .00001 --translationScale 10 --strippedOutputTransform ${TRANSFORMFILE} )
+Set( RegCmd ${BRAINSFitPATH} --movingVolume ${MOVING_IMAGE} --fixedVolume ${FIXED} --outputVolume ${TEMPDIR}/${ROOTNAME}_RegisterImagesOutput.nrrd --linearTransform ${TEMPDIR}/affine_transform.txt --useScaleVersor3D --costMetric MMI --initializeTransformMode useGeometryAlign --minimumStepLength .00001 --translationScale 10 --strippedOutputTransform ${TRANSFORMFILE} )
 
 Run( output ${RegCmd} )
 echo( ${output} )
