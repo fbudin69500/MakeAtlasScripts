@@ -31,6 +31,8 @@ set( BRAINSDemonWarp '@BRAINSDemonWarpTOOL@' )
 set( BRAINSFit '@BRAINSFitTOOL@' )
 #dtiaverage
 set( dtiaverage '@dtiaverageTOOL@' )
+#RegisterImages
+set( RegisterImages '@RegisterImagesTOOL@' )
 #unu
 set( unu '@unuTOOL@' )
 #dtiprocess

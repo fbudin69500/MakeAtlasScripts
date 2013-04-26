@@ -37,6 +37,7 @@ ITKTransformTools
 MedianImageFilter
 ImageStat
 ANTS
+RegisterImages
 WarpImageMultiTransform
 #buildtemplateparallel.sh
 dtiestim
