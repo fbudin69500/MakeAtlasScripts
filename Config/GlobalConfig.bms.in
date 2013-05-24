@@ -19,10 +19,10 @@ set( rreg '@rregTOOL@' )
 set( transformation '@transformationTOOL@' )
 #areg
 set( areg '@aregTOOL@' )
-#Double2FloatTransform
-set( Double2FloatTransform '@Double2FloatTransformTOOL@' )
-#AtlasWerks
-set( AtlasWerks '@AtlasWerks_oldTOOL@' )
+#RegisterImages
+set( RegisterImages '@RegisterImagesTOOL@' )
+#GreedyAtlas
+set( GreedyAtlas '@GreedyAtlasTOOL@' )
 #ResampleDTIlogEuclidean
 set( ResampleDTIlogEuclidean '@ResampleDTIlogEuclideanTOOL@' )
 #BRAINSDemonWarp
@@ -53,8 +53,6 @@ set ( WarpImageMultiTransform '@WarpImageMultiTransformTOOL@' )
 set ( dtiestim '@dtiestimTOOL@')
 #ManualImageOrient
 set ( ManualImageOrient '@ManualImageOrientTOOL@')
-#ResampleDTI
-#set ( ResampleDTI '/tools/Slicer3/Slicer3-3.6.3-2011-03-04-linux-x86_64/lib/Slicer3/Plugins/ResampleDTI')
 #HistogramMatching
 set ( HistogramMatching '@HistogramMatchingTOOL@')
 #CreateMRML

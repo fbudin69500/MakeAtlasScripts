@@ -1,10 +1,9 @@
 ### The script uses:
-#- ANTS
-#- Double2FloatTransform
-#- AtlasWerks
 #- ImageMath
+#- BRAINSFit
 #- ResampleVolume2
-#- BRAINSDemonWarp
+#- ResampleDTIlogEuclidean
+#- GreedyAtlas
 #- ITKTransformTools
 #########################Mask image used to compute average#############
 
@@ -49,14 +48,20 @@ endforeach( ${CASES} )
 set( POPULATION_AVERAGE_INPUT_MASKED_TAG ${POPULATION_AVERAGE_INPUT_TAG}${MASK_TAG}_padded )
 #########################affine registration###############################
 ##affinely register all cases once they are skullstripped
+set( times 0 )
 GetParam(FIXED_CASE ${CASES} 0)
 RegEx( FIXED_IMG ${tempDir}/${POPULATION_AVERAGE_INPUT_MASKED_TAG}.nrrd '\*' REPLACE ${FIXED_CASE} )
-RegEx( RESCALED_FIXED_IMG ${tempDir}/${POPULATION_AVERAGE_INPUT_MASKED_TAG}_hm_resc.nrrd '\*' REPLACE ${FIXED_CASE} )
-set( times 0 )
+RegEx( RESCALED_FIXED_IMG ${tempDir}/${POPULATION_AVERAGE_INPUT_MASKED_TAG}_hm_resc_${times}.nrrd '\*' REPLACE ${FIXED_CASE} )
+RegEx( FIXED_MASK ${INPUT_MASK_FILE} '\*' REPLACE ${FIXED_CASE} )
 include( 031AffineRegistration.bms )
+
 
 set( avgImage ${tempDir}/AverageAffineImage.nrrd )
 set( Cmd ${ImageMath} ${FIRST_CASE} -avg ${ALL_OTHER_CASES} -outfile ${avgImage} )
+#The mask computed on the new average image has some non-nul value in the background.
+#Computing This mask was creating an image entirely filled with "ones"
+#Instead, we keep the mask of the first image that is more or less aligned with this average.
+#This gives a much better result.
 If( ${step} < 9 )
   Run( output ${Cmd} )
   echo( ${output} )
@@ -66,6 +71,8 @@ set( FIXED_IMG ${avgImage} )
 set( RESCALED_FIXED_IMG ${tempDir}/AverageAffineImage_resc.nrrd )
 include( 031AffineRegistration.bms )
 ####################Create average##############################################
+set( GreedyAtlasOutputPrefix 'GreedyAtlas' )
+set( GreedyAtlasOutputExtension 'mhd' )
 ##Saves config file in average dir
 if( ${ScriptName} != '' )
   ExitOnError( 'TRUE' )
@@ -74,45 +81,37 @@ if( ${ScriptName} != '' )
   ExitOnError( 'FALSE' )
 Endif( ${ScriptName} != '' )
 
-#set ( atlasWerksCmd ${AtlasWerks} -f ${tempDir}/AW.xml -o ${tempDir}/AtlasWerksParsedOutput.xml )
-set ( atlasWerksCmd ${AtlasWerks}  --outputImageFilenamePrefix=${tempDir}/avg_ --outputDeformedImageFilenamePrefix=${tempDir}/DeformedImage --outputHFieldFilenamePrefix=${tempDir}/h_ --outputHInvFieldFilenamePrefix=${tempDir}/inv_h_ --scaleLevel=4 --numberOfIterations=200 --maxPerturbation=0.1 --scaleLevel=2 --numberOfIterations=50 --maxPerturbation=0.1 --scaleLevel=1 --numberOfIterations=25 --maxPerturbation=0.1 ${MD_CASES} ${TRANSFORM_LIST} )
+If( ${step} < 14 )
+  include( 034CreateXML.bms )
+Endif( ${step} < 14 )
+set ( GreedyAtlasCmd ${GreedyAtlas} -f ${tempDir}/AW.xml -o ${tempDir}/GreedyAtlasParsedOutput.xml )
 
 If( ${step} < 15 )
-  run ( output ${atlasWerksCmd})
+  run ( output ${GreedyAtlasCmd})
   echo ( ${output} )
 Endif( ${step} < 15 )
 
 ###################Save H-Fields#########################################
-set( count 0 )
+set( count 1 )###We set to '1' because '0' is a space (so empty variable after extraction from the list) in MD_CASES
+Int( ${count} )###We have to add this line, otherwise '1' is not directly recognized as a number. Other numbers (0,2,...) are though....
 foreach( i ${CASES} )
+  GetParam( GreedyAtlasInputName ${MD_CASES} ${count} )
+  GetFileName( GreedyAtlasOutputRootName ${GreedyAtlasInputName} NAME_WITHOUT_EXTENSION )
   RegEx( OutSubjDir ${CASES_OUTPUT_DIR} '\*' REPLACE ${i} )
-  If( ${count} < 10 )
-    set( suffix 000${count} )
-  Endif( ${count} )
-  if( ${count} >= 10 AND ${count} < 100 )
-    set( suffix 00${count} )
-  Endif( ${count} )
-  if( ${count} >= 100 AND ${count} < 1000 )
-    set( suffix 0${count} )
-  Endif( ${count} )
-  if( ${count} >= 1000 )
-    set( suffix ${count} )
-  Endif( ${count} )
-  set( hfield ${tempDir}/h_${suffix}.mhd )
+  set( hfield ${tempDir}/${GreedyAtlasOutputPrefix}${GreedyAtlasOutputRootName}DefFieldMeanToIm.${GreedyAtlasOutputExtension} )
   Set( COPIED_HFIELD ${OutSubjDir}/${i}_hFieldToPopAverage.mha )
   Set( Cmd ${ResampleVolume2} ${hfield} ${COPIED_HFIELD} -i nn )
   If( ${step} < 16 )
     Run( output ${Cmd} )
     echo( ${output} )
   EndIf( ${step} < 16 )
-  set( invhfield ${tempDir}/inv_h_${suffix}.mhd )
+  set( invhfield ${tempDir}/${GreedyAtlasOutputPrefix}${GreedyAtlasOutputRootName}DefFieldImToMean.${GreedyAtlasOutputExtension} )
   Set( COPIED_INV_HFIELD ${OutSubjDir}/${i}_inv_hFieldToPopAverage.mha )
   Set( Cmd ${ResampleVolume2} ${invhfield} ${COPIED_INV_HFIELD} -i nn )
   If( ${step} < 17 )
     Run( output ${Cmd} )
     echo( ${output} )
   EndIf( ${step} < 17 )
-
   Inc(${count} 1)
   Int( ${count} )
 endforeach( ${CASES} )
@@ -131,7 +130,7 @@ IF( ${IS_SCALED} == TRUE )
   EndIf( ${step} < 45 )
 ENDIF( ${IS_SCALED} == TRUE )
 
-Set( ImageForMask ${tempDir}/avg_2.mhd )
+Set( ImageForMask ${tempDir}/${GreedyAtlasOutputPrefix}MeanImage.${GreedyAtlasOutputExtension} )
 Set( ImageForMaskNrrd ${tempDir}/avg.nrrd )
 Set( Mask ${tempDir}/mask.nrrd )
 

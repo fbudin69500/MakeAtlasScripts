@@ -7,6 +7,8 @@
 #####################################################################################################
 ##-1-Cases to process
 set( CASES @cases@ )
+##-2-Set number of threads used by GreedyAtlas
+set( GreedyAtlasNbOfThreads 8 )
 ##-4-If set to '', not used. Set Original_Image accordingly
 set( TRANSFORM_FILE @TransformFile@ )
 ##-5-Suffix of the original scalar image (to the avg image) or the DTI image before the rigid registration.
@@ -46,6 +48,8 @@ set( step 0 )
 set (Measure MI)
 ##-27- Affine registration parameter. Bin number for MI metric. Refer to ANTS doc for the other metrics
 set (AffregParam 32 )
+##-28-Fluid coefficient
+set( FluidCoeff 100 )
 ###################################
 include( @ConfigDirectory@/GlobalConfig.bms )
 ##Processes

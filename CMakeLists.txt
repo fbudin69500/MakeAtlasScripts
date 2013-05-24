@@ -25,8 +25,8 @@ ResampleVolume2
 rreg
 transformation
 areg
-Double2FloatTransform
-AtlasWerks_old
+RegisterImages
+GreedyAtlas
 ResampleDTIlogEuclidean
 BRAINSDemonWarp
 BRAINSFit
