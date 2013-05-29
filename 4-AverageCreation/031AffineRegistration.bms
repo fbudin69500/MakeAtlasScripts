@@ -41,7 +41,8 @@ foreach( i ${CASES} )
   set( TRANSFORM ${TRANSFORM_PREFIX}_Affine_d.txt )
   RegEx( MOVING_MASK ${INPUT_MASK_FILE} '\*' REPLACE ${i} )
 
-  set ( Cmd ${BRAINSFit} --costMetric NC --outputTransform ${TRANSFORM} --transformType Affine --translationScale 10 --interpolationMode BSpline --outputVolume ${RESAMPLED_IMAGE} --movingVolume ${MOVING_IMG} --fixedVolume ${RESCALED_FIXED_IMG} --maskProcessingMode ROI --fixedBinaryVolume ${FIXED_MASK} --movingBinaryVolume ${MOVING_MASK} --minimumStepLength .0001 --skewScale 0.05 )
+
+  set ( Cmd ${BRAINSFit} --costMetric NC --outputTransform ${TRANSFORM} --transformType Affine --translationScale 10 --interpolationMode BSpline --outputVolume ${RESAMPLED_IMAGE} --movingVolume ${MOVING_IMG} --fixedVolume ${RESCALED_FIXED_IMG} --maskProcessingMode ROI --fixedBinaryVolume ${FIXED_MASK} --movingBinaryVolume ${MOVING_MASK} --minimumStepLength .005 --skewScale 0.05 )
   echo( ${Cmd} )
   If(${step} < 6 && ${times} == 0 )
     run( output ${Cmd} )
