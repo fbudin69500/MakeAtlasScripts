@@ -20,21 +20,21 @@ set( TRANSFORM_FILE '')
 ##-6-Suffix of the hfield that were computed in the population average creation
 set( HField_File @ProcessingDirectory@/*/4-AverageCreation/*_hFieldToPopAverage.mha )
 ##-7-Population image used as a  reference image (grid) for resampling -typically population average previously computed
-set( Reference_Image @TemplateImage@ )
+set( Reference_Image @PopulationAverage@ )
 ##-9-Histogram match for scalar images. Should contain as many values as there are suffixes in 2-
 set( HISTOGRAM_MATCH @HISTOGRAM_MATCH_VAL@ )
 ##-13-Directory in which the computed average images are saved
-set( outputDir @ProcessingDirectory@/4.1-AverageCreation )
+set( outputDir @ProcessingDirectory@/4.5-AverageCreation )
 ##-15-Directory in which temporary files are written
-set( tempDir @ProcessingDirectory@/temp/4.1-AverageCreation )
+set( tempDir @ProcessingDirectory@/temp/4.5-AverageCreation )
 ##-16-Median Filter images before average creation
 set( Mradius 0 )
 ##-17-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
-set( ScriptName @ConfigDirectory@/4.1-AverageWithHFields.bms )
+set( ScriptName @ConfigDirectory@/4.5-AverageWithHFields.bms )
 ##-18-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
 set( step 0 )
 ###################################
 include( @ConfigDirectory@/GlobalConfig.bms )
 ##Processes
-include( @CMAKE_CURRENT_SOURCE_DIR@/4.1-AverageWithHFields/000Average.bms )
+include( @CMAKE_CURRENT_SOURCE_DIR@/4.5-AverageWithHFields/000Average.bms )
