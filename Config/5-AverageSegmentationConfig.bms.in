@@ -6,14 +6,19 @@
 ################################### Variables to set ################################################
 #####################################################################################################
 ##-2-Population average file name
+##May contain multiple files (different modalities). The number of elements has to match the number of elements in -3-TEMPLATE, -18-Measure and -19-bin_number
 set( PopulationAverage @PopulationAverage@ )
 ##-3-External template (in probability maps directory)
+##May contain multiple files (different modalities). The number of elements has to match the number of elements in -2-PopulationAverage, -18-Measure and -19-bin_number
+#ber
 set( TEMPLATE @TemplateDirectory@/template.mha )
 ##-4-External template mask (in probability maps directory)
+##May contain multiple files (Full brain mask, region masks,...). The number of elements has to match the number of elements in -6-PopAverage_mask_FILENAME
 set ( TEMPLATE_mask_FILENAME '' )
 ##-5-Name of the template segmentation. This file has to be in external template directory
 set( TEMPLATE_SEGMENTATION @ExternalSegmentation@ )
 ##-6-Population Average mask (if there isn't one, set to '', if there's one, give the full path)
+##May contain multiple files (Full brain mask, region masks,...). The number of elements has to match the number of elements in -4-TEMPLATE_mask_FILENAME
 set ( PopAverage_mask_FILENAME '' )
 ###################################
 #Extra parameters. Normally no need to modified
@@ -22,8 +27,6 @@ set ( PopAverage_mask_FILENAME '' )
 set( IS_SCALED @Scale@ )
 ##-8-Select which kind of registration is gonna be used. FALSE = Elastic, TRUE = Diffeomorphic
 set( Diffeomorphic TRUE )
-##-9-Do you want the smoothing? (type float)
-set ( Smooth FALSE )
 ##-14-Directory in which the segmentation is saved
 set( OutputDir @ProcessingDirectory@/5-AverageSegmentation )
 ##-15-Directory in which temporary files are written
@@ -31,8 +34,10 @@ set( tempDir @ProcessingDirectory@/temp/5-AverageSegmentation )
 ##-16-Image grid filename
 set( IMAGE_GRID @ProcessingDirectory@/4-AverageCreation/ImageGrid.nrrd )
 ##-17- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the ANTS doc)
+##May contain multiple elements. The number of elements has to match the number of elements in -3-TEMPLATE, -2-PopulationAverage, and  -19-bin_number
 set (Measure MI)
 ##-18- ANTS ranges. Bin number for MI metric. Refer to ANTS doc for the other metrics
+##May contain multiple elements. The number of elements has to match the number of elements in -3-TEMPLATE, -2-PopulationAverage, and  -18-Measure
 set (bin_number 32 )
 ##-19-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
 set( step 0 )

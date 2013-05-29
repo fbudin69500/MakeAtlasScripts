@@ -26,10 +26,10 @@ rreg
 transformation
 areg
 RegisterImages
-Double2FloatTransform
-AtlasWerks_old
+GreedyAtlas
 ResampleDTIlogEuclidean
 BRAINSDemonWarp
+BRAINSFit
 dtiaverage
 unu
 dtiprocess
@@ -37,20 +37,18 @@ ITKTransformTools
 MedianImageFilter
 ImageStat
 ANTS
-#ANTStcshScript path
+RegisterImages
 WarpImageMultiTransform
 buildtemplateparallel.sh
 dtiestim
 ManualImageOrient
-DiffusionTensorEstimation
 HistogramMatching
-#CreateMRML
 N4ITKBiasFieldCorrection
 MaskComputationWithThresholding
 )
 
-set( ToolsDirectory "/rodent/bin_linux64/toolsApril2013" CACHE PATH "Tools
-directory")
+
+set( ToolsDirectory "/rodent/bin_linux64/toolsMay2013" CACHE PATH "Tools directory")
 
 ##########################Find tools##############################################
 foreach( var ${listTools} )
@@ -87,8 +85,8 @@ endif()
 set(InputFile "${initProcessingDirectory}/*/1-Converted/*_T1.nrrd" CACHE PATH "input image in 1-Converted, ie: /Project/*/1-Converted/*_T1.nrrd; *
 will be replaced by the case name. It is not compulsary" )
 get_filename_component( InputTag ${InputFile} NAME_WE )
-if( DEFINED segmentationFile )
-  get_filename_component( segmentationTag ${segmentationFile} NAME_WE )
+if( DEFINED ExternalSegmentation )
+  get_filename_component( segmentationTag ${ExternalSegmentation} NAME )
 endif()
 if( ${InputTag} MATCHES "\\*" )
   set( rootName ${InputTag} )
@@ -98,8 +96,8 @@ endif()
 ###########################Version of the pipeline############################################
 set( ConfigVersion 3.2 )
 ###########################set variables values depending on project type######################
-set( LabelMapsToWarpFile @ProcessingDirectory@/5-AverageSegmentation/${segmentationTag}.nrrd )
-set( LabelMapsTag @ProcessingDirectory@/*/6-Warping/*_${segmentationTag}.nrrd )
+set( LabelMapsToWarpFile @ProcessingDirectory@/5-AverageSegmentation/${segmentationTag} )
+set( LabelMapsTag @ProcessingDirectory@/*/6-Warping/*_${segmentationTag} )
 set(TransformFile @ProcessingDirectory@/*/2-Registration/${rootName}_reg.mat )
 if( ${InputType} STREQUAL scalar )
   set(RigidRegistrationImageFile @ProcessingDirectory@/*/2-Registration/${rootName}_reg.nrrd )
@@ -120,7 +118,7 @@ if( ${InputType} STREQUAL DWI )
   set(IsScalar FALSE )
   set(PopulationAverageInputFiles @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_MD.nrrd )
   set(Original_Image @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f.nrrd )
-  set(SSImages "@ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_AD.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_FA.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_MD.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_RD.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_b0_biasCorrected_reg.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_idwi_biasCorrected_reg.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f.nrrd" )
+  set(SSImages "@ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_AD.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_FA.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_MD.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_RD.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_b0_biasCorrected_reg.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_idwi_biasCorrected_reg.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg.nrrd" )
   set(StatFile "@ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_AD.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_FA.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_MD.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_RD.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_b0_biasCorrected_reg.nrrd @ProcessingDirectory@/*/2-Registration/${rootName}_idwi_biasCorrected_reg.nrrd" )
   set(WarpInputFile @ProcessingDirectory@/*/2-Registration/${rootName}_dti_f_reg_MD.nrrd )
   set(TemplateImage @ProcessingDirectory@/4-AverageCreation/AverageTensor_SS_MD.nrrd )
