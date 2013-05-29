@@ -1,0 +1,154 @@
+### The script uses:
+#- ResampleDTIlogEuclidean
+#- ImageMath
+#- ResampleVolume2
+#- dtiaverage
+#- unu
+#- dtiprocess
+
+##############################################################################
+###################Transform original DTIs to average###########################
+##############################################################################
+
+foreach( i ${CASES} )
+  RegEx( Original_CASE ${Original_Image} '\*' REPLACE ${i} )
+  RegEx( OutSubjDir ${CASES_OUTPUT_DIR} '\*' REPLACE ${i} )
+  RegEx( MD ${POPULATION_AVERAGE_INPUT_FILES} '\*' REPLACE ${i} )
+  GetFileName( Original_TAG ${Original_CASE} NAME_WITHOUT_EXTENSION )
+  if( ${IS_SCALED} == TRUE )
+    RegEx( IMAGE_GRID_CASE ${IMAGE_GRID} '\*' REPLACE ${i} )
+    set( dtichSp ${tempDir}/${Original_TAG}_iso.nrrd)
+    set( inputdtiImage ${tempDir}/${Original_TAG}_iso_chSp.nrrd )
+    Set( Cmd ${ResampleDTIlogEuclidean} -R ${IMAGE_GRID_CASE} ${Original_CASE} ${dtichSp} )
+    If( ${step} < 20 )
+      Run( output ${Cmd} )
+      echo( ${output} )
+    EndIf( ${step} < 20 )
+    Set( Cmd ${ImageMath} ${dtichSp} -changeSp 1,1,1 -outfile ${inputdtiImage} )
+    If( ${step} < 21 )
+      Run( output ${Cmd} )
+      echo( ${output} )
+    EndIf( ${step} < 21 )
+    set( resampledDTIFile ${tempDir}/${Original_TAG}_iso_chSp_transformed.nrrd )
+    set( resampledDTIFileMasked ${tempDir}/${Original_TAG}_iso_chSp_transformed_masked.nrrd )
+  else( ${IS_SCALED} == TRUE )
+    set( resampledDTIFile ${tempDir}/${Original_TAG}_transformed.nrrd )
+    set( inputdtiImage ${Original_CASE} )
+    set( resampledDTIFileMasked ${tempDir}/${Original_TAG}_transformed_masked.nrrd )
+  endif( ${IS_SCALED} == TRUE )
+  #transform DTI
+  if( ${TRANSFORM_FILE} != '' )
+    RegEx( TRANSFORM_FILE_CASE ${TRANSFORM_FILE} '\*' REPLACE ${i} )
+    set( combinedTransforms -f ${TRANSFORM_FILE_CASE} )
+  else( ${TRANSFORM_FILE} != '' )
+    set( combinedTransforms '' )
+  Endif( ${TRANSFORM_FILE} != '' )
+  Set( hfield ${OutSubjDir}/${i}_hFieldToPopAverage.mha )
+  set( ResampleDTICmd ${ResampleDTIlogEuclidean} ${inputdtiImage} ${resampledDTIFile} ${combinedTransforms} -R ${MD} -H ${hfield} --transform_order input-to-output --hfieldtype displacement )
+  echo( ${ResampleDTICmd} )
+  If( ${step} < 22 )
+    run( output ${ResampleDTICmd} )
+    echo( ${output} )
+  EndIf( ${step} < 22 )
+
+##############################################################################
+  ####transform mask###################
+##############################################################################
+  RegEx( mask ${INPUT_MASK_FILE} '\*' REPLACE ${i} )
+  set( maskTransformed ${tempDir}/${i}_mask_transformed.nrrd )
+
+  set( ResampleCmd ${ResampleVolume2} ${mask} ${maskTransformed} -H ${hfield} -R ${MD} -i nn --hfieldtype displacement )
+  echo( ${ResampleCmd} )
+  If( ${step} < 23 )
+    run( output ${ResampleCmd} )
+    echo( ${output} )
+  EndIf( ${step} < 23 )
+  ####mask DTI##########################
+  set( maskCmd ${ImageMath} ${resampledDTIFile} -mask ${maskTransformed} -outfile ${resampledDTIFileMasked} -type float)
+  echo( ${maskCmd} )
+  If( ${step} < 24 )
+    run( output ${maskCmd} )
+    echo( ${output} )
+  EndIf( ${step} < 24 )
+
+  set( TRANSFORMED_DTI_SS ${TRANSFORMED_DTI_SS} --inputs ${resampledDTIFileMasked} )
+  set( TRANSFORMED_DTI_NSS ${TRANSFORMED_DTI_NSS} --inputs ${resampledDTIFile} )
+endforeach( ${CASES} )
+#############Prepare for skull-stripped (SS) and non-skull-stripped (NSS)################
+set( AverageName AverageTensor_SS AverageTensor )
+
+
+################################################################################
+#########################Average DTI############################################
+################################################################################
+
+Set( count 0 )
+foreach( i ${AverageName} )
+  if( ${count} == 0 )
+    Set( List ${TRANSFORMED_DTI_SS} )
+  else( ${count} == 0 )
+    Set( List ${TRANSFORMED_DTI_NSS} )
+  endif( ${count} == 0 )
+  set( averageTensorName ${tempDir}/${i}.nrrd )
+  set( dtiaverageCmd ${dtiaverage} ${List} --tensor_output ${averageTensorName} )
+  echo( ${dtiaverageCmd} )
+  If( ${step} < 25 )
+    run( output ${dtiaverageCmd} )
+    echo( ${output} )
+  EndIf( ${step} < 25 )
+  ######Convert average DTI to float###################################
+  set( averageTensorFloat ${outputDir}/${i}.nrrd )
+  set( unuCmd ${unu} convert -t float -i ${averageTensorName} -o ${averageTensorFloat} )
+  echo( ${unuCmd} )
+  If( ${step} < 26 )
+    run( output ${unuCmd} )
+    echo( ${output} )
+  EndIf( ${step} < 26 )
+  #########################Compute MD, FA, Color FA, RD and AD from Average#########################
+  set( FAFile ${outputDir}/${i}_FA.nrrd )
+  set( ColorFAFile ${outputDir}/${i}_ColorFA.nrrd )
+  set( MDFile ${outputDir}/${i}_MD.nrrd )
+  Set( ADFile ${outputDir}/${i}_AD.nrrd )
+  Set( RDFile ${outputDir}/${i}_RD.nrrd )
+  set(MDCmd ${dtiprocess} --dti_image ${averageTensorName} -m ${MDFile} --scalar-float )
+  echo( ${MDCmd} )
+  If( ${step} < 27 )
+    run( output ${MDCmd} )
+    echo( ${output} )
+  EndIf( ${step} < 27 )
+  set(FACmd ${dtiprocess} --dti_image ${averageTensorName} -f ${FAFile} --scalar-float )
+  echo( ${FACmd} )
+  If( ${step} < 28 )
+    run( output ${FACmd} )
+    echo( ${output} )
+  EndIf( ${step} < 28 )
+  set(ColorFACmd ${dtiprocess} --dti_image ${averageTensorName} --color_fa_output ${ColorFAFile} --scalar-float )
+  echo( ${ColorFACmd} )
+  If( ${step} < 29 )
+    run( output ${ColorFACmd} )
+    echo( ${output} )
+  EndIf( ${step} < 29 )
+
+  Set ( COMPUTEADCmd ${dtiprocess} --dti_image ${averageTensorName} --lambda1_output ${ADFile} --scalar-float )
+  If( ${step} < 30 )
+    Run (output ${COMPUTEADCmd})
+    echo( ${output} )
+  EndIf( ${step} < 30 )
+
+  Set( LAMBDA2 ${tempDir}/${i}_RD1.nrrd )
+  Set( LAMBDA3 ${tempDir}/${i}_RD2.nrrd )
+  Set( COMPUTERDCmd ${dtiprocess} --dti_image ${averageTensorName} --lambda2_output ${LAMBDA2} --lambda3_output ${LAMBDA3} --scalar-float )
+  If( ${step} < 31 )
+    Run (output ${COMPUTERDCmd})
+    echo( ${output} )
+  EndIf( ${step} < 31 )
+  Set ( COMPUTERDCmd ${ImageMath} ${LAMBDA2} -avg ${LAMBDA3} -type float -outfile ${RDFile} )
+  If( ${step} < 32 )
+    Run (output ${COMPUTERDCmd})
+    echo( ${output} )
+  EndIf( ${step} < 32 )
+  Inc(${count} 1)
+  Int( ${count} )
+endforeach( i ${List} )
+#We set the skull stripped MD image as the "normal" MD image 
+set( MDFile ${outputDir}/AverageTensor_SS_MD.nrrd )

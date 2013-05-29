@@ -21,8 +21,6 @@ set( transformation '@transformationTOOL@' )
 set( areg '@aregTOOL@' )
 #RegisterImages
 set( RegisterImages '@RegisterImagesTOOL@' )
-#Double2FloatTransform
-set( Double2FloatTransform '@Double2FloatTransformTOOL@' )
 #AtlasWerks
 set( AtlasWerks '@AtlasWerks_oldTOOL@' )
 #ResampleDTIlogEuclidean
@@ -43,10 +41,10 @@ set( MedianImageFilter '@MedianImageFilterTOOL@' )
 set( ImageStat '@ImageStatTOOL@' )
 #ANTS
 set ( ANTS '@ANTSTOOL@' )
+#ANTS buildtemplateparallel.sh path
+set ( buildtemplateparallel.sh '@buildtemplateparallel.shTOOL@' )
 #WarpImageMultiTransform 
 set ( WarpImageMultiTransform '@WarpImageMultiTransformTOOL@' )
-#buildtemplateparallel
-#set ( buildtemplateparallel '@buildtemplateparallelTOOL@' )
 #dtiestim
 set ( dtiestim '@dtiestimTOOL@')
 #ManualImageOrient

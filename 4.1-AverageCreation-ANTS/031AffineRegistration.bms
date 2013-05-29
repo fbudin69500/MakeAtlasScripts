@@ -41,7 +41,7 @@ foreach( i ${CASES} )
   set( TRANSFORM ${TRANSFORM_PREFIX}_Affine_d.txt )
   RegEx( MOVING_MASK ${INPUT_MASK_FILE} '\*' REPLACE ${i} )
 
-  set ( Cmd ${BRAINSFit} --costMetric NC --outputTransform ${TRANSFORM} --transformType Affine --translationScale 10 --interpolationMode BSpline --outputVolume ${RESAMPLED_IMAGE} --movingVolume ${MOVING_IMG} --fixedVolume ${RESCALED_FIXED_IMG} --maskProcessingMode ROI --fixedBinaryVolume ${FIXED_MASK} --movingBinaryVolume ${MOVING_MASK}  --minimumStepLength .00001  )
+  set ( Cmd BRAINSFit --costMetric NC --outputTransform ${TRANSFORM} --transformType Affine --translationScale 100 --interpolationMode BSpline --outputVolume ${RESAMPLED_IMAGE} --movingVolume ${MOVING_IMG} --fixedVolume ${RESCALED_FIXED_IMG} --maskProcessingMode ROI --fixedBinaryVolume ${FIXED_MASK} --movingBinaryVolume ${MOVING_MASK}  )
   echo( ${Cmd} )
   If(${step} < 6 && ${times} == 0 )
     run( output ${Cmd} )
@@ -52,8 +52,11 @@ foreach( i ${CASES} )
     echo( ${output} )
   EndIf()
 
+
+  ####Convert transform files from MatrixOffsetTransformBase_double_3_3 to AffineTransform_double_3_3 for AtlasWerks###
   set( TRANSFORM_LIST ${TRANSFORM_LIST} ${TRANSFORM} )
-  set( MD_CASES ${MD_CASES} ${MOVING_IMG} )
+  GetFilename( filename ${RESAMPLED_IMAGE} NAME )
+  set( MD_CASES ${MD_CASES} ${filename} )
   ####List of images to compute average affinely registered images
   if( ${FIRST} == TRUE )
     set( FIRST_CASE ${RESAMPLED_IMAGE} )

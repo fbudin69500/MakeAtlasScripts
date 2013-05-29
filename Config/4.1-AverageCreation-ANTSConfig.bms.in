@@ -1,0 +1,51 @@
+##Check that the version is the same in the example and in the config file you are modifying.
+##If not, copy and modify this example to have a version of the configuration file that is up
+##to date.
+##Version:@ConfigVersion@
+#####################################################################################################
+################################### Variables to set ################################################
+#####################################################################################################
+##-1-Cases to process
+set( CASES @cases@ )
+##-4-If set to '', not used. Set Original_Image accordingly
+set( TRANSFORM_FILE @TransformFile@ )
+##-5-Suffix of the original scalar image (to the avg image) or the DTI image before the rigid registration.
+set( Original_Image @Original_Image@ )
+##-4-Mask file name
+set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-BrainMaskComputation/*_mask_from_seg.nrrd )
+###################################fill in those if you want to recompute average from original images###################################
+##-6-Recalculating the average image a second time with the original images instead of the registered ones? (TRUE or FALSE - if true, go check params 5 and 7)
+set( Recalculate_avg FALSE )
+###################################
+#Extra parameters. Normally no need to modified
+###################################
+##-8-Input file used to create population average
+set( POPULATION_AVERAGE_INPUT_FILES @PopulationAverageInputFiles@ )
+##-12-Output directories for each case
+set( CASES_OUTPUT_DIR @ProcessingDirectory@/*/4.1-AverageCreation-ANTS )
+##-15-Directory in which the new population average is saved
+set( outputDir @ProcessingDirectory@/4.1-AverageCreation-ANTS )
+##-17-Directory in which temporary files are written
+set( tempDir @ProcessingDirectory@/temp/4.1-AverageCreation-ANTS )
+##-18-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
+set( IS_SCALED @Scale@ )
+##-19-Histogram match for scalar images
+set( HISTOGRAM_MATCH TRUE )
+##-21-If scalar image (TRUE or FALSE)
+set( IS_SCALAR @IsScalar@ )
+##-22-Image grid filename
+set( IMAGE_GRID @ProcessingDirectory@/*/2-Registration/ImageGrid.nrrd )
+##-23-Median Filter images before average creation
+set( Mradius 0 )
+##-24-Name of this file (configuration file).
+##Set to '' if you don't want to save the configuration file in the output directory
+set( ScriptName @ConfigDirectory@/4-AverageCreationConfig.bms )
+##Set ANTS script (that starts the script given by ANTS) path
+##We need this script to change directory due to limitations in the original script
+set( ANTStcshScriptPATH @CMAKE_CURRENT_SOURCE_DIR@/4.1-AverageCreation-ANTS/runANTSatlasScript.tcsh )
+##-25-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
+set( step 0 )
+###################################
+include( @ConfigDirectory@/GlobalConfig.bms )
+##Processes
+include( @CMAKE_CURRENT_SOURCE_DIR@/4.1-AverageCreation-ANTS/000MakeAverage.bms )

@@ -1,0 +1,175 @@
+### The script uses:
+#- BRAINSFit
+#- Double2FloatTransform
+#- GreedyAtlas
+#- ImageMath
+#- ResampleVolume2
+#- ITKTransformTools
+#########################Mask image used to compute average#############
+
+foreach( i ${CASES} )
+  RegEx( OutSubjDir ${CASES_OUTPUT_DIR} '\*' REPLACE ${i} )
+  MakeDirectory( ${OutSubjDir} )
+  ##Save config file in each sub dir of each case
+  if( ${ScriptName} != '' )
+    GetFilename( name ${ScriptName} NAME )
+    CopyFile( ${ScriptName} ${OutSubjDir}/${name} )
+  Endif( ${ScriptName} != '' )
+  RegEx( MD ${POPULATION_AVERAGE_INPUT_FILES} '\*' REPLACE ${i} )
+  RegEx( MASK ${INPUT_MASK_FILE} '\*' REPLACE ${i} )
+  RegEx( CASE_INPUT_TAG ${POPULATION_AVERAGE_INPUT_TAG} '\*' REPLACE ${i} )
+  set( maskedMD ${tempDir}/${CASE_INPUT_TAG}${MASK_TAG}.nrrd )
+  set( Cmd ${ImageMath} ${MD} -mask ${MASK} -outfile ${maskedMD} -type float)
+  echo( ${Cmd} )
+  If( ${step} < 1 )
+    run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 1 )
+  if( ${Mradius} != 0 )
+    set( MedianMD ${tempDir}/${CASE_INPUT_TAG}${MASK_TAG}_median.nrrd )  
+    set( Cmd ${MedianImageFilter} --neighborhood ${Mradius},${Mradius},${Mradius} ${maskedMD} ${MedianMD} )
+    echo( ${Cmd} )
+    If( ${step} < 2 )
+      run( output ${Cmd} )
+      echo( ${output} )
+    EndIf( ${step} < 2 )
+  else( ${Mradius} != 0 )
+    set( MedianMD ${maskedMD} )
+  endif( ${Mradius} != 0 )
+  set( paddedMD ${tempDir}/${CASE_INPUT_TAG}${MASK_TAG}_padded.nrrd )
+  set( Cmd ${unu} pad -i ${MedianMD} -o ${paddedMD} -min -10 -10 -10 -max M+10 M+10 M+10 -b pad )
+  echo( ${Cmd} )
+  If( ${step} < 3 )
+    run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 3 )
+endforeach( ${CASES} )
+
+set( POPULATION_AVERAGE_INPUT_MASKED_TAG ${POPULATION_AVERAGE_INPUT_TAG}${MASK_TAG}_padded )
+#########################affine registration###############################
+##affinely register all cases once they are skullstripped
+set( times 0 )
+GetParam(FIXED_CASE ${CASES} 0)
+RegEx( FIXED_IMG ${tempDir}/${POPULATION_AVERAGE_INPUT_MASKED_TAG}.nrrd '\*' REPLACE ${FIXED_CASE} )
+RegEx( RESCALED_FIXED_IMG ${tempDir}/${POPULATION_AVERAGE_INPUT_MASKED_TAG}_hm_resc_${times}.nrrd '\*' REPLACE ${FIXED_CASE} )
+RegEx( FIXED_MASK ${INPUT_MASK_FILE} '\*' REPLACE ${FIXED_CASE} )
+include( 031AffineRegistration.bms )
+
+
+#We skip the average computation and registration. Results are better without
+#set( avgImage ${tempDir}/AverageAffineImage_${times}.nrrd )
+#set( Cmd ${ImageMath} ${FIRST_CASE} -avg ${ALL_OTHER_CASES} -outfile ${avgImage} )
+#If( ${step} < 8 )
+#  Run( output ${Cmd} )
+#  echo( ${output} )
+#EndIf( ${step} < 8 )
+
+#The mask computed on the new average image has some non-nul value in the background.
+#Computing This mask was creating an image entirely filled with "ones"
+#Instead, we keep the mask of the first image that is more or less aligned with this average.
+#This gives a much better result.
+#Set( FIXED_MASK ${tempDir}/AverageAffineImage_${times}_mask.nrrd )
+#Set( Cmd ${unu} 1op if -i ${avgImage} -o ${FIXED_MASK} )
+#If( ${step} < 9 )
+#  Run( output ${Cmd} )
+#  echo( ${output} )
+#EndIf( ${step} < 9 )
+
+
+#set( FIXED_IMG ${avgImage} )
+#set(FIXED_CASE AverageAffineImage_resc_${times} )
+#set( RESCALED_FIXED_IMG ${tempDir}/${FIXED_CASE}.nrrd )
+#include( 031AffineRegistration.bms )
+####################Create average##############################################
+
+Set( ANTSPrefix 'ANTSAtlas' )
+set( ANTSAtlasCMD ${ANTStcshScriptPATH} ${buildtemplateparallel.sh} ${tempDir} ${ANTSPrefix} ${MD_CASES} )
+echo( ${ANTSAtlasCMD} )
+If( ${step} < 15 )
+  run ( output ${ANTSAtlasCMD})
+  echo ( ${output} )
+Endif( ${step} < 15 )
+set( ANTSAtlasOutputExtension nii.gz )
+set( ANTSAtlasOutputRootName ANTSWarp )
+###################Save H-Fields#########################################
+Set( count 1 )
+Int( ${count} )
+foreach( i ${CASES} )
+  GetParam( WarpCase ${MD_CASES} ${count} )
+  GetFileName( ANTSSuffix ${WarpCase} NAME_WITHOUT_EXTENSION )
+
+  #####Concatenates ANTS displacement field and affine transforms #####  
+  RegEx( ReferenceImage ${POPULATION_AVERAGE_INPUT_FILES} '\*' REPLACE ${i} )
+  RegEx( OutSubjDir ${CASES_OUTPUT_DIR} '\*' REPLACE ${i} )
+  Set( COPIED_HFIELD ${OutSubjDir}/${i}_hFieldToPopAverage.mha )
+  GetParam( AFFINE_TRANSFORM ${TRANSFORM_LIST} ${count} )
+  set( Cmd ${ITKTransformTools} concatenate ${COPIED_HFIELD} -r ${ReferenceImage} ${tempDir}/${ANTSPrefix}${ANTSSuffix}Warp.nii.gz displacement  ${tempDir}/${ANTSPrefix}${ANTSSuffix}Affine.txt ${AFFINE_TRANSFORM} )
+
+  If( ${step} < 16 )
+    Run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 16 )
+
+  ##inverse affine transforms
+  set( InverseANTSAffine ${tempDir}/${ANTSPrefix}${ANTSSuffix}Affine_inverse.txt )
+  GetFileName( InverseBRAINSAffine ${AFFINE_TRANSFORM} NAME_WITHOUT_EXTENSION )
+  set( InverseBRAINSAffine ${tempDir}/${InverseBRAINSAffine}_inverse.txt )
+
+  set( Cmd ${ITKTransformTools} invert ${tempDir}/${ANTSPrefix}${ANTSSuffix}Affine.txt ${InverseANTSAffine} )
+  If( ${step} < 17 )
+    Run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 17 )  
+  set( Cmd ${ITKTransformTools} invert ${AFFINE_TRANSFORM} ${InverseBRAINSAffine} )
+  If( ${step} < 17 )
+    Run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 17 )
+  #####Concatenates ANTS inverse transforms
+  
+  Set( COPIED_INV_HFIELD ${OutSubjDir}/${i}_inv_hFieldToPopAverage.mha )
+  set( Cmd ${ITKTransformTools} concatenate ${COPIED_INV_HFIELD} -r ${ReferenceImage} ${tempDir}/${ANTSPrefix}${ANTSSuffix}InverseWarp.nii.gz displacement ${InverseANTSAffine} ${InverseBRAINSAffine} )
+  If( ${step} < 17 )
+    Run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 17 )
+
+  Inc(${count} 1)
+  Int( ${count} )
+endforeach( ${CASES} )
+########################################################################
+if( ${IS_SCALAR} != TRUE )
+  include( 032TransformDTI.bms )
+else( ${IS_SCALAR} != TRUE )
+  include( 033Histogram.bms )
+Endif( ${IS_SCALAR} != TRUE )
+
+GetParam(SCALED_CASE ${CASES} 0)
+IF( ${IS_SCALED} == TRUE )
+  RegEx( IMAGE_GRID_SCALED_CASE ${IMAGE_GRID} '\*' REPLACE ${SCALED_CASE} )
+  If( ${step} < 45 )
+    CopyFile(${IMAGE_GRID_SCALED_CASE} ${outputDir}/ImageGrid.nrrd  )
+  EndIf( ${step} < 45 )
+ENDIF( ${IS_SCALED} == TRUE )
+
+Set( ImageForMask ${tempDir}/${ANTSPrefix}template.${ANTSAtlasOutputExtension} )
+Set( ImageForMaskNrrd ${tempDir}/avg.nrrd )
+Set( Mask ${tempDir}/mask.nrrd )
+
+Set( Cmd ${ResampleVolume2} ${ImageForMask} ${ImageForMaskNrrd} -i nn )
+
+Run( output ${Cmd} )
+echo( ${output} )
+
+Set( Cmd ${unu} 1op if -i ${ImageForMaskNrrd} -o ${Mask} )
+If( ${step} < 46 )
+  Run( output ${Cmd} )
+  echo( ${output} )
+EndIf( ${step} < 46 )
+
+Set( SmoothMask ${outputDir}/Mask.nrrd )
+Set( Cmd ${MedianImageFilter} ${Mask} --neighborhood 2,2,2 ${SmoothMask} )
+If( ${step} < 47 )
+  Run( output ${Cmd} )
+  echo( ${output} )
+EndIf( ${step} < 47 )

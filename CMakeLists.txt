@@ -37,8 +37,9 @@ ITKTransformTools
 MedianImageFilter
 ImageStat
 ANTS
+#ANTStcshScript path
 WarpImageMultiTransform
-#buildtemplateparallel.sh
+buildtemplateparallel.sh
 dtiestim
 ManualImageOrient
 DiffusionTensorEstimation
@@ -48,7 +49,7 @@ N4ITKBiasFieldCorrection
 MaskComputationWithThresholding
 )
 
-set( ToolsDirectory "/rodent/bin_linux64/toolsJuly2012" CACHE PATH "Tools
+set( ToolsDirectory "/rodent/bin_linux64/toolsApril2013" CACHE PATH "Tools
 directory")
 
 ##########################Find tools##############################################
@@ -95,7 +96,7 @@ else()
   set( rootName "*_${InputTag}" )
 endif()
 ###########################Version of the pipeline############################################
-set( ConfigVersion 3.03 )
+set( ConfigVersion 3.2 )
 ###########################set variables values depending on project type######################
 set( LabelMapsToWarpFile @ProcessingDirectory@/5-AverageSegmentation/${segmentationTag}.nrrd )
 set( LabelMapsTag @ProcessingDirectory@/*/6-Warping/*_${segmentationTag}.nrrd )
