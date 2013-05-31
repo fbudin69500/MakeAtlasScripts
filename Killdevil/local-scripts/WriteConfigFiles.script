@@ -1,0 +1,19 @@
+#!/bin/tcsh
+if( $# != 5 ) then
+  echo "Usage: $0 bmsScriptName.bms listCases outputFolder killdevilPath killdevilConfigFilesPath"
+  exit(-1)
+endif
+set outputFolder = $3
+set listCases = $2
+set scriptName = $1
+set filename = $scriptName:t
+set rootname = $filename:r
+set killdevilpath=`echo $4 | sed "s/\//\\\//g"`
+set outputFolderName=$outputFolder:t
+set killdevilConfigFilesPath=`echo $5 | sed "s/\//\\\//g"`
+foreach i ( `more $listCases` )
+  sed "s/CASES.*/CASES $i )/" $scriptName > ${outputFolder}/${rootname}_${i}.bms
+  sed -i "s/$filename/Killdevil-config\/SeparatedCases\/${outputFolderName}\/${rootname}_${i}.bms/"  ${outputFolder}/${rootname}_${i}.bms
+  sed -i "s/tempDir.*/tempDir $killdevilpath\/Processing\/temp\/${rootname}_${i})/"  ${outputFolder}/${rootname}_${i}.bms
+  sed -i "s/.*GlobalConfig.bms/include( $killdevilpath\/$killdevilConfigFilesPath\/AllCases\/GlobalConfig.bms/"  ${outputFolder}/${rootname}_${i}.bms
+end

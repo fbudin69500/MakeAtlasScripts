@@ -1,0 +1,14 @@
+#!/bin/tcsh
+if( $# != 4 ) then
+  echo "Usage: $0 listCases killdevilSeparatedScriptsPath MemoryLimit Cores"
+  exit(-1)
+endif
+set caseFiles=$1
+set killdevilSeparatedScriptsPath=$2
+set MemoryLimit=$3
+set Cores=$4
+setenv ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS $Cores
+foreach i (`less $caseFiles`)
+  echo $i
+  bsub -q day -M $MemoryLimit -n $Cores /lustre/scr/f/b/fbudin/tools/BatchMake_1.3 -e ${killdevilSeparatedScriptsPath}_${i}.bms
+end
