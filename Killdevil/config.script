@@ -4,6 +4,8 @@ if( $# != 2 ) then
   exit(-1)
 endif
 
+set killdeviltoolspath=/lustre/scr/f/b/fbudin/tools/
+
 echo "Configures..."
 set configPath=$1
 set lastchar = `echo -n $configPath | tail -c -1`
@@ -54,14 +56,14 @@ if(! -d $configPath/Killdevil-config/AllCases) then
 endif
 
 set configPathFor_sed=`echo $configPath | sed "s/\//\\\//g"`
-set killdevilscriptspath=$killdevilPath/$Tools/$MakeAtlasDirectory/Killdevil/killdevil-scripts/
-set killdevilscriptspathFor_sed=`echo $killdevilscriptspath | sed "s/\//\\\//g"`
 set killdevilconfigpath=$killdevilPath/$Tools/$ConfigDirectory/Killdevil-config
 set killdevilconfigpathFor_sed=`echo $killdevilconfigpath | sed "s/\//\\\//g"`
+set killdevilscriptspath=$killdevilconfigpath/killdevil-scripts
+set killdevilscriptspathFor_sed=`echo $killdevilscriptspath | sed "s/\//\\\//g"`
 set killdevilpathFor_sed=`echo $killdevilPath | sed "s/\//\\\//g"`
 set projectdirectoryFor_sed=`echo $projectDirectory0 | sed "s/\//\\\//g"`
 set filepathFor_sed=`echo $filepath | sed "s/\//\\\//g"`
-foreach i ($MakeAtlasPath/Killdevil/*script.in)
+foreach i ($MakeAtlasPath/Killdevil/*.script.in)
   set name=$i:t:r
   set outputFileName=$configPath/Killdevil-config/$name
   sed "s/@CONFIG_PATH@/$configPathFor_sed/" $i > $outputFileName
@@ -74,6 +76,17 @@ foreach i ($MakeAtlasPath/Killdevil/*script.in)
   chmod +x $outputFileName
 end
 
+if(! -d $configPath/Killdevil-config/killdevil-scripts) then
+  mkdir $configPath/Killdevil-config/killdevil-scripts
+endif
+set killdeviltoolspathFor_sed=`echo $killdeviltoolspath | sed "s/\//\\\//g"`
+foreach i ($MakeAtlasPath/Killdevil/killdevil-scripts/*.script.in)
+  set name=$i:t:r
+  set outputFileName=$configPath/Killdevil-config/killdevil-scripts/$name
+  sed "s/@KILLDEVILTOOLSPATH@/$killdeviltoolspathFor_sed/" $i > $outputFileName
+  chmod +x $outputFileName
+end
+
 foreach i (${configPath}/*-*bms)
   set oneFileName=$i
   set name = $i:t
@@ -83,7 +96,10 @@ foreach i (${configPath}/*-*bms)
   rm $configPath/Killdevil-config/AllCases/${name}.1 $configPath/Killdevil-config/AllCases/${name}.2
 end
 
-$filepath/local-scripts/GlobalConfig.py $MakeAtlasPath/Config/GlobalConfig.bms.in $configPath/Killdevil-config/AllCases/GlobalConfig.bms /lustre/scr/f/b/fbudin/tools/
+sed "s/-j 8/-j 12/" $MakeAtlasPath/4.1-AverageCreation-ANTS/runANTSatlasScript.tcsh > $configPath/Killdevil-config/AllCases/runANTSatlasScript.tcsh
+sed -i "s/ANTStcshScriptPATH.*/ANTStcshScriptPATH $killdevilconfigpathFor_sed\/AllCases\/runANTSatlasScript.tcsh)/" $configPath/Killdevil-config/AllCases/4.1-AverageCreation-ANTSConfig.bms
+sed -i "s/GreedyAtlasNbOfThreads 8/GreedyAtlasNbOfThreads 12/" $configPath/Killdevil-config/AllCases/4-AverageCreationConfig.bms
+$filepath/local-scripts/GlobalConfig.py $MakeAtlasPath/Config/GlobalConfig.bms.in $configPath/Killdevil-config/AllCases/GlobalConfig.bms $killdeviltoolspath
 
 
 
@@ -99,4 +115,4 @@ foreach i ($configPath/Killdevil-config/AllCases/*-*bms)
   $filepath/local-scripts/WriteConfigFiles.script $i $configPath/Killdevil-config/listCases.txt $configPath/Killdevil-config/SeparatedCases/$name $killdevilPath $Tools/$ConfigDirectory/Killdevil-config
 end
 
-rsync -r -a -v -z -e ssh $projectDirectory0/ killdevil.unc.edu:$killdevilPath
+rsync --exclude 'Data' -r -a -v -z -e ssh $projectDirectory0/ killdevil.unc.edu:$killdevilPath

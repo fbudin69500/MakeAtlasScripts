@@ -17,4 +17,4 @@ foreach i ($configPath/Killdevil-config/AllCases/*-*bms)
   $filepath/local-scripts/WriteConfigFiles.script $i $configPath/Killdevil-config/listCases.txt $configPath/Killdevil-config/SeparatedCases/$name $killdevilPath $Tools/$ConfigDirectory/Killdevil-config
 end
 
-rsync -r -a -v -z -e ssh $projectDirectory/ killdevil.unc.edu:$killdevilPath
+rsync --exclude 'Data' -r -a -v -z -e ssh $projectDirectory/ killdevil.unc.edu:$killdevilPath
