@@ -1,0 +1,11 @@
+#!/bin/tcsh
+if( $# |= 2 ) then
+  echo "Usage: $0 ScriptName[from AllCases dir] MemoryLimit[in GB]"
+  exit(-1)
+endif
+set scriptName=$1
+set MemoryLimit=$2
+set killdevilscriptspath = @KILLDEVILSCRIPTSPATH@
+set killdevilconfigpath = @KILLDEVILCONFIGPATH@
+echo "Submitting jobs to killdevil.unc.edu ..."
+ssh killdevil.unc.edu -C "$killdevilscriptspath/Average-bsub.script $killdevilconfigpath/AllCases/$scriptName" $MemoryLimit

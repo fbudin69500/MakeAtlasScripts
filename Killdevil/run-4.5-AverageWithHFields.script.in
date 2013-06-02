@@ -1,0 +1,6 @@
+#!/bin/tcsh
+set killdevilscriptspath = @KILLDEVILSCRIPTSPATH@
+set killdevilconfigpath = @KILLDEVILCONFIGPATH@
+echo "Submitting jobs to killdevil.unc.edu ..."
+set MemoryLimit=8
+ssh killdevil.unc.edu -C "$killdevilscriptspath/Average-bsub.script $killdevilconfigpath/AllCases/4.5-AverageWithHFields.bms" $MemoryLimit

@@ -1,0 +1,18 @@
+#!/bin/tcsh
+if( $# != 4 ) then
+  echo "Usage: $0 listCases killdevilSeparatedScriptsPath MemoryLimit Cores"
+  exit(-1)
+endif
+set caseFiles=$1
+set killdevilSeparatedScriptsPath=$2
+set MemoryLimit=$3
+set Cores=$4
+set killdeviltoolspath=@KILLDEVILTOOLSPATH@
+setenv ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS $Cores
+foreach i (`less $caseFiles`)
+  echo $i
+  if( ! -e ${killdevilSeparatedScriptsPath}_${i}.bms ) then
+    echo "Batchmake script not found - ${killdevilSeparatedScriptsPath}_${i}.bms"  
+  endif
+  bsub -q day -M $MemoryLimit -n $Cores -R "span[hosts=1]" $killdeviltoolspath/BatchMake_1.3 -e ${killdevilSeparatedScriptsPath}_${i}.bms
+end

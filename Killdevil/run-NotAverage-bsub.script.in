@@ -1,0 +1,19 @@
+#!/bin/tcsh
+if( $# |= 3 ) then
+  echo "Usage: $0 ScriptName[from AllCases dir] MemoryLimit[in GB]  Cores"
+  exit(-1)
+endif
+set scriptName=$1:r
+set MemoryLimit=$2
+set Cores=$3
+set configPath = @CONFIG_PATH@
+set first = `echo $configPath | head -c 1`
+if( "$first" != "/" ) then
+  set currentPath = `pwd`
+  set configPath = $currentPath/$configPath
+endif
+set killdevilscriptspath = @KILLDEVILSCRIPTSPATH@
+set killdevilconfigpath = @KILLDEVILCONFIGPATH@
+set listCases = $killdevilconfigpath/"listCases.txt"
+echo "Submitting jobs to killdevil.unc.edu ..."
+ssh killdevil.unc.edu -C "$killdevilscriptspath/NotAverage-bsub.script $listCases $killdevilconfigpath/SeparatedCases/$scriptName/$scriptName" $MemoryLimit $Cores
