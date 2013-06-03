@@ -50,6 +50,8 @@ set (Measure MI)
 set (AffregParam 32 )
 ##-28-Fluid coefficient
 set( FluidCoeff 100 )
+##-29-Registers all the images a second time using the affine average
+set( COMPUTE_SECOND_AFFINE_AVERAGE FALSE )
 ###################################
 include( @ConfigDirectory@/GlobalConfig.bms )
 ##Processes

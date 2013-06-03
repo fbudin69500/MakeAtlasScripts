@@ -56,30 +56,30 @@ RegEx( FIXED_MASK ${INPUT_MASK_FILE} '\*' REPLACE ${FIXED_CASE} )
 include( 031AffineRegistration.bms )
 
 
-#We skip the average computation and registration. Results are better without
-#set( avgImage ${tempDir}/AverageAffineImage_${times}.nrrd )
-#set( Cmd ${ImageMath} ${FIRST_CASE} -avg ${ALL_OTHER_CASES} -outfile ${avgImage} )
-#If( ${step} < 8 )
-#  Run( output ${Cmd} )
-#  echo( ${output} )
-#EndIf( ${step} < 8 )
+if( ${COMPUTE_SECOND_AFFINE_AVERAGE} == TRUE )
+  set( avgImage ${tempDir}/AverageAffineImage_${times}.nrrd )
+  set( Cmd ${ImageMath} ${FIRST_CASE} -avg ${ALL_OTHER_CASES} -outfile ${avgImage} )
+  If( ${step} < 8 )
+    Run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 8 )
 
-#The mask computed on the new average image has some non-nul value in the background.
-#Computing This mask was creating an image entirely filled with "ones"
-#Instead, we keep the mask of the first image that is more or less aligned with this average.
-#This gives a much better result.
-#Set( FIXED_MASK ${tempDir}/AverageAffineImage_${times}_mask.nrrd )
-#Set( Cmd ${unu} 1op if -i ${avgImage} -o ${FIXED_MASK} )
-#If( ${step} < 9 )
-#  Run( output ${Cmd} )
-#  echo( ${output} )
-#EndIf( ${step} < 9 )
+  #The mask computed on the new average image has some non-nul value in the background.
+  #Computing This mask was creating an image entirely filled with "ones"
+  #Instead, we keep the mask of the first image that is more or less aligned with this average.
+  #This gives a much better result.
+  Set( FIXED_MASK ${tempDir}/AverageAffineImage_${times}_mask.nrrd )
+  Set( Cmd ${unu} 1op if -i ${avgImage} -o ${FIXED_MASK} )
+  If( ${step} < 9 )
+    Run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 9 )
+  set( FIXED_IMG ${avgImage} )
+  set(FIXED_CASE AverageAffineImage_resc_${times} )
+  set( RESCALED_FIXED_IMG ${tempDir}/${FIXED_CASE}.nrrd )
+  include( 031AffineRegistration.bms )
+EndIf()
 
-
-#set( FIXED_IMG ${avgImage} )
-#set(FIXED_CASE AverageAffineImage_resc_${times} )
-#set( RESCALED_FIXED_IMG ${tempDir}/${FIXED_CASE}.nrrd )
-#include( 031AffineRegistration.bms )
 ####################Create average##############################################
 
 Set( ANTSPrefix 'ANTSAtlas' )
