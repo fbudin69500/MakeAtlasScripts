@@ -18,9 +18,11 @@ set lastchar = `echo -n $killdevilPath | tail -c -1`
 if( "$lastchar" == "/" ) then
   set killdevilPath=`echo -n $killdevilPath | head -c -1`
 endif
-echo "###Config Path: $configPath"
+echo "###Killdevil Path: $killdevilPath"
 set filepath = $0:h
 echo "###Current script path: "$filepath
+set configPath=`$filepath/local-scripts/GetStringForCMakeCache.py $configPath "ConfigDirectory"`
+echo "###Config Path: $configPath"
 set MakeAtlasPath=`$filepath/local-scripts/GetStringForCMakeCache.py $configPath "MakeAtlasScripts_SOURCE_DIR"`
 echo "###Make Atlas Scripts Path: $MakeAtlasPath"
 set ProcessingPath=`$filepath/local-scripts/GetStringForCMakeCache.py $configPath "ProcessingDirectory"`
@@ -34,7 +36,6 @@ if(! -d $configPath/Killdevil-config) then
   mkdir $configPath/Killdevil-config
 endif
 
-
 set MakeAtlasDirectory = $MakeAtlasPath:t
 set first = `echo $configPath | head -c 1`
 if( "$first" != "/" ) then
@@ -42,18 +43,22 @@ if( "$first" != "/" ) then
   set configPath = $currentPath/$configPath
 endif
 
+echo "###Absolute Config Path: $configPath"
+
 set projectDirectory0=`$filepath/local-scripts/GetProjectDirectory.py $configPath $ProcessingPath 0`
 set projectDirectory1=`$filepath/local-scripts/GetProjectDirectory.py $configPath $ProcessingPath 1`
 set projectDirectory2=`$filepath/local-scripts/GetProjectDirectory.py $configPath $ProcessingPath 2`
+
+
 if(! -d $configPath/Killdevil-config/AllCases) then
   mkdir $configPath/Killdevil-config/AllCases
 endif
 
 set projectDirectory1For_sed=`echo $projectDirectory1 | sed "s/\//\\\//g"`
 set ConfigANDToolsDirectory = `echo $configPath |sed "s/$projectDirectory1For_sed\///"`
-set ConfigDirectoryFor_sed=`echo $ConfigDirectory | sed "s/\//\\\//g"`
 set Tools = `echo $ConfigANDToolsDirectory |sed "s/\/.*//g"`
 set ConfigDirectory = `echo $ConfigANDToolsDirectory |sed "s/$Tools\///g"`
+set ConfigDirectoryFor_sed=`echo $ConfigDirectory | sed "s/\//\\\//g"`
 echo "###Config Directory (subdirectory in which the configured scripts are written): "$ConfigDirectory
 echo "###Tools Directory (subdirectory in which the tools and templates are copied): "$Tools
 set configPathFor_sed=`echo $configPath | sed "s/\//\\\//g"`
@@ -97,7 +102,6 @@ foreach i (${configPath}/*-*bms)
   $filepath/local-scripts/ReplacePaths.py $configPath/Killdevil-config/AllCases/${name}.2 $configPath/Killdevil-config/AllCases/${name} $projectDirectory2 $killdevilPath
   rm $configPath/Killdevil-config/AllCases/${name}.1 $configPath/Killdevil-config/AllCases/${name}.2
 end
-
 sed "s/-j 8/-j $NbOfCoresForAverage/" $MakeAtlasPath/4.1-AverageCreation-ANTS/runANTSatlasScript.tcsh > $configPath/Killdevil-config/AllCases/runANTSatlasScript.tcsh
 sed -i "s/ANTStcshScriptPATH.*/ANTStcshScriptPATH $killdevilconfigpathFor_sed\/AllCases\/runANTSatlasScript.tcsh)/" $configPath/Killdevil-config/AllCases/4.1-AverageCreation-ANTSConfig.bms
 sed -i "s/GreedyAtlasNbOfThreads 8/GreedyAtlasNbOfThreads $NbOfCoresForAverage/" $configPath/Killdevil-config/AllCases/4-AverageCreationConfig.bms
