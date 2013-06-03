@@ -35,18 +35,11 @@ endif
 
 
 set MakeAtlasDirectory = $MakeAtlasPath:t
-set Tools = $MakeAtlasPath:h:t
 set first = `echo $configPath | head -c 1`
-set lastchar = `echo -n $configPath | tail -c -1`
-if( "$lastchar" == "/" ) then
-  set configPath=`echo -n $configPath | head -c -1`
-endif
 if( "$first" != "/" ) then
   set currentPath = `pwd`
   set configPath = $currentPath/$configPath
 endif
-set ConfigDirectory = $configPath:t
-echo "###Config Directory (subdirectory in which the configured scripts are written): "$ConfigDirectory
 
 set projectDirectory0=`$filepath/local-scripts/GetProjectDirectory.py $configPath $ProcessingPath 0`
 set projectDirectory1=`$filepath/local-scripts/GetProjectDirectory.py $configPath $ProcessingPath 1`
@@ -55,6 +48,13 @@ if(! -d $configPath/Killdevil-config/AllCases) then
   mkdir $configPath/Killdevil-config/AllCases
 endif
 
+set projectDirectory1For_sed=`echo $projectDirectory1 | sed "s/\//\\\//g"`
+set ConfigANDToolsDirectory = `echo $configPath |sed "s/$projectDirectory1For_sed\///"`
+set ConfigDirectoryFor_sed=`echo $ConfigDirectory | sed "s/\//\\\//g"`
+set Tools = `echo $ConfigANDToolsDirectory |sed "s/\/.*//g"`
+set ConfigDirectory = `echo $ConfigANDToolsDirectory |sed "s/$Tools\///g"`
+echo "###Config Directory (subdirectory in which the configured scripts are written): "$ConfigDirectory
+echo "###Tools Directory (subdirectory in which the tools and templates are copied): "$Tools
 set configPathFor_sed=`echo $configPath | sed "s/\//\\\//g"`
 set killdevilconfigpath=$killdevilPath/$Tools/$ConfigDirectory/Killdevil-config
 set killdevilconfigpathFor_sed=`echo $killdevilconfigpath | sed "s/\//\\\//g"`
