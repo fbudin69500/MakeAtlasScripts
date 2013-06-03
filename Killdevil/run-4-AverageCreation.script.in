@@ -2,5 +2,5 @@
 set killdevilscriptspath = @KILLDEVILSCRIPTSPATH@
 set killdevilconfigpath = @KILLDEVILCONFIGPATH@
 echo "Submitting jobs to killdevil.unc.edu ..."
-set MemoryLimit=48
-ssh killdevil.unc.edu -C "$killdevilscriptspath/Average-bsub.script $killdevilconfigpath/AllCases/4-AverageCreationConfig.bms" $MemoryLimit
+set MemoryLimit=40
+ssh killdevil.unc.edu -C "$killdevilscriptspath/Average-bsub.script $killdevilconfigpath/AllCases/4-AverageCreationConfig.bms" $MemoryLimit week

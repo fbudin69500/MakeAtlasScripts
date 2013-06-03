@@ -5,6 +5,7 @@ if( $# != 2 ) then
 endif
 
 set killdeviltoolspath=/lustre/scr/f/b/fbudin/tools/
+set NbOfCoresForAverage=10
 
 echo "Configures..."
 set configPath=$1
@@ -84,6 +85,7 @@ foreach i ($MakeAtlasPath/Killdevil/killdevil-scripts/*.script.in)
   set name=$i:t:r
   set outputFileName=$configPath/Killdevil-config/killdevil-scripts/$name
   sed "s/@KILLDEVILTOOLSPATH@/$killdeviltoolspathFor_sed/" $i > $outputFileName
+  sed -i "s/@NUMBEROFCORESFORAVERAGE@/$NbOfCoresForAverage/" $outputFileName
   chmod +x $outputFileName
 end
 
@@ -96,9 +98,9 @@ foreach i (${configPath}/*-*bms)
   rm $configPath/Killdevil-config/AllCases/${name}.1 $configPath/Killdevil-config/AllCases/${name}.2
 end
 
-sed "s/-j 8/-j 12/" $MakeAtlasPath/4.1-AverageCreation-ANTS/runANTSatlasScript.tcsh > $configPath/Killdevil-config/AllCases/runANTSatlasScript.tcsh
+sed "s/-j 8/-j $NbOfCoresForAverage/" $MakeAtlasPath/4.1-AverageCreation-ANTS/runANTSatlasScript.tcsh > $configPath/Killdevil-config/AllCases/runANTSatlasScript.tcsh
 sed -i "s/ANTStcshScriptPATH.*/ANTStcshScriptPATH $killdevilconfigpathFor_sed\/AllCases\/runANTSatlasScript.tcsh)/" $configPath/Killdevil-config/AllCases/4.1-AverageCreation-ANTSConfig.bms
-sed -i "s/GreedyAtlasNbOfThreads 8/GreedyAtlasNbOfThreads 12/" $configPath/Killdevil-config/AllCases/4-AverageCreationConfig.bms
+sed -i "s/GreedyAtlasNbOfThreads 8/GreedyAtlasNbOfThreads $NbOfCoresForAverage/" $configPath/Killdevil-config/AllCases/4-AverageCreationConfig.bms
 $filepath/local-scripts/GlobalConfig.py $MakeAtlasPath/Config/GlobalConfig.bms.in $configPath/Killdevil-config/AllCases/GlobalConfig.bms $killdeviltoolspath
 
 
