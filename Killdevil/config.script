@@ -100,8 +100,10 @@ foreach i (${configPath}/*-*bms)
   $filepath/local-scripts/ReplacePaths.py $i $configPath/Killdevil-config/AllCases/${name}.1 $projectDirectory0 $killdevilPath
   $filepath/local-scripts/ReplacePaths.py $configPath/Killdevil-config/AllCases/${name}.1 $configPath/Killdevil-config/AllCases/${name}.2 $projectDirectory1 $killdevilPath
   $filepath/local-scripts/ReplacePaths.py $configPath/Killdevil-config/AllCases/${name}.2 $configPath/Killdevil-config/AllCases/${name} $projectDirectory2 $killdevilPath
+  sed -i "s/.*GlobalConfig.bms/include( $killdevilconfigpathFor_sed\/AllCases\/GlobalConfig.bms/"  $configPath/Killdevil-config/AllCases/${name}
   rm $configPath/Killdevil-config/AllCases/${name}.1 $configPath/Killdevil-config/AllCases/${name}.2
 end
+
 sed "s/-j 8/-j $NbOfCoresForAverage/" $MakeAtlasPath/4.1-AverageCreation-ANTS/runANTSatlasScript.tcsh > $configPath/Killdevil-config/AllCases/runANTSatlasScript.tcsh
 sed -i "s/ANTStcshScriptPATH.*/ANTStcshScriptPATH $killdevilconfigpathFor_sed\/AllCases\/runANTSatlasScript.tcsh)/" $configPath/Killdevil-config/AllCases/4.1-AverageCreation-ANTSConfig.bms
 sed -i "s/GreedyAtlasNbOfThreads 8/GreedyAtlasNbOfThreads $NbOfCoresForAverage/" $configPath/Killdevil-config/AllCases/4-AverageCreationConfig.bms

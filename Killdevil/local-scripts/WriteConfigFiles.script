@@ -15,5 +15,4 @@ foreach i ( `more $listCases` )
   sed "s/CASES.*/CASES $i )/" $scriptName > ${outputFolder}/${rootname}_${i}.bms
   sed -i "s/$filename/Killdevil-config\/SeparatedCases\/${outputFolderName}\/${rootname}_${i}.bms/"  ${outputFolder}/${rootname}_${i}.bms
   sed -i "s/tempDir.*/tempDir $killdevilpath\/Processing\/temp\/${rootname}_${i})/"  ${outputFolder}/${rootname}_${i}.bms
-  sed -i "s/.*GlobalConfig.bms/include( $killdevilpath\/$killdevilConfigFilesPath\/AllCases\/GlobalConfig.bms/"  ${outputFolder}/${rootname}_${i}.bms
 end
