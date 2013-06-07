@@ -48,10 +48,18 @@ set( step 0 )
 set (Measure MI)
 ##-27- Affine registration parameter. Bin number for MI metric. Refer to ANTS doc for the other metrics
 set (AffregParam 32 )
-##-28-Fluid coefficient
-set( FluidCoeff 100 )
-##-29-Registers all the images a second time using the affine average
+##-28-Registers all the images a second time using the affine average
 set( COMPUTE_SECOND_AFFINE_AVERAGE FALSE )
+##-29-Gamma for each iteration (check 29-30-31-32-33)
+set( Gammas 0.01 0.001 0.0001 )
+##-30-Set iteration numbers (check 29-30-31-32-33)
+set( ITERATION_NUMBER 200 120 100 )
+##-31-Alpha for each iteration (check 29-30-31-32-33)
+Set( Alphas 1 1 .1 )
+##-32-Beta for each iteration (check 29-30-31-32-33)
+Set( Betas 1 1 .1 )
+##-33-MaxPert (check 29-30-31-32-33)
+set( MaxPerts 0.001 0.01 0.1 )
 ###################################
 include( @ConfigDirectory@/GlobalConfig.bms )
 ##Processes

@@ -1,3 +1,14 @@
+GetListSize( GammasSize Gammas )
+GetListSize( AlphasSize Alphas )
+GetListSize( BetasSize Betas )
+GetListSize( ITERATION_NUMBERSize ITERATION_NUMBER )
+GetListSize( MaxPertsSize MaxPerts )
+if( ${GammasSize} != ${AlphasSize} || ${GammasSize} != ${BetasSize} || ${GammasSize} != ${ITERATION_NUMBERSize} || ${GammasSize} != ${MaxPertsSize} )
+  echo( 'Gammas, Alphas, Betas, MaxPerts and ITERATION_NUMBER must have the same number of elements' )
+  exit()
+endif()
+
+
 MakeDirectory( ${outputDir} )
 MakeDirectory( ${tempDir} )
 set( MASK_TAG _masked_from_seg )
