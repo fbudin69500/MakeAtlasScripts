@@ -4,6 +4,7 @@ set killdevilPath=@KILLDEVILPATH@
 set projectDirectory=@PROJECTDIRECTORY@
 set Tools=@TOOLS@
 set filepath=@SCRIPTSPATH@
+set localProcessingPath=@LOCALPROCESSINGPATH@
 set ConfigDirectory = $configPath:t
 if(! -d $configPath/Killdevil-config/SeparatedCases) then
   mkdir $configPath/Killdevil-config/SeparatedCases
@@ -17,4 +18,4 @@ foreach i ($configPath/Killdevil-config/AllCases/*-*bms)
   $filepath/local-scripts/WriteConfigFiles.script $i $configPath/Killdevil-config/listCases.txt $configPath/Killdevil-config/SeparatedCases/$name $killdevilPath $Tools/$ConfigDirectory/Killdevil-config
 end
 
-rsync --exclude 'Data' -r -a -v -z -e ssh $projectDirectory/ killdevil.unc.edu:$killdevilPath
+rsync --exclude 'Data' --exclude $localProcessingPath/temp -r -a -v -z -e ssh $projectDirectory/ killdevil.unc.edu:$killdevilPath
