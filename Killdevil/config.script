@@ -49,15 +49,13 @@ set projectDirectory0=`$filepath/local-scripts/GetProjectDirectory.py $configPat
 set projectDirectory1=`$filepath/local-scripts/GetProjectDirectory.py $configPath $ProcessingPath 1`
 set projectDirectory2=`$filepath/local-scripts/GetProjectDirectory.py $configPath $ProcessingPath 2`
 
+
 if(! -d $configPath/Killdevil-config/AllCases) then
   mkdir $configPath/Killdevil-config/AllCases
 endif
 
 set projectDirectory1For_sed=`echo $projectDirectory1 | sed "s/\//\\\//g"`
-set projectDirectory2For_sed=`echo $projectDirectory2 | sed "s/\//\\\//g"`
-set localProcessingPath=`echo $ProcessingPath | sed "s/$projectDirectory2For_sed\///"`
 set ConfigANDToolsDirectory = `echo $configPath |sed "s/$projectDirectory1For_sed\///"`
-set localProcessingPathFor_sed=`echo $localProcessingPath |sed "s/\/.*//g"`
 set Tools = `echo $ConfigANDToolsDirectory |sed "s/\/.*//g"`
 set ConfigDirectory = `echo $ConfigANDToolsDirectory |sed "s/$Tools\///g"`
 set ConfigDirectoryFor_sed=`echo $ConfigDirectory | sed "s/\//\\\//g"`
@@ -81,7 +79,6 @@ foreach i ($MakeAtlasPath/Killdevil/*.script.in)
   sed -i "s/@PROJECTDIRECTORY@/$projectdirectoryFor_sed/" $outputFileName
   sed -i "s/@TOOLS@/$Tools/" $outputFileName
   sed -i "s/@SCRIPTSPATH@/$filepathFor_sed/" $outputFileName
-  sed -i "s/@LOCALPROCESSINGPATH@/$localProcessingPathFor_sed/" $outputFileName
   chmod +x $outputFileName
 end
 
@@ -103,10 +100,8 @@ foreach i (${configPath}/*-*bms)
   $filepath/local-scripts/ReplacePaths.py $i $configPath/Killdevil-config/AllCases/${name}.1 $projectDirectory0 $killdevilPath
   $filepath/local-scripts/ReplacePaths.py $configPath/Killdevil-config/AllCases/${name}.1 $configPath/Killdevil-config/AllCases/${name}.2 $projectDirectory1 $killdevilPath
   $filepath/local-scripts/ReplacePaths.py $configPath/Killdevil-config/AllCases/${name}.2 $configPath/Killdevil-config/AllCases/${name} $projectDirectory2 $killdevilPath
-  sed -i "s/.*GlobalConfig.bms/include( $killdevilconfigpathFor_sed\/AllCases\/GlobalConfig.bms/"  $configPath/Killdevil-config/AllCases/${name}
   rm $configPath/Killdevil-config/AllCases/${name}.1 $configPath/Killdevil-config/AllCases/${name}.2
 end
-
 sed "s/-j 8/-j $NbOfCoresForAverage/" $MakeAtlasPath/4.1-AverageCreation-ANTS/runANTSatlasScript.tcsh > $configPath/Killdevil-config/AllCases/runANTSatlasScript.tcsh
 sed -i "s/ANTStcshScriptPATH.*/ANTStcshScriptPATH $killdevilconfigpathFor_sed\/AllCases\/runANTSatlasScript.tcsh)/" $configPath/Killdevil-config/AllCases/4.1-AverageCreation-ANTSConfig.bms
 sed -i "s/GreedyAtlasNbOfThreads 8/GreedyAtlasNbOfThreads $NbOfCoresForAverage/" $configPath/Killdevil-config/AllCases/4-AverageCreationConfig.bms
@@ -126,5 +121,4 @@ foreach i ($configPath/Killdevil-config/AllCases/*-*bms)
   $filepath/local-scripts/WriteConfigFiles.script $i $configPath/Killdevil-config/listCases.txt $configPath/Killdevil-config/SeparatedCases/$name $killdevilPath $Tools/$ConfigDirectory/Killdevil-config
 end
 
-echo "Data and $localProcessingPath/temp are not synchronized from local system to killdevil"
-rsync --exclude 'Data' --exclude $localProcessingPath/temp -r -a -v -z -e ssh $projectDirectory0/ killdevil.unc.edu:$killdevilPath
+rsync --exclude 'Data' --exclude 'temp' --exclude '.git' -r -a -v -z -e ssh $projectDirectory0/ killdevil.unc.edu:$killdevilPath
