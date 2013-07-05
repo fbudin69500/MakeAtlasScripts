@@ -35,11 +35,10 @@ endif
 if(! -d $configPath/Killdevil-config) then
   mkdir $configPath/Killdevil-config
 endif
-
+set currentPath = `pwd`
 set MakeAtlasDirectory = $MakeAtlasPath:t
 set first = `echo $configPath | head -c 1`
 if( "$first" != "/" ) then
-  set currentPath = `pwd`
   set configPath = $currentPath/$configPath
 endif
 
@@ -68,6 +67,11 @@ set killdevilscriptspath=$killdevilconfigpath/killdevil-scripts
 set killdevilscriptspathFor_sed=`echo $killdevilscriptspath | sed "s/\//\\\//g"`
 set killdevilpathFor_sed=`echo $killdevilPath | sed "s/\//\\\//g"`
 set projectdirectoryFor_sed=`echo $projectDirectory0 | sed "s/\//\\\//g"`
+
+set first = `echo $filepath | head -c 1`
+if( "$first" != "/" ) then
+  set filepath = $currentPath/$filepath
+endif
 set filepathFor_sed=`echo $filepath | sed "s/\//\\\//g"`
 foreach i ($MakeAtlasPath/Killdevil/*.script.in)
   set name=$i:t:r
