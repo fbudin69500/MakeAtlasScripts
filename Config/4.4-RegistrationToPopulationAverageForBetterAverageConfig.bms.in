@@ -1,0 +1,39 @@
+##Check that the version is the same in the example and in the config file you are modifying.
+##If not, copy and modify this example to have a version of the configuration file that is up
+##to date.
+##Version:@ConfigVersion@
+#####################################################################################################
+################################### Variables to set ################################################
+#####################################################################################################
+##-1-Cases to process
+set( CASES @cases@ )
+##-4-mask created from the segmentation
+set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-BrainMaskComputation/*_mask_from_seg.nrrd )
+##-5-Template mask (used for the registration if set)
+set( TEMPLATE_MASK @ProcessingDirectory@/4-AverageCreation/Mask.nrrd )
+##-6-Template image to use for registration (usually the computed population average) 
+set( Template_Image @PopulationAverage@ )
+#####################################################################################################
+######################## Advanced options that you should not have to modify ########################
+#####################################################################################################
+##-7-directory in the case directory in which to save new case files (mask, parcellation and statistics)
+set( OUTPUT_DIR @ProcessingDirectory@/*/4.4-RegistrationToPopulationAverageForBetterAverage )
+##-8-Input suffix of files used to create new average
+set( WARP_INPUT_FILE @WarpInputFile@ )
+##-15-directory in which temporary files are written
+set( tempDir @ProcessingDirectory@/temp/4.4-RegistrationToPopulationAverageForBetterAverage )
+##-16-Iteration number
+set( IterationNumber 100x100x150 )
+##-17-Name of this file (configuration file)
+##Set to '' if you don't want to save the configuration file in the output directory
+set( ScriptName @ConfigDirectory@/4.4-RegistrationToPopulationAverageForBetterAverageConfig.bms )
+##-2-Use the inverse h-field computed with the population atlas creation
+set( USE_INV_HFIELD FALSE )
+##-3-List of images to warp (can contain multiple files)
+set( LabelMapsToWarp  '' )
+##-9-Suffix of the inverse hfield that are computed in the population average creation
+set( InvHField '' )
+###################################
+include( @ConfigDirectory@/GlobalConfig.bms )
+##Processes
+include( @CMAKE_CURRENT_SOURCE_DIR@/6-Warp/000WarpToCases.bms )

@@ -6,6 +6,7 @@ endif
 
 set killdeviltoolspath=/lustre/scr/f/b/fbudin/tools/
 set NbOfCoresForAverage=10
+set antstoolspath=/lustre/scr/f/b/fbudin/tools/ANTs-1.9.x-Linux/bin/ #do not forget the trailing '/'
 
 echo "Configures..."
 set configPath=$1
@@ -35,8 +36,11 @@ endif
 if(! -d $configPath/Killdevil-config) then
   mkdir $configPath/Killdevil-config
 endif
+
+
 set currentPath = `pwd`
 set MakeAtlasDirectory = $MakeAtlasPath:t
+
 set first = `echo $configPath | head -c 1`
 if( "$first" != "/" ) then
   set configPath = $currentPath/$configPath
@@ -47,7 +51,10 @@ echo "###Absolute Config Path: $configPath"
 set projectDirectory0=`$filepath/local-scripts/GetProjectDirectory.py $configPath $ProcessingPath 0`
 set projectDirectory1=`$filepath/local-scripts/GetProjectDirectory.py $configPath $ProcessingPath 1`
 set projectDirectory2=`$filepath/local-scripts/GetProjectDirectory.py $configPath $ProcessingPath 2`
-
+$filepath/local-scripts/MakeAtlasIsInProjectDirectory.py $MakeAtlasPath $projectDirectory0
+if( $? ) then
+  exit(-1)
+endif
 
 if(! -d $configPath/Killdevil-config/AllCases) then
   mkdir $configPath/Killdevil-config/AllCases
@@ -90,23 +97,28 @@ if(! -d $configPath/Killdevil-config/killdevil-scripts) then
   mkdir $configPath/Killdevil-config/killdevil-scripts
 endif
 set killdeviltoolspathFor_sed=`echo $killdeviltoolspath | sed "s/\//\\\//g"`
+set antstoolspath_sed=`echo $antstoolspath | sed "s/\//\\\//g"`
 foreach i ($MakeAtlasPath/Killdevil/killdevil-scripts/*.script.in)
   set name=$i:t:r
   set outputFileName=$configPath/Killdevil-config/killdevil-scripts/$name
   sed "s/@KILLDEVILTOOLSPATH@/$killdeviltoolspathFor_sed/" $i > $outputFileName
   sed -i "s/@NUMBEROFCORESFORAVERAGE@/$NbOfCoresForAverage/" $outputFileName
+  sed -i "s/@ANTSTOOLSPATH@/$antstoolspath_sed/" $outputFileName
   chmod +x $outputFileName
 end
 
+set MakeAtlasPathFor_sed=`echo $MakeAtlasPath | sed "s/\//\\\//g"`
 foreach i (${configPath}/*-*bms)
   set oneFileName=$i
   set name = $i:t
   $filepath/local-scripts/ReplacePaths.py $i $configPath/Killdevil-config/AllCases/${name}.1 $projectDirectory0 $killdevilPath
   $filepath/local-scripts/ReplacePaths.py $configPath/Killdevil-config/AllCases/${name}.1 $configPath/Killdevil-config/AllCases/${name}.2 $projectDirectory1 $killdevilPath
   $filepath/local-scripts/ReplacePaths.py $configPath/Killdevil-config/AllCases/${name}.2 $configPath/Killdevil-config/AllCases/${name} $projectDirectory2 $killdevilPath
+  sed -i "s/.*GlobalConfig.bms/include( $killdevilpathFor_sed\/$Tools\/$ConfigDirectory\/Killdevil-config\/AllCases\/GlobalConfig.bms/" $configPath/Killdevil-config/AllCases/${name}
   rm $configPath/Killdevil-config/AllCases/${name}.1 $configPath/Killdevil-config/AllCases/${name}.2
 end
 sed "s/-j 8/-j $NbOfCoresForAverage/" $MakeAtlasPath/4.1-AverageCreation-ANTS/runANTSatlasScript.tcsh > $configPath/Killdevil-config/AllCases/runANTSatlasScript.tcsh
+chmod +x $configPath/Killdevil-config/AllCases/runANTSatlasScript.tcsh
 sed -i "s/ANTStcshScriptPATH.*/ANTStcshScriptPATH $killdevilconfigpathFor_sed\/AllCases\/runANTSatlasScript.tcsh)/" $configPath/Killdevil-config/AllCases/4.1-AverageCreation-ANTSConfig.bms
 sed -i "s/GreedyAtlasNbOfThreads 8/GreedyAtlasNbOfThreads $NbOfCoresForAverage/" $configPath/Killdevil-config/AllCases/4-AverageCreationConfig.bms
 $filepath/local-scripts/GlobalConfig.py $MakeAtlasPath/Config/GlobalConfig.bms.in $configPath/Killdevil-config/AllCases/GlobalConfig.bms $killdeviltoolspath
