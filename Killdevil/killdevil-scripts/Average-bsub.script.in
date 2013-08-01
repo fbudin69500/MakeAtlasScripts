@@ -15,5 +15,5 @@ if( ! -e $killdevilbmsScript) then
 endif
 setenv ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS $Cores
 setenv ANTSPATH $antstoolspath
-bsub -q $whichqueue -M $MemoryLimit -n $Cores $killdeviltoolspath/BatchMake_1.3 -e $killdevilbmsScript
+bsub -q $whichqueue -M $MemoryLimit -n $Cores -R "span[hosts=1]" $killdeviltoolspath/BatchMake_1.3 -e $killdevilbmsScript
 #bsub -q week -M $MemoryLimit -n $Cores -x -R "span[hosts=1]" $killdeviltoolspath/BatchMake_1.3 -e $killdevilbmsScript
