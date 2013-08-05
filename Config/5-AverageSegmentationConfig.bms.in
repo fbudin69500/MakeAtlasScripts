@@ -20,28 +20,30 @@ set( TEMPLATE_SEGMENTATION @ExternalSegmentation@ )
 ##-6-Population Average mask (if there isn't one, set to '', if there's one, give the full path)
 ##May contain multiple files (Full brain mask, region masks,...). The number of elements has to match the number of elements in -4-TEMPLATE_mask_FILENAME
 set ( PopAverage_mask_FILENAME '' )
+##-7-Do not recompute the transforms (TRUE/FALSE)
+set ( WARP_ONLY FALSE )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
-##-7-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
+##-8-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
 set( IS_SCALED @Scale@ )
-##-8-Select which kind of registration is gonna be used. FALSE = Elastic, TRUE = Diffeomorphic
+##-9-Select which kind of registration is gonna be used. FALSE = Elastic, TRUE = Diffeomorphic
 set( Diffeomorphic TRUE )
-##-14-Directory in which the segmentation is saved
+##-10-Directory in which the segmentation is saved
 set( OutputDir @ProcessingDirectory@/5-AverageSegmentation )
-##-15-Directory in which temporary files are written
+##-11-Directory in which temporary files are written
 set( tempDir @ProcessingDirectory@/temp/5-AverageSegmentation )
-##-16-Image grid filename
+##-12-Image grid filename
 set( IMAGE_GRID @ProcessingDirectory@/4-AverageCreation/ImageGrid.nrrd )
-##-17- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the ANTS doc)
+##-13- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the ANTS doc)
 ##May contain multiple elements. The number of elements has to match the number of elements in -3-TEMPLATE, -2-PopulationAverage, and  -19-bin_number
 set (Measure MI)
-##-18- ANTS ranges. Bin number for MI metric. Refer to ANTS doc for the other metrics
+##-14- ANTS ranges. Bin number for MI metric. Refer to ANTS doc for the other metrics
 ##May contain multiple elements. The number of elements has to match the number of elements in -3-TEMPLATE, -2-PopulationAverage, and  -18-Measure
 set (bin_number 32 )
-##-19-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
+##-15-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
 set( step 0 )
-##-20-Name of this file (configuration file).
+##-16-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName @ConfigDirectory@/5-AverageSegmentationConfig.bms )
 ###################################
