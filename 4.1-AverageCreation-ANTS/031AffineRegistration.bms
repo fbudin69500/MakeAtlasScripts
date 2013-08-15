@@ -53,17 +53,16 @@ foreach( i ${CASES} )
   EndIf()
 
 
-  ####Convert transform files from MatrixOffsetTransformBase_double_3_3 to AffineTransform_double_3_3 for AtlasWerks###
-  set( TRANSFORM_LIST ${TRANSFORM_LIST} ${TRANSFORM} )
   GetFilename( filename ${RESAMPLED_IMAGE} NAME )
-  set( MD_CASES ${MD_CASES} ${filename} )
   ####List of images to compute average affinely registered images
   if( ${FIRST} == TRUE )
     set( FIRST_CASE ${RESAMPLED_IMAGE} )
     set( FIRST FALSE )
+    set( MD_CASES ${filename} )
     set( TRANSFORM_LIST ${TRANSFORM} )
   else( ${FIRST} == TRUE )
     set( ALL_OTHER_CASES ${RESAMPLED_IMAGE} ${ALL_OTHER_CASES} )
+    set( MD_CASES ${MD_CASES} ${filename} )
     set( TRANSFORM_LIST ${TRANSFORM_LIST} ${TRANSFORM} )
   endif( ${FIRST} == TRUE )
 endforeach( ${CASES} )

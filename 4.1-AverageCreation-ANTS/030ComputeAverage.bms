@@ -92,7 +92,7 @@ Endif( ${step} < 15 )
 set( ANTSAtlasOutputExtension nii.gz )
 set( ANTSAtlasOutputRootName ANTSWarp )
 ###################Save H-Fields#########################################
-Set( count 1 )
+Set( count 0 )
 Int( ${count} )
 foreach( i ${CASES} )
   GetParam( WarpCase ${MD_CASES} ${count} )
