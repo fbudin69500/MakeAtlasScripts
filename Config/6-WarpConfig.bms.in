@@ -7,40 +7,42 @@
 #####################################################################################################
 ##-1-Cases to process
 set( CASES @cases@ )
-##-2-Use the inverse h-field computed with the population atlas creation
+##-2-Use the inverse h-field computed with the population atlas creation. Don't forget to set -3-TypeOfDeformation appropriately
 set( USE_INV_HFIELD TRUE )
-##-3-List of images to warp (can contain multiple files)
+##-3- Type of deformation field computed. If computed from 4-AverageComputation, set to 'h-Field'. If computed from 4.1-AverageComputation-ANTS, set to 'displacement'
+set( hfieldTypeVar h-Field )
+##-4-List of images to warp (can contain multiple files)
 set( LabelMapsToWarp  @LabelMapsToWarpFile@ )
-##-4-mask created from the segmentation. The number of elements has to match the number of elements in -5-Template mask, -6-Template image, -8-Input suffix, -17- Similarity, and -18- ANTS ranges
+##-5-mask created from the segmentation. The number of elements has to match the number of elements in -6-Template mask, -9-Template image, -11-Input suffix, -13- Similarity, and -14- ANTS ranges
 set( INPUT_MASK_FILE @ProcessingDirectory@/*/3-BrainMaskComputation/*_mask_from_seg.nrrd )
-##-5-Template mask (used for the registration if set). The number of elements has to match the number of elements in -4-mask, -6-Template image, -8-Input suffix, -17- Similarity, and -18- ANTS ranges
+##-6-Template mask (used for the registration if set). The number of elements has to match the number of elements in -5-mask, -6-Template image, -11-Input suffix, -13- Similarity, and -14- ANTS ranges
 set( TEMPLATE_MASK '' )
-##-6-labels from template (used as an extra term in the registration with MSQ). You can set masks, or segmented regions, or regions extracted from segmented average
+##-7-labels from template (used as an extra term in the registration with MSQ). You can set masks, or segmented regions, or regions extracted from segmented average
 set( TEMPLATE_LABELS '' )
-##-7-labels from the input images (used as an extra term in the registration with MSQ). You can set masks, or segmented regions
+##-8-labels from the input images (used as an extra term in the registration with MSQ). You can set masks, or segmented regions
 set( INPUT_LABELS '' )
 #####################################################################################################
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
-##-6-Template image to use for registration (usually the computed population average). The number of elements has to match the number of elements in -4-mask, -5-Template mask, -8-Input suffix, -17- Similarity, and -18- ANTS ranges
+##-9-Template image to use for registration (usually the computed population average). The number of elements has to match the number of elements in -4-mask, -5-Template mask, -8-Input suffix, -17- Similarity, and -18- ANTS ranges
 set( Template_Image @PopulationAverage@ )
-##-7-directory in the case directory in which to save new case files (mask, parcellation and statistics)
+##-10-directory in the case directory in which to save new case files (mask, parcellation and statistics)
 set( OUTPUT_DIR @ProcessingDirectory@/*/6-Warping )
-##-8-Input suffix of files used to create new average. The number of elements has to match the number of elements in -4-mask, -5-Template mask, -6-Template image, -17- Similarity, and -18- ANTS ranges
+##-11-Input suffix of files used to create new average. The number of elements has to match the number of elements in -4-mask, -5-Template mask, -6-Template image, -17- Similarity, and -18- ANTS ranges
 set( WARP_INPUT_FILE @WarpInputFile@ )
-##-9-Suffix of the inverse hfield that are computed in the population average creation
+##-10-Suffix of the inverse hfield that are computed in the population average creation
 set( InvHField @ProcessingDirectory@/*/4-AverageCreation/*_inv_hFieldToPopAverage.mha )
-##-15-directory in which temporary files are written
+##-11-directory in which temporary files are written
 set( tempDir @ProcessingDirectory@/temp/6-Warping )
-##-16-Iteration number
+##-12-Iteration number
 set( IterationNumber 100x100x100x20 )
-##-17- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the ANTS doc)
-##May contain multiple elements. The number of elements has to match the number of elements in -4-mask, -5-Template mask, -6-Template image, -8-Input suffix, and -18- ANTS ranges
+##-13- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the ANTS doc)
+##May contain multiple elements. The number of elements has to match the number of elements in -5-mask, -6-Template mask, -9-Template image, -11-Input suffix, and -14- ANTS ranges
 set (Measure MI)
-##-18- ANTS ranges. Bin number for MI metric. Refer to ANTS doc for the other metrics
-##May contain multiple elements. The number of elements has to match the number of elements in -4-mask, -5-Template mask, -6-Template image, -8-Input suffix, and -17- Similarity
+##-14- ANTS ranges. Bin number for MI metric. Refer to ANTS doc for the other metrics
+##May contain multiple elements. The number of elements has to match the number of elements in -5-mask, -6-Template mask, -9-Template image, -11-Input suffix, and -13- Similarity
 set (bin_number 32 )
-##-19-Name of this file (configuration file)
+##-15-Name of this file (configuration file)
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName @ConfigDirectory@/6-WarpConfig.bms )
 ###################################

@@ -101,7 +101,7 @@ foreach( i ${CASES} )
   #####Concatenates ANTS displacement field and affine transforms #####  
   RegEx( ReferenceImage ${POPULATION_AVERAGE_INPUT_FILES} '\*' REPLACE ${i} )
   RegEx( OutSubjDir ${CASES_OUTPUT_DIR} '\*' REPLACE ${i} )
-  Set( COPIED_HFIELD ${OutSubjDir}/${i}_hFieldToPopAverage.mha )
+  Set( COPIED_HFIELD ${OutSubjDir}/${i}_displacementFieldToPopAverage.mha )
   GetParam( AFFINE_TRANSFORM ${TRANSFORM_LIST} ${count} )
   set( Cmd ${ITKTransformTools} concatenate ${COPIED_HFIELD} -r ${ReferenceImage} ${tempDir}/${ANTSPrefix}${ANTSSuffix}Warp.nii.gz displacement  ${tempDir}/${ANTSPrefix}${ANTSSuffix}Affine.txt ${AFFINE_TRANSFORM} )
 
@@ -127,7 +127,7 @@ foreach( i ${CASES} )
   EndIf( ${step} < 17 )
   #####Concatenates ANTS inverse transforms
   
-  Set( COPIED_INV_HFIELD ${OutSubjDir}/${i}_inv_hFieldToPopAverage.mha )
+  Set( COPIED_INV_HFIELD ${OutSubjDir}/${i}_inv_displacementFieldToPopAverage.mha )
   set( Cmd ${ITKTransformTools} concatenate ${COPIED_INV_HFIELD} -r ${ReferenceImage} ${tempDir}/${ANTSPrefix}${ANTSSuffix}InverseWarp.nii.gz displacement ${InverseANTSAffine} ${InverseBRAINSAffine} )
   If( ${step} < 17 )
     Run( output ${Cmd} )
