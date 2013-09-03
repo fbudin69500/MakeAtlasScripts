@@ -153,23 +153,9 @@ IF( ${IS_SCALED} == TRUE )
 ENDIF( ${IS_SCALED} == TRUE )
 
 Set( ImageForMask ${tempDir}/${ANTSPrefix}template.${ANTSAtlasOutputExtension} )
-Set( ImageForMaskNrrd ${tempDir}/avg.nrrd )
-Set( Mask ${tempDir}/mask.nrrd )
+Set( Mask ${outputDir}/mask.nrrd )
 
-Set( Cmd ${ResampleVolume2} ${ImageForMask} ${ImageForMaskNrrd} -i nn )
-
+Set( Cmd ${ImageMath} ${ImageForMask} -threshold 1,10000 -outfile ${Mask} -i nn )
 Run( output ${Cmd} )
 echo( ${output} )
 
-Set( Cmd ${unu} 1op if -i ${ImageForMaskNrrd} -o ${Mask} )
-If( ${step} < 46 )
-  Run( output ${Cmd} )
-  echo( ${output} )
-EndIf( ${step} < 46 )
-
-Set( SmoothMask ${outputDir}/Mask.nrrd )
-Set( Cmd ${MedianImageFilter} ${Mask} --neighborhood 2,2,2 ${SmoothMask} )
-If( ${step} < 47 )
-  Run( output ${Cmd} )
-  echo( ${output} )
-EndIf( ${step} < 47 )
