@@ -155,7 +155,7 @@ ENDIF( ${IS_SCALED} == TRUE )
 Set( ImageForMask ${tempDir}/${ANTSPrefix}template.${ANTSAtlasOutputExtension} )
 Set( Mask ${outputDir}/mask.nrrd )
 
-Set( Cmd ${ImageMath} ${ImageForMask} -threshold 1,10000 -outfile ${Mask} -i nn )
+Set( Cmd ${ImageMath} ${ImageForMask} -threshold 1,100000 -outfile ${Mask} -i nn )
 Run( output ${Cmd} )
 echo( ${output} )
 
