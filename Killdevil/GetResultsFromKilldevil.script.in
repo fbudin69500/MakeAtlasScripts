@@ -1,4 +1,4 @@
 #!/bin/tcsh
 set projectDirectory=@PROJECTDIRECTORY@
 set killdevilPath=@KILLDEVILPATH@
-rsync -r -a -v -z -e ssh killdevil.unc.edu:$killdevilPath/ $projectDirectory
+rsync --exclude 'core' -r -a -v -z -e ssh killdevil.unc.edu:$killdevilPath/ $projectDirectory

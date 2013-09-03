@@ -9,9 +9,13 @@ set ConfigDirectory = $configPath:t
 if(! -d $configPath/Killdevil-config/SeparatedCases) then
   mkdir $configPath/Killdevil-config/SeparatedCases
 endif
-
+set allcaseslist=""
+foreach i ( `more $configPath/Killdevil-config/listCases.txt` )
+  set allcaseslist=`echo $allcaseslist`" $i"
+end
 foreach i ($configPath/Killdevil-config/AllCases/*-*bms)
   set name = $i:t:r
+  sed -i "s/CASES.*/CASES $allcaseslist )/" $i
   if(! -d $configPath/Killdevil-config/SeparatedCases/$name) then
     mkdir $configPath/Killdevil-config/SeparatedCases/$name
   endif
