@@ -25,25 +25,27 @@ set ( WARP_ONLY FALSE )
 ###################################
 #Extra parameters. Normally no need to modified
 ###################################
-##-8-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
+##-8- If masks are given to help for the registration, if the fist mask is the full brain mask, it will be given as a parameter to ANTS to optimize the registration only over this region
+set( FIRST_MASK_IS_FULL_BRAIN TRUE )
+##-9-If the transform given above was computed with image spacing set to 1,1,1 and centered, set to TRUE (Not used for scalar images)
 set( IS_SCALED @Scale@ )
-##-9-Select which kind of registration is gonna be used. FALSE = Elastic, TRUE = Diffeomorphic
+##-10-Select which kind of registration is gonna be used. FALSE = Elastic, TRUE = Diffeomorphic
 set( Diffeomorphic TRUE )
-##-10-Directory in which the segmentation is saved
+##-11-Directory in which the segmentation is saved
 set( OutputDir @ProcessingDirectory@/5-AverageSegmentation )
-##-11-Directory in which temporary files are written
+##-12-Directory in which temporary files are written
 set( tempDir @ProcessingDirectory@/temp/5-AverageSegmentation )
-##-12-Image grid filename
+##-13-Image grid filename
 set( IMAGE_GRID @ProcessingDirectory@/4-AverageCreation/ImageGrid.nrrd )
-##-13- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the ANTS doc)
+##-14- Similarity metrics that is gonna be used with ANTS. Can be MI, MSQ, CC, PR, PSE (please refer to the ANTS doc)
 ##May contain multiple elements. The number of elements has to match the number of elements in -3-TEMPLATE, -2-PopulationAverage, and  -19-bin_number
 set (Measure MI)
-##-14- ANTS ranges. Bin number for MI metric. Refer to ANTS doc for the other metrics
+##-15- ANTS ranges. Bin number for MI metric. Refer to ANTS doc for the other metrics
 ##May contain multiple elements. The number of elements has to match the number of elements in -3-TEMPLATE, -2-PopulationAverage, and  -18-Measure
 set (bin_number 32 )
-##-15-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
+##-16-Step at which to start the processing (only use if script stopped in the middle of the execution for no real reason)
 set( step 0 )
-##-16-Name of this file (configuration file).
+##-17-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
 set( ScriptName @ConfigDirectory@/5-AverageSegmentationConfig.bms )
 ###################################

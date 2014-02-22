@@ -24,6 +24,8 @@ set( INPUT_LABELS '' )
 #####################################################################################################
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
+##-8- If masks are given to help for the registration, if the fist mask is the full brain mask, it will be given as a parameter to ANTS to optimize the registration only over this region
+set( FIRST_MASK_IS_FULL_BRAIN TRUE )
 ##-9-Template image to use for registration (usually the computed population average). The number of elements has to match the number of elements in -4-mask, -5-Template mask, -8-Input suffix, -17- Similarity, and -18- ANTS ranges
 set( Template_Image @PopulationAverage@ )
 ##-10-directory in the case directory in which to save new case files (mask, parcellation and statistics)
