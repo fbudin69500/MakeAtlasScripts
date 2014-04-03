@@ -48,7 +48,7 @@ MaskComputationWithThresholding
 )
 
 
-set( ToolsDirectory "/rodent/bin_linux64/toolsMay2013" CACHE PATH "Tools directory")
+set( ToolsDirectory "/rodent/bin_linux64/toolsApril2014" CACHE PATH "Tools directory")
 
 ##########################Find tools##############################################
 foreach( var ${listTools} )
