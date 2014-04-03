@@ -1,6 +1,5 @@
 ### The script uses:
 #- BRAINSFit
-#- Double2FloatTransform
 #- GreedyAtlas
 #- ImageMath
 #- ResampleVolume2

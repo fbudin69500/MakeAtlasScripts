@@ -1,4 +1,4 @@
-# AtlasWerks
+# GreedyAtlas
 set (AWfile ${tempDir}/AW.xml)
 WriteFile(${AWfile} '<!--top-level node-->\n')
 AppendFile(${AWfile} '<ParameterFile>\n')

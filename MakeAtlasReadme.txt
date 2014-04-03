@@ -40,10 +40,10 @@ All cases are registered to the first case (fixed image):
 	-Each case is affinely registered to the fixed image
 An average image is computed from all the affinely registered images
 All the cases are registered to the average image (same process as just described)
-An atlas is computed using AtlasWerks:
+An atlas is computed using GreedyAtlas:
 	-The input images are the histogram matched images (not affinely transformed)
-	-We give the list of affine transforms to AtlasWerks
-	-AtlasWerks creates an average image and hFields to transform each case to this average image
+	-We give the list of affine transforms to GreedyAtlas
+	-GreedyAtlas creates an average image and hFields to transform each case to this average image
 We save each hField in its corresponding case directory
 If the input images are DTIs:
 	We compute the average of the DTIs
