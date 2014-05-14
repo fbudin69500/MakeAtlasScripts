@@ -152,9 +152,15 @@ IF( ${IS_SCALED} == TRUE )
 ENDIF( ${IS_SCALED} == TRUE )
 
 Set( ImageForMask ${tempDir}/${ANTSPrefix}template.${ANTSAtlasOutputExtension} )
-Set( Mask ${outputDir}/mask.nrrd )
+Set( Mask ${tempDir}/mask.nrrd )
 
 Set( Cmd ${ImageMath} ${ImageForMask} -threshold 1,100000 -outfile ${Mask} -i nn )
 Run( output ${Cmd} )
 echo( ${output} )
+
+Set( FinalMask ${outputDir}/mask.nrrd )
+Set( Cmd ${ResampleVolume2} ${Mask} ${FinalMask} -i nn -R ${AverageReference} )
+Run( output ${Cmd} )
+echo( ${output} )
+
 

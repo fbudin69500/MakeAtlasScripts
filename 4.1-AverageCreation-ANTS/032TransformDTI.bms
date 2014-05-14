@@ -151,4 +151,4 @@ foreach( i ${AverageName} )
   Int( ${count} )
 endforeach( i ${List} )
 #We set the skull stripped MD image as the "normal" MD image 
-set( MDFile ${outputDir}/AverageTensor_SS_MD.nrrd )
+set( AverageReference ${outputDir}/AverageTensor_SS_MD.nrrd )

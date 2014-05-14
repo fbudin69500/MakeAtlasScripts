@@ -4,6 +4,7 @@ set( AverageImageSS ${outputDir}/AverageImage_SS.nrrd )
 set( AverageImageNSS ${outputDir}/AverageImage_NSS.nrrd )
 set( AverageImageSS_orig ${outputDir}/AverageImage_SS_orig.nrrd )
 set( AverageImageNSS_orig ${outputDir}/AverageImage_NSS_orig.nrrd )
+set( AverageReference ${AverageImageSS} )
 #########################################################################################
 #				HISTOGRAM MATCH = FALSE
 #########################################################################################
