@@ -39,7 +39,7 @@ set( IMAGE_GRID @ProcessingDirectory@/*/2-Registration/ImageGrid.nrrd )
 set( Mradius 0 )
 ##-24-Name of this file (configuration file).
 ##Set to '' if you don't want to save the configuration file in the output directory
-set( ScriptName @ConfigDirectory@/4-AverageCreationConfig.bms )
+set( ScriptName @ConfigDirectory@/4.1-AverageCreation-ANTSConfig.bms )
 ##Set ANTS script (that starts the script given by ANTS) path
 ##We need this script to change directory due to limitations in the original script
 set( ANTStcshScriptPATH @CMAKE_CURRENT_SOURCE_DIR@/4.1-AverageCreation-ANTS/runANTSatlasScript.tcsh )
