@@ -1,4 +1,18 @@
 #!/bin/tcsh
+set syncProc=""
+set badCMD = 0
+if( $# == 1 ) then
+  if( "$1" == "--ProcessingNotSync" ) then
+    set syncProc="--exclude 'Processing'"
+  else
+    set badCMD = 1
+  endif
+endif
+if( $# > 1 || $badCMD == 1 ) then
+  echo "Usage: $0 [--ProcessingNotSync]"
+  exit -1
+endif
+
 set configPath=@CONFIG_PATH@
 set killdevilPath=@KILLDEVILPATH@
 set projectDirectory=@PROJECTDIRECTORY@
@@ -22,4 +36,4 @@ foreach i ($configPath/Killdevil-config/AllCases/*-*bms)
   $filepath/local-scripts/WriteConfigFiles.script $i $configPath/Killdevil-config/listCases.txt $configPath/Killdevil-config/SeparatedCases/$name $killdevilPath $Tools/$ConfigDirectory/Killdevil-config
 end
 
-rsync --exclude 'Data' --exclude 'temp' --exclude '.git' -r -a -v -z -e ssh $projectDirectory/ killdevil.unc.edu:$killdevilPath
+rsync --exclude 'Data' $syncProc--exclude 'temp' --exclude '.git' -r -a -v -z -e ssh $projectDirectory/ killdevil.unc.edu:$killdevilPath
