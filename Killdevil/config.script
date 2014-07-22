@@ -74,6 +74,10 @@ set killdevilscriptspath=$killdevilconfigpath/killdevil-scripts
 set killdevilscriptspathFor_sed=`echo $killdevilscriptspath | sed "s/\//\\\//g"`
 set killdevilpathFor_sed=`echo $killdevilPath | sed "s/\//\\\//g"`
 set projectdirectoryFor_sed=`echo $projectDirectory0 | sed "s/\//\\\//g"`
+set ProcessingPathFor_sed=`echo $ProcessingPath | sed "s/\//\\\//g"`
+set processingDir = `echo $ProcessingPath |sed "s/$projectDirectory1For_sed\///g"`
+set killdevilProcessingPath = $killdevilPath/$processingDir
+set killdevilProcessingPathFor_sed=`echo $killdevilProcessingPath | sed "s/\//\\\//g"`
 
 set first = `echo $filepath | head -c 1`
 if( "$first" != "/" ) then
@@ -90,6 +94,8 @@ foreach i ($MakeAtlasPath/Killdevil/*.script.in)
   sed -i "s/@PROJECTDIRECTORY@/$projectdirectoryFor_sed/" $outputFileName
   sed -i "s/@TOOLS@/$Tools/" $outputFileName
   sed -i "s/@SCRIPTSPATH@/$filepathFor_sed/" $outputFileName
+  sed -i "s/@PROCESSINGPATH@/$ProcessingPathFor_sed/" $outputFileName
+  sed -i "s/@KILLDEVILPROCESSINGPATH@/$killdevilProcessingPathFor_sed/" $outputFileName
   chmod +x $outputFileName
 end
 
