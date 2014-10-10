@@ -111,7 +111,7 @@ If( ${INPUTTYPE} == 'DWI' )
   If (${CREATEIDWI} == TRUE ) Then
     Set (IDWIFlag --idwi ${TEMPDIR}/${IDWImage} )
   EndIf (${CREATEIDWI})
-  Set (GenerateCmd ${dtiestimPATH} --dwi_image ${INPUTDIR}/${DWImage} --tensor_output ${OUTPUTDIR}/${DTImage} ${B0Flag} ${IDWIFlag} -m wls -t 0 )
+  Set (GenerateCmd ${dtiestimPATH} --dwi_image ${INPUTDIR}/${DWImage} --tensor_output ${OUTPUTDIR}/${DTImage} ${B0Flag} ${IDWIFlag} -m wls -t 0 --shiftNeg )
   Run (output ${GenerateCmd})
   Echo (${output})
 EndIf( ${INPUTTYPE} == 'DWI' )
