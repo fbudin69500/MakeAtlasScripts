@@ -48,23 +48,6 @@ MaskComputationWithThresholding
 )
 
 
-set( ToolsDirectory "/rodent/bin_linux64/toolsOctober2014" CACHE PATH "Tools directory")
-
-##########################Find tools##############################################
-foreach( var ${listTools} )
-  find_program(${var}TOOL ${ToolsDirectory}/${var} )
-  if(NOT ${var}TOOL )
-    find_program(${var}TOOL ${var})
-    if(${var}TOOL)
-    message( WARNING "${var} was not in ${ToolsDirectory}.  The path was set
- to the dynamic executable path set as default on your machine:
- ${${var}TOOL} ")
-    else(${var}TOOL )
-        message( WARNING "${var} not found. Path not set")
-    endif(${var}TOOL)
-  endif(NOT ${var}TOOL )
-  mark_as_advanced( ${var}TOOL )
-endforeach( var )
 
 mark_as_advanced( CMAKE_BUILD_TYPE CMAKE_INSTALL_PREFIX )
 set( ConfigDirectory "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "Config directory" )
@@ -73,7 +56,36 @@ get_filename_component(initProcessingDirectory ${CMAKE_CURRENT_BINARY_DIR}/../..
 get_filename_component(toolsDirectory ${CMAKE_CURRENT_BINARY_DIR}/.. REALPATH )
 set( ProcessingDirectory "${initProcessingDirectory}" CACHE PATH "Processing directory" )
 
+if( NOT ProcessingToolsDirectory )
+  file( GLOB ProcessingToolsDirectory ${toolsDirectory}/tools* )
+  set( ProcessingToolsDirectory ${ProcessingToolsDirectory} CACHE PATH "Tools directory" )
+  unset( ProcessingToolsDirectory )
+endif()
+if( NOT ProcessingToolsDirectory )
+  message( FATAL_ERROR "Processing Tools directory not found" )
+endif()
+list( LENGTH ProcessingToolsDirectory sizeProcessingToolsDirectory )
+if( ${sizeProcessingToolsDirectory} GREATER 1 )
+  list( GET ProcessingToolsDirectory 0 ProcessingToolsDirectoryZero )
+  set( ProcessingToolsDirectory ${ProcessingToolsDirectoryZero} CACHE PATH "Tools directory" FORCE)
+  message( WARNING "Multiple processing tools directory found in ${toolsDirectory}. Using ${ProcessingToolsDirectory}.")
+endif()
 
+##########################Find tools##############################################
+foreach( var ${listTools} )
+  find_program(${var}TOOL ${ProcessingToolsDirectory}/${var} )
+  if(NOT ${var}TOOL )
+    find_program(${var}TOOL ${var})
+    if(${var}TOOL)
+    message( WARNING "${var} was not in ${ProcessingToolsDirectory}.  The path was set
+ to the dynamic executable path set as default on your machine:
+ ${${var}TOOL} ")
+    else(${var}TOOL )
+        message( WARNING "${var} not found. Path not set")
+    endif(${var}TOOL)
+  endif(NOT ${var}TOOL )
+  mark_as_advanced( ${var}TOOL )
+endforeach( var )
 
 set( InputType "scalar" CACHE STRING "scalar/DWI/DTI" )
 if( NOT( ${InputType} STREQUAL scalar )
@@ -94,7 +106,7 @@ else()
   set( rootName "*_${InputTag}" )
 endif()
 ###########################Version of the pipeline############################################
-set( ConfigVersion 3.3 )
+set( ConfigVersion 3.4 )
 ###########################set variables values depending on project type######################
 set( LabelMapsToWarpFile @ProcessingDirectory@/5-AverageSegmentation/${segmentationTag}.nrrd )
 set( LabelMapsTag @ProcessingDirectory@/*/6-Warping/*_${segmentationTag}.nrrd )
