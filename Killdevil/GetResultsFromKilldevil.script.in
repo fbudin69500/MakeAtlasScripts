@@ -2,3 +2,4 @@
 set processingDirectory=@PROCESSINGPATH@
 set killdevilProcessingPath=@KILLDEVILPROCESSINGPATH@
 rsync --exclude 'core' -r -a -v -z -e ssh killdevil.unc.edu:$killdevilProcessingPath/ $processingDirectory
+chmod -R g+w $processingDirectory
