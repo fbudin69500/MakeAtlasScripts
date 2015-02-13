@@ -1,0 +1,44 @@
+### The script uses:
+#-RATS_MM
+#-RATS_LOGISMOS
+#-MeshToLabelMap
+####################run ABC##############################################
+ForEach (Case ${CASES})
+  echo('Skullstripping '${Case} )
+  RegEx( CASE_Image ${Input_Grayscale_IMAGE} '\*' REPLACE ${Case} )
+  RegEx( CASE_OUTPUT_MASK_FILE ${OUTPUT_MASK_FILE} '\*' REPLACE ${Case} )
+  GetFilename( NEW_MASK_FILE_TAG ${CASE_OUTPUT_MASK_FILE} NAME_WITHOUT_EXTENSION )
+  MakeDirectory( ${tempDir}/${Case} )
+  RegEx( OutputSubjDir ${OUTPUT_DIR} '\*' REPLACE ${Case} )
+  MakeDirectory( ${OutputSubjDir} )
+  ###RATS_MM
+  Set( case_output_mask_with_dir ${OutputSubjDir}/${CASE_OUTPUT_MASK_FILE} )
+  Set( Cmd ${RATS_MM} ${CASE_Image} ${case_output_mask_with_dir} -v ${RATS_MM_volume} -t ${RATS_MM_threshold} )
+  echo( ${Cmd} )
+  If( ${step} < 1 )
+    run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 1 )
+  ###RATS_LOGISMOS
+  Set( modelMask ${tempDir}/${Case}/${NEW_MASK_FILE_TAG}_LOGISMOS.vtp )
+  Set( Cmd ${RATS_LOGISMOS} ${CASE_Image} ${case_output_mask_with_dir} ${modelMask} --alpha ${RATS_LOGISMOS_alpha} )
+  echo( ${Cmd} )
+  If( ${step} < 2 )
+    run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 2 )
+  ###MeshToLabelMap
+  Set( LOGISMOS_MASK_VOLUME ${OutputSubjDir}/${NEW_MASK_FILE_TAG}_LOGISMOS.nrrd )
+  Set( Cmd ${MeshToLabelMap} -m ${modelMask} -l ${LOGISMOS_MASK_VOLUME} -R ${CASE_Image} )
+  echo( ${Cmd} )
+  If( ${step} < 3 )
+    run( output ${Cmd} )
+    echo( ${output} )
+  EndIf( ${step} < 3 )
+  if( ${ScriptName} != '' )
+    GetFilename( name ${ScriptName} NAME )
+    If( ${step} < 4 )
+      CopyFile( ${ScriptName} ${OutputSubjDir}/${name} )
+    EndIf( ${step} < 4 )
+  Endif( ${ScriptName} != '' )
+EndForEach( ${CASES} )

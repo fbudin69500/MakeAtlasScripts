@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 CMAKE_POLICY(VERSION 2.8)
+if(POLICY CMP0053)
+  cmake_policy(SET CMP0053 OLD)
+endif()
 
 project(MakeAtlasScripts NONE)
 
@@ -45,6 +48,9 @@ ManualImageOrient
 HistogramMatching
 N4ITKBiasFieldCorrection
 MaskComputationWithThresholding
+RATS_LOGISMOS
+RATS_MM
+MeshToLabelMap
 )
 
 
@@ -106,7 +112,7 @@ else()
   set( rootName "*_${InputTag}" )
 endif()
 ###########################Version of the pipeline############################################
-set( ConfigVersion 3.4 )
+set( ConfigVersion 3.5 )
 ###########################set variables values depending on project type######################
 set( LabelMapsToWarpFile @ProcessingDirectory@/5-AverageSegmentation/${segmentationTag}.nrrd )
 set( LabelMapsTag @ProcessingDirectory@/*/6-Warping/*_${segmentationTag}.nrrd )

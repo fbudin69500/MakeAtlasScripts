@@ -61,4 +61,9 @@ set ( HistogramMatching '@HistogramMatchingTOOL@')
 Set ( N4ITKBiasFieldCorrection '@N4ITKBiasFieldCorrectionTOOL@')
 #MaskComputationWithThresholding
 Set ( MaskComputationWithThresholding '@MaskComputationWithThresholdingTOOL@')
-
+#RATS_MM
+Set ( RATS_MM '@RATS_MMTOOL@')
+#RATS_LOGISMOS
+Set ( RATS_LOGISMOS '@RATS_LOGISMOSTOOL@')
+#MeshToLabelMap
+Set ( MeshToLabelMap '@MeshToLabelMapTOOL@')
