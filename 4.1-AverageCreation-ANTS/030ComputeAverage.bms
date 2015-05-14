@@ -127,7 +127,7 @@ foreach( i ${CASES} )
   #####Concatenates ANTS inverse transforms
   
   Set( COPIED_INV_HFIELD ${OutSubjDir}/${i}_inv_displacementFieldToPopAverage.mha )
-  set( Cmd ${ITKTransformTools} concatenate ${COPIED_INV_HFIELD} -r ${ReferenceImage} ${tempDir}/${ANTSPrefix}${ANTSSuffix}InverseWarp.nii.gz displacement ${InverseANTSAffine} ${InverseBRAINSAffine} )
+  set( Cmd ${ITKTransformTools} concatenate ${COPIED_INV_HFIELD} -r ${ReferenceImage} ${InverseBRAINSAffine} ${InverseANTSAffine} ${tempDir}/${ANTSPrefix}${ANTSSuffix}InverseWarp.nii.gz displacement )
   If( ${step} < 17 )
     Run( output ${Cmd} )
     echo( ${output} )
