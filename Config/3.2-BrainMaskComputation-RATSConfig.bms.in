@@ -13,7 +13,7 @@ set( Input_Grayscale_IMAGE @RigidRegistrationImageFile@ )
 ######################## Advanced options that you should not have to modify ########################
 #####################################################################################################
 ##-3-Directory in the case directory in which to save new case files (mask and parcellation)
-set( OUTPUT_DIR @ProcessingDirectory@/*/3-BrainMaskComputation )
+set( OUTPUT_DIR @ProcessingDirectory@/*/3.2-BrainMaskComputation-RATS )
 ##-4-Mask file name
 set( OUTPUT_MASK_FILE *_mask_from_seg.nrrd )
 ##-5-RATS_LOGISMOS alpha value
@@ -23,7 +23,7 @@ set( RATS_MM_volume 500 )
 ##-7-Threshold (eg 500)
 set( RATS_MM_threshold 500 )
 ##-22-directory in which temporary files are written
-set( tempDir @ProcessingDirectory@/temp/3-BrainMaskComputation-RATS )
+set( tempDir @ProcessingDirectory@/temp/3.2-BrainMaskComputation-RATS )
 ##-5-directory in which to find "rreg_rigid.params" and "rreg_TO_TEMPLATE.param"
 set( CONFIGDIR @CMAKE_CURRENT_SOURCE_DIR@/3.2-BrainMaskComputation-RATS )
 ##-26-Name of this file (configuration file).
